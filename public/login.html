@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+    <head>
+        <meta charset="utf-8" />
+        <link rel="canonical" href="/public/welcome-sura" />
+        <link rel="icon" href="/public/favicon.ico" />
+        <link rel="stylesheet" href="/public/styles/login.css" />
+        <link rel="stylesheet" href="/public/styles/template.css" />
+        
+        <!-- Nunito Font -->
+        <link rel="preconnect" href="https://fonts.googleapis.com"> 
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+        <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+        <!-- Set the viewport width to device width for mobile -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Welcome to SURA | Stanford Undergraduate Research Association</title>
+    </head>
+
+    <body>
+        <header>
+            <div id="SURA-div"> 
+                <a id="SURA" href="/" title="Home" rel="home">
+                    <img id="sura-logo-home" src="/public/images/sura_logo_white.png">
+                    <p>SURA</p>
+                </a>
+                <!-- We need this empty div to not make the SURA homelink be clickable across half of the header. -->
+                <div></div>
+            </div>
+            
+            <nav role="navigation">
+                <ul class="menu nav">
+                    <li class="leaf"><a href="/meet-team">Team</a></li>
+                    <li class="leaf"><a href="/stanford-research-conference">Research Conference</a></li>
+                    <li class="leaf"><a href="/outreach-initiatives">Outreach</a></li>
+                    <li class="leaf"><a href="/graduate-mentorship">Mentorship</a></li>
+                    <li class="leaf"><a href="/treesearch">TreeSearch</a></li>
+                    <li class="leaf"><a href="/get-involved">Get Involved</a></li>
+                    <li class="leaf"><a href="/">About</a></li>
+                    <li class="leaf"><a href="/">Login</Inp></a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <div id="outer_box">
+                <div id="left_box" class="inner_box">
+                    <p>Welcome Back!</p>
+                    <img src="/public/images/sura_logo.png" width="100px">
+                    ^Placeholder for another icon^
+                    <p id="SURA_description">Stanford's Premier Organization for Student Researchers</p>
+                </div>
+                <div id="right_box" class="inner_box">
+                    <h1>Login Here</h1>
+                    
+                    <form action="/welcome-sura?destination=node/9" method="post" id="user-login-form" accept-charset="UTF-8">
+                        <div>
+                            <div class="label_input_container">
+                                <label for="edit-name"><img src="/public/images/login/user.png" width="32px"></label>
+                                
+                                <input type="text" id="edit-name" name="name" placeholder="Username" maxlength="60" required/>
+                            </div>
+                            
+                            <div class="label_input_container">
+                                <label for="edit-pass"><img src="/public/images/login/lock.png" width="32px"></label>
+                                
+                                <input type="password" id="edit-pass" name="pass" placeholder="Password" maxlength="128" required/>
+                            </div>
+
+                            <div class="form-actions form-wrapper" id="submit-button-container">
+                                <input type="submit" id="submit-button" name="op" value="Log in" class="form-submit" />
+                            </div>
+
+
+
+                            <div id="forgot-password-container">
+                                <ul>
+                                    <li class="first last"><a href="/user/password" title="Request new password via e-mail.">Forgot password</a></li>
+                                </ul>
+                            </div>
+
+
+
+
+                            <!-- <input type="hidden" name="form_build_id" value="form-lhRqK9VrqEZxKYZ8QRbhnGxKwbi2sxP0eIeqRmPY7FI" />
+                            <input type="hidden" name="form_id" value="user_login_block" /> -->
+
+
+                            
+
+                        </div>
+                    </form>
+                    
+                </div>
+            </div>
+        </main>
+
+
+        <footer>
+            Copyright © 2022. Stanford Undergraduate Research Association.
+        </footer>
+        
+    </body>
+</html>
+        
