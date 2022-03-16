@@ -1,0 +1,317 @@
+/***************************************************************************/
+
+/* Basic Layout */
+
+body {
+    display:flex;
+}
+
+#control-panel {
+    background-color: white;
+    width: 20vw;
+}
+
+#preview-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#hidden {
+    display: none;
+}
+
+
+/***************************************************************************/
+
+/* Left Pane */
+
+#control-panel {
+    /* border: black 2px solid; */
+    display: flex;
+    flex-direction: column;
+}
+
+#control-panel > * {
+    position: fixed;
+}
+
+#section-form {
+    width: 20vw;
+    height: 100vh;
+
+    flex-grow: 1;
+
+    display: flex;
+    flex-direction: column;
+    /* border: black 2px solid; */
+}
+
+.button-set {
+    flex-grow: 1;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* border: black 2px solid; */
+}
+
+#save-cancel {
+    display: flex;
+    justify-content: center;
+    /* border: black 2px solid; */
+}
+
+#font-size {
+    width: 3em;
+    font-size: small;
+}
+
+
+
+/***************************************************************************/
+
+/* Template attributes dependent on view port. */
+
+/* Scale vw from 100 to 80 */
+
+/* #page-title {
+    width: 80vw;
+    height: 100vh;
+}
+
+#empty-space {
+    height: 100vh;
+    width: 80vw;
+}
+
+header {
+    width: 80vw;
+}
+
+.line {
+    width:28vw;
+}
+
+article {
+    width: 60vw;
+}
+
+.add-image {
+    width: 16vw;
+    height: 16vw;
+}
+
+footer {
+    width: 80vw;
+} */
+
+
+/***************************************************************************/
+
+/* Right Pane */
+
+
+
+/***************************************************************************/
+
+/* Admin Buttons */
+
+#save-cancel {
+    position: fixed;
+    z-index: 5;
+    right: 0;
+    top: 70vh;
+}
+
+#save-webpage {
+    border-radius: 100%;
+    border: none;
+    background-color: aqua;
+    width: 4em;
+    height: 4em;
+    margin: 1em;
+}
+
+#cancel_changes {
+    border-radius: 100%;
+    border: none;
+    background-color: aqua;
+    width: 4em;
+    height: 4em;
+    margin: 1em;
+}
+
+.new-section {
+    transform: translateY(0.85em);
+    font-size: 1.1em;
+    width: 8em;
+    height: 1.7em;
+    border-radius: 0.8em;
+    background-color: rgb(62, 126, 185);
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-top: -1.7em;
+    z-index: 1;
+}
+
+.new-section:hover {
+    background-color: rgb(73, 135, 194);
+}
+
+.delete-section {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+
+}
+
+.delete-section {
+    border: none;
+    background-color: rgb(240, 240, 240);
+    border-radius: 0.5em;
+    font-size: medium;
+}
+
+.delete-section img {
+    width: 2em;
+}
+
+.delete-section img:hover {
+    transform: scale(1.1);
+}
+
+.add-image {
+    flex-grow: 1;
+    width: 20vw;
+    height: 20vw;
+    border: none;
+    background-color: transparent;
+
+}
+
+.image-container {
+    display: flex;
+    justify-content: center;
+    /* border: 2px black solid; */
+}
+
+.add-image img {
+    width: 20vw;
+    border-radius: 1em;
+}
+
+.add-image {
+    transform: scale(1.05);
+}
+
+.add-image img:hover {
+    transform: scale(1.05);
+}
+
+.add-link {
+    margin: 1em;
+    font-size: large;
+    width: fit-content;
+    height:fit-content;
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-top: 1em;
+    padding-bottom: 1em;
+    /* border-radius: 1em; */
+    border: none;
+    background-color: rgb(77, 123, 221);
+    color:white;
+}
+
+.add-link:hover {
+    background-color: rgb(86, 131, 226);
+}
+
+/* .new-section > button:hover {
+    transform: scale(1.05);
+} */
+
+
+
+/***************************************************************************/
+
+/* Popup Menu */
+
+#popup-menu-container * {
+    margin: 0;
+    padding: 0;
+}
+
+#popup-menu-container {
+    /* display: none; */
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    visibility: hidden;
+}
+
+#popup-menu {
+    width: 80vw;
+    height: 80vh;
+    background-color: antiquewhite;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#popup-menu h2 {
+    padding: 0.5em;
+}
+
+#templates {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    overflow-y:scroll;
+}
+
+#templates li button {
+    height: 20vw;
+    width: 34vw;
+    margin: 2vw;
+}
+
+
+
+/***************************************************************************/
+
+/* Add Link Dialog */
+
+#add-link-dialog-container {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    visibility: hidden;
+}
+
+#add-link-dialog {
+    display: flex;
+    flex-direction: column;
+    width: 30em;
+    height: 15em;
+    background-color: aliceblue;
+}
+
+
+
+
+
+/* 'hide' class is to hide in the final page if the user doesn't enter data in those elements. */
+/* 'temporary' class is to be deleted so that they are not in the final page. */
+

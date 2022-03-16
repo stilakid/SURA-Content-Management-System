@@ -1,0 +1,49 @@
+CS193X Final Project Milestone
+=============================
+
+Project Name: SURA Website redesign
+Your Name: Juben Rana
+Your SUNetID: stilakid
+
+Overview
+--------
+<TODO: Let us know how things are going. What have you explored, looked into, worked on, and tried so far? What do you have left to do? Are you running into any particular difficulties or blockers?>
+So far, I have created the HTML and CSS for the home page. Most of the webpages will have similar templates. Currently, I am creating the login page.
+Left to do:
+	1) Make it dynamically adapt to changes to viewport.
+	2) Mobile support.
+	3) Javascript for certain pages.
+	3) Things related to Backend and API. Need to talk to SURA member about it.
+
+Project Changes
+---------------
+<TODO: If you have needed to change your project in any way, such as scope, features, etc., please let us know what you changed.>
+Nothing has changed so far.
+
+Follow-up
+---------
+<TODO: Use this space to respond to any questions/feedback you received on your proposal, or ask us any questions you may have.>
+Rest assured, I am coding almost everything from ground up by myself. I am only referring to the old code to get an idea of the current structure of pages.
+
+
+API
+---
+<TODO: Identify a few (at least two or so) of your API endpoints, what they'll do, how they'll be used.>
+Although I have not explicitly made an API endpoint, I plan to make one that allows the administrator to easily add new current posts and delete outdated events from the homepage and other relevant web pages.
+
+There will also be work that will go into making APIs for changing personal data in individual user profiles. Currently, I do not have access to those pages and I will need to talk with a SURA member about it.
+
+External libraries and code
+---------------------------
+<TODO: Identify any external libraries or code you are using or plan to use, and describe how it fits into your project. Please include everything even if you already listed it in your proposal.>
+Nothing so far.
+
+Collaboration and resources
+---------------------------
+<TODO: Identify any sources you have consulted or plan to consult, except for code listed above. Include those you listed previously in your proposal.>
+I have a feeling that the backend development may build on top of what is already available. I need to talk with the SURA admins to see if they are open to the idea of rebuilding it. Though, I plan to add additional features so there will be backend programming involved.
+
+
+Anything else?
+-------------
+<TODO: Anything else you'd like the teaching staff to know? How are you doing overall?>

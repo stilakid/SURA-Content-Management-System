@@ -1,0 +1,362 @@
+/***************************************************************************/
+
+/* Whole Docment */
+
+:root {
+    font-family: "Nunito", sans-serif;
+}
+
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+a {
+    color: #89bae6;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #bee1ff;
+    text-decoration: underline;
+}
+
+
+
+/***************************************************************************/
+
+/* Background layer */
+
+body {
+    background-image: url(/images/corridor.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+/* Page Title */
+
+#page-title {
+    display: flex;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    align-items: center;
+    /* z-index: -1; */
+}
+
+#page-title > * {
+    color: white;
+    font-family: serif;
+    font-size: 10em;
+    text-align: center;
+}
+
+
+/* One Viewport worth of Empty Space */
+
+#empty-space {
+    height: 100vh;
+    width: 100vw;
+}
+
+
+
+/***************************************************************************/
+
+/* Header Bar */
+
+body {
+    margin: 0px;
+}
+
+header {
+    background-color: rgb(165, 0, 0);
+    /* background-color: #c50000; */
+}
+
+/* SURA homepage Link */
+
+#SURA {
+    font-size: xx-large;
+    font-weight: bolder;
+    color: white;
+    margin: 10px;
+    text-decoration: none;
+
+    display: flex;
+    align-items: center;
+}
+
+#SURA:hover {
+    color: white;
+}
+
+#sura-logo-home {
+    width: 1em;
+    padding-right: 5px;
+}
+
+
+
+/* Navigation Links */
+
+header {
+    display: flex;
+    align-items: center;
+    position: fixed;
+    width: 100vw;
+    z-index: 2;
+}
+
+#SURA-div {
+    display: flex;
+    flex-grow: 1;
+}
+
+nav > ul {
+    display: flex;
+    align-items: flex-end;
+    /* margin: 15px; */
+
+    list-style-type: none; /* Remove bullets */
+}
+
+.leaf > a {
+    color: white;
+    text-transform: capitalize;
+    /* margin: 15px; */
+    text-decoration: none;
+    display: block;
+    padding:20px;
+}
+
+.leaf > a:hover {
+    color: white;
+    background-color: darkred;
+}
+
+
+
+/***************************************************************************/
+
+/* Border */
+
+.border {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1em;
+}
+
+#sura-logo-box {
+    width: 5.5em;
+    height: 5.5em;
+    background-color: white;
+    border-radius: 1em;
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+#sura-logo {
+    width: 5em;
+    display: block;
+    margin: auto;
+    padding-top: 0.15em;
+}
+
+.line {
+    background-color: white;
+    height:3px;
+    width:35vw;
+    flex-shrink: 1;
+}
+
+
+
+/***************************************************************************/
+
+/* Articles */
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#pre-article {
+    padding-top: 1em;
+    padding-bottom: 1em;
+    background-color: rgb(240, 248, 255);
+}
+
+article {
+    padding-left: 10vw;
+    padding-right: 10vw;
+    padding-top: 3em;
+    padding-bottom: 3em;
+    font-size: larger;
+    width: 80vw;
+    background-color: white;
+
+    /* To anchor delete button */
+    position: relative;
+}
+
+.article-title {
+    margin-bottom: 0.5em;
+    font-size: 3em;
+}
+
+.article-body {
+    display: flex;
+}
+
+.template-4 .article-body {
+    flex-direction: column;
+    margin:0px;
+}
+
+.image-container {
+    margin: 1em;
+}
+
+.text-container {
+    flex-grow: 1;
+    margin-left: 1em;
+    margin-right: 1em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.section {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.has-background-vertical {
+    flex-grow: 1;
+    background-color: rgba(0, 0, 0, 0.342);
+    display: flex;
+    flex-direction: column;
+}
+
+.has-background-horizontal {
+    background-color: rgba(0, 0, 0, 0.342);
+    flex-grow: 1;
+    display: flex;
+}
+
+.has-no-background {
+    flex-grow: 1;
+}
+
+.template-5 .has-background-vertical {
+    margin: 0px;
+}
+
+
+
+.template-7 .has-background-vertical {
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+.template-6 .section {
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+.template-10 .article-body {
+    align-items: center;
+    justify-content: flex-end;
+    border: 2px blue solid;
+}
+
+.text-card {
+    width: 30vw;
+    border: 2px black solid;
+    position: absolute;
+    left: 10vw;
+    z-index: 1;
+    background-color: rgb(241, 241, 241);
+}
+
+.image-card {
+    width: 45vw;
+    border: 2px black solid;
+    height: 40vw;
+    background-color: rgb(115, 204, 255);
+    display: flex;
+    align-items: center;
+}
+
+.odd-article {
+    background-color: #3a4750;
+    color: white;
+    /* background-color: rgba(255, 40, 40, 0.733); */
+}
+
+.even-article {
+    /* background-color: #f6e1e1; */
+    background-color: rgba(240, 248, 255, 0.89);
+}
+
+#first-article {
+    background-color: darkred;
+    /* background-color: #c50000; */
+    padding-top: 1em;
+    /* padding-bottom: 1em; */
+}
+
+
+.button-link {
+    margin: 1em;
+    font-size: large;
+    width: fit-content;
+    height:fit-content;
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-top: 1em;
+    padding-bottom: 1em;
+    /* border-radius: 1em; */
+    border: none;
+    background-color: rgb(77, 123, 221);
+    color:white;
+}
+
+.button-link:hover {
+    background-color: rgb(86, 131, 226);
+}
+
+.button-link a {
+    color: white;
+}
+
+.button-link a:hover {
+    text-decoration: none;
+}
+
+/***************************************************************************/
+
+/* Footer */
+
+footer {
+    height: 3em;
+    width: 100vw;
+    background-color: darkred;
+    /* background-color: #3a4750; */
+    color: white;
+    text-align: center;
+    padding-top:3em;
+
+    /* To anchor delete button */
+    position: relative;
+
+}
+
+
+
