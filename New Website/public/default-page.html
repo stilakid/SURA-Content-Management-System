@@ -4,10 +4,17 @@
 
     <head>
         <meta charset="utf-8" />
-        <link rel="canonical" href="/public/welcome-sura" />
-        <link rel="shortcut icon" href="/public/favicon.ico" />
-        <link rel="stylesheet" href="/public/styles/template.css" />
-        
+        <link rel="canonical" href="/welcome-sura" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="stylesheet" href="/styles/template.css" />
+        <link rel="stylesheet" href="/styles/editable-page.css" />
+        <script src="/scripts/editable-page.js" defer></script>
+        <script type="module" src="/scripts/client-api.js" defer></script>
+
+        <!-- These two lines provide automatic page and style reloading when files change -->
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/lib/client/updater.js" defer></script>
+
         <!-- Nunito Font -->
         <link rel="preconnect" href="https://fonts.googleapis.com"> 
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
@@ -19,42 +26,322 @@
     </head>
 
     <body>
-        <header>
-            <div id="SURA-div"> 
-                <a id="SURA" href="/" title="Home" rel="home">
-                    <img id="sura-logo-home" src="/public/images/sura_logo_white.png">
-                    <p>SURA</p>
-                </a>
-                <!-- We need this empty div to not make the SURA homelink be clickable across half of the header. -->
-                <div></div>
-            </div>
-            
-            <nav role="navigation">
-                <ul class="menu nav">
-                    <li class="leaf"><a href="/meet-team">Team</a></li>
-                    <li class="leaf"><a href="/stanford-research-conference">Research Conference</a></li>
-                    <li class="leaf"><a href="/outreach-initiatives">Outreach</a></li>
-                    <li class="leaf"><a href="/graduate-mentorship">Mentorship</a></li>
-                    <li class="leaf"><a href="/treesearch">TreeSearch</a></li>
-                    <li class="leaf"><a href="/get-involved">Get Involved</a></li>
-                    <li class="leaf"><a href="/">About</a></li>
-                    <li class="leaf"><a href="/">Login</Inp></a></li>
+        <div id="popup-menu-container">
+            <div id="popup-menu">
+                <h2>Choose Template</h2>
+                
+                <ul id="templates">
+                    <li><button id="template-1" class="template">Template 1</button></li>
+                    <li><button id="template-2" class="template">Template 2</button></li>
+                    <li><button id="template-3" class="template">Template 3</button></li>
+                    <li><button id="template-4" class="template">Template 4</button></li>
+                    <li><button id="template-5" class="template">Template 5</button></li>
+                    <li><button id="template-6" class="template">Template 6</button></li>
+                    <li><button id="template-7" class="template">Template 7</button></li>
+                    <li><button id="template-8" class="template">Template 8</button></li>
+                    <li><button id="template-9" class="template">Template 9</button></li>
+                    <li><button id="template-10" class="template">Template 10</button></li>
                 </ul>
-            </nav>
-        </header>
-        
-        <main>
-            <div id="page-title">
-                <h1> Page Title </h1>
+                
             </div>
-            
-            <div id="empty-space"></div>
+        </div>
 
-            
-        </main>
+        <div id="add-link-dialog-container">
+            <div id="add-link-dialog">
+                <h2>Add Link</h2>
 
-        <footer>
-            Copyright © 2022. Stanford Undergraduate Research Association.
-        </footer>
+                <label for="link-name">
+                    Enter button label: <input type="text" id="link-name">
+                </label>
+                
+                <label for="URL">
+                    Enter link here: <input type="text" id="URL">
+                </label>
+
+
+                <button class="save">Add Link</button>
+                <button class="cancel">Cancel</button>
+            </div>
+        </div>
+        
+        <div id="save-cancel">
+            <button id="save-webpage">Save</button>
+            <button id="cancel_changes">Cancel</button>
+        </div>
+
+        <aside id="preview-area">
+            <header>
+                <div id="SURA-div"> 
+                    <a id="SURA" href="/" title="Home" rel="home">
+                        <img id="sura-logo-home" src="/images/sura_logo_white.png">
+                        <p>SURA</p>
+                    </a>
+                    <!-- We need this empty div to not make the SURA homelink be clickable across half of the header. -->
+                    <div></div>
+                </div>
+                
+                <nav role="navigation">
+                    <ul class="menu nav">
+                        <!-- <li class="leaf"><a href="/">Team</a></li>
+                    <li class="leaf"><a href="/">Research Conference</a></li>
+                    <li class="leaf"><a href="/">Outreach</a></li>
+                    <li class="leaf"><a href="/">Mentorship</a></li> -->
+                    <li class="leaf"><a href="/treesearch.html">TreeSearch</a></li>
+                    <!-- <li class="leaf"><a href="/">Get Involved</a></li>
+                    <li class="leaf"><a href="/">About</a></li> -->
+                    <li class="leaf"><a href="/login.html">Login</Inp></a></li>
+                    </ul>
+                </nav>
+            </header>
+            
+            <main>
+                <div id="page-title">
+                    <h1 contenteditable="true"> Page Title </h1>
+                </div>
+                
+                <div id="empty-space"></div>
+    
+                <article id="pre-article" class="even-article">
+                </article>
+
+                <!-- This is where the sections were before -->
+                
+            </main>
+    
+            <footer>
+                Copyright © 2022. Stanford Undergraduate Research Association.
+            </footer>
+        </aside>
+
+        
+        
+        <div id="hidden">
+            
+            <footer></footer>
+            
+            
+
+            <button class="new-section temporary">New Section</button>
+
+            <button class="delete-section temporary"><img src="/images/editable-page/delete.png"></button>
+            
+            <!-- Heading and Text -->
+            <article class="template-1">
+                <h1 class="hide article-title" contenteditable="true">Heading Goes Here</h1>
+                <p class="hide article-text" contenteditable="true">Enter text here</p>
+                <button class="add-link hide">Add Link</button>
+            </article>
+
+            <!-- Heading, Image, and Text | Img on the right -->
+            <article class="template-2">
+                <h1 class="hide article-title" contenteditable="true">Heading Goes Here</h1>
+                <div class="article-body">
+                    <div class="text-container">
+                        <p class="hide article-text" contenteditable="true">Enter text here</p>
+                        <button class="add-link hide">Add Link</button>
+                    </div>
+                    <div class="image-container">
+                        <button class="add-image hide"><img src="/images/editable-page/add-image.svg"></button>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Heading, Image, and Text | Img on the left -->
+            <article class="template-3">
+                <h1 class="hide article-title" contenteditable="true">Heading Goes Here</h1>
+                <div class="article-body">
+                    <div class="image-container">
+                        <button class="add-image hide"><img src="/images/editable-page/add-image.svg"></button>
+                    </div>
+                    <div class="text-container">
+                        <p class="hide article-text" contenteditable="true">Enter text here</p>
+                        <button class="add-link hide">Add Link</button>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Heading, Image, and Text with Background | Img on the right -->
+            <article class="template-4">
+                <h1 class="hide article-title" contenteditable="true">Heading Goes Here</h1>
+                
+                <div class="article-body">
+
+                    <div class="has-background-horizontal">
+                        <div class="text-container">
+                            <h2 class="article-subheading hide" contenteditable="true">Enter Secondary Heading</h2>
+                            <p class="hide article-text" contenteditable="true">Enter text here</p>
+                            <button class="add-link hide">Add Link</button>
+                        </div>
+
+                        <div class="image-container">
+                            <button class="add-image hide"><img src="/images/editable-page/add-image.svg"></button>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Heading, Image, and Text with Background | Img on the left -->
+            <article class="template-5">
+                <h1 class="hide article-title" contenteditable="true">Heading Goes Here</h1>
+                
+                <div class="article-body">
+                    
+                    <div class="has-background-horizontal">
+                        <div class="image-container">
+                            <button class="add-image hide"><img src="/images/editable-page/add-image.svg"></button>
+                        </div>
+
+                        <div class="text-container">
+                            <h2 class="article-subheading hide" contenteditable="true">Enter Secondary Heading</h2>
+                            <p class="hide article-text" contenteditable="true">Enter text here</p>
+                            <button class="add-link hide">Add Link</button>
+                        </div>
+                    </div>
+                    
+                </div>
+            </article>
+
+            <!-- Heading, Two Images, and Two Texts -->
+            <article class="template-6">
+                <h1 class="hide article-title" contenteditable="true">Heading Goes Here</h1>
+                
+                <div class="article-body">
+                    <div class="section">
+                        <div class="image-container">
+                            <button class="add-image hide"><img src="/images/editable-page/add-image.svg"></button>
+                        </div>
+                        <div class="text-container">
+                            <h2 class="article-subheading hide" contenteditable="true">Enter Secondary Heading</h2>
+                            <p class="hide article-text" contenteditable="true">Enter text here</p>
+                            <button class="add-link hide">Add Link</button>
+                        </div>
+                    </div>
+                    <div class="section">
+                        <div class="image-container">
+                            <button class="add-image hide"><img src="/images/editable-page/add-image.svg"></button>
+                        </div>
+                        <div class="text-container">
+                            <h2 class="article-subheading hide" contenteditable="true">Enter Secondary Heading</h2>
+                            <p class="hide article-text" contenteditable="true">Enter text here</p>
+                            <button class="add-link hide">Add Link</button>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Heading, Two Images, and Two Texts with Background -->
+            <article class="template-7">
+                <h1 class="hide article-title" contenteditable="true">Heading Goes Here</h1>
+                
+                <div class="article-body">
+                    <div class="section">
+                        <div class="has-background-vertical">
+                            <div class="image-container">
+                                <button class="add-image hide"><img src="/images/editable-page/add-image.svg"></button>
+                            </div>
+                            <div class="text-container">
+                                <h2 class="article-subheading hide" contenteditable="true">Enter Secondary Heading</h2>
+                                <p class="hide article-text" contenteditable="true">Enter text here</p>
+                                <button class="add-link hide">Add Link</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section">
+                        <div class="has-background-vertical">
+                            <div class="image-container">
+                                <button class="add-image hide"><img src="/images/editable-page/add-image.svg"></button>
+                            </div>
+                            <div class="text-container">
+                                <h2 class="article-subheading hide" contenteditable="true">Enter Secondary Heading</h2>
+                                <p class="hide article-text" contenteditable="true">Enter text here</p>
+                                <button class="add-link hide">Add Link</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Heading, Two Images, and Two Texts | Images attached -->
+            <article class="template-8">
+                <h1 class="hide article-title" contenteditable="true">Heading Goes Here</h1>
+
+                <div class="article-body">
+                    <div class="section">
+                        <div class="image-container">
+                            <button class="add-image hide"><img src="/images/editable-page/add-image.svg"></button>
+                        </div>
+                        <div class="text-container">
+                            <h2 class="article-subheading hide" contenteditable="true">Enter Secondary Heading</h2>
+                            <p class="hide article-text" contenteditable="true">Enter text here</p>
+                            <button class="add-link hide">Add Link</button>
+                        </div>
+                    </div>
+                    <div class="section">
+                        <div class="image-container">
+                            <button class="add-image hide"><img src="/images/editable-page/add-image.svg"></button>
+                        </div>
+                        <div class="text-container">
+                            <h2 class="article-subheading hide" contenteditable="true">Enter Secondary Heading</h2>
+                            <p class="hide article-text" contenteditable="true">Enter text here</p>
+                            <button class="add-link hide">Add Link</button>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="template-9">
+                <h1 class="hide article-title" contenteditable="true">Heading Goes Here</h1>
+                
+                <div class="article-body">
+                    <div class="section">
+                        <div class="has-background-vertical">
+                            <div class="image-container">
+                                <button class="add-image hide"><img src="/images/editable-page/add-image.svg"></button>
+                            </div>
+                            <div class="text-container">
+                                <h2 class="article-subheading hide" contenteditable="true">Enter Secondary Heading</h2>
+                                <p class="hide article-text" contenteditable="true">Enter text here</p>
+                                <button class="add-link hide">Add Link</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section">
+                        <div class="has-background-vertical">
+                            <div class="image-container">
+                                <button class="add-image hide"><img src="/images/editable-page/add-image.svg"></button>
+                            </div>
+                            <div class="text-container">
+                                <h2 class="article-subheading hide" contenteditable="true">Enter Secondary Heading</h2>
+                                <p class="hide article-text" contenteditable="true">Enter text here</p>
+                                <button class="add-link hide">Add Link</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Heading, Image, and Text with Background | Img on the right -->
+            <article class="template-10">
+                <h1 class="hide article-title" contenteditable="true">Heading Goes Here</h1>
+                
+                <div class="article-body">
+                    <div class="text-card">
+                        <div class="has-background">
+                            <div class="text-container">
+                                <h2 class="article-subheading hide" contenteditable="true">Enter Secondary Heading</h2>
+                                <p class="hide article-text" contenteditable="true">Enter text here</p>
+                                <button class="add-link hide">Add Link</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="image-container image-card">
+                        <button class="add-image hide"><img src="/images/editable-page/add-image.svg"></button>
+                    </div>
+                </div>
+                
+            </article>
+
+        </div>
     </body>
 </html>

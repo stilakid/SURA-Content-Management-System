@@ -358,5 +358,42 @@ footer {
 
 }
 
+/* temp */
 
+#make-new-page {
+    position: fixed;
+    z-index: 5;
+    right: 0;
+    top: 70vh;
 
+    border-radius: 1.5em;
+    border: none;
+    background-color: rgb(224, 224, 224);
+    width: fit-content(10em);
+    padding: 0.5em;
+    height: 2.5em;
+    margin: 1em;
+}
+
+#make-new-page:hover {
+    background-color: rgb(243, 176, 176);
+}
+
+#make-new-page-dialog-container {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    visibility: hidden;
+}
+
+#make-new-page-dialog {
+    display: flex;
+    flex-direction: column;
+    width: 30em;
+    height: 15em;
+    background-color: aliceblue;
+}

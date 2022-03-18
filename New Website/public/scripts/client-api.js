@@ -44,8 +44,12 @@ async function saveWebpage () {
     console.log(webpage);
     console.log(JSON.stringify(webpage));
 
-    // Post this webpage to server!!!
+    // Patch this webpage to server!!!
     // variable = await apiRequest(method, path, body);
+
+    let id = location.href.split("/").slice(-1)[0];
+    let url = "/webpages/" + id;
+    await apiRequest("PATCH", url, webpage);
 }
 
 // Adds Sections above Footer
@@ -95,7 +99,6 @@ const addSection = (article_data) => {
 async function setupComWithServer () {
     // Load data
     let id = location.href.split("/").slice(-1)[0];
-    console.log("/webpages/" + id);
     /*
     Expect: {"id":"editable-page.html","articles":[{"template":"template-10","heading":"Heading Goes Here","texts":"Enter text here"},{"template":"template-1","heading":"Heading Goes Here","texts":"Enter text here"}]}
     */
@@ -107,7 +110,7 @@ async function setupComWithServer () {
     }
 
 
-    // Post data
+    // Patch data
     console.log("it is working")
     let save = document.querySelector("#save-webpage");
     save.addEventListener("click", saveWebpage);

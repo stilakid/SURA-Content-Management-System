@@ -8,7 +8,8 @@
         <link rel="icon" href="/favicon.ico" />
         <link rel="stylesheet" href="/styles/template.css">
         <link rel="stylesheet" href="/styles/homepage.css">
-        <script src=“/scripts/homepage.js” defer></script>
+        <script src="/scripts/homepage.js" defer></script>
+        <script type="module" src="/scripts/temp.js" defer></script>
 
         <!-- Nunito Font -->
         <link rel="preconnect" href="https://fonts.googleapis.com"> 
@@ -35,14 +36,14 @@
             
             <nav role="navigation">
                 <ul class="menu nav">
-                    <li class="leaf"><a href="/meet-team">Team</a></li>
-                    <li class="leaf"><a href="/stanford-research-conference">Research Conference</a></li>
-                    <li class="leaf"><a href="/outreach-initiatives">Outreach</a></li>
-                    <li class="leaf"><a href="/graduate-mentorship">Mentorship</a></li>
-                    <li class="leaf"><a href="/treesearch">TreeSearch</a></li>
-                    <li class="leaf"><a href="/get-involved">Get Involved</a></li>
-                    <li class="leaf"><a href="/">About</a></li>
-                    <li class="leaf"><a href="/">Login</Inp></a></li>
+                    <!-- <li class="leaf"><a href="/">Team</a></li>
+                    <li class="leaf"><a href="/">Research Conference</a></li>
+                    <li class="leaf"><a href="/">Outreach</a></li>
+                    <li class="leaf"><a href="/">Mentorship</a></li> -->
+                    <li class="leaf"><a href="/treesearch.html">TreeSearch</a></li>
+                    <!-- <li class="leaf"><a href="/">Get Involved</a></li>
+                    <li class="leaf"><a href="/">About</a></li> -->
+                    <li class="leaf"><a href="/login.html">Login</a></li>
                 </ul>
             </nav>
         </header>
@@ -50,6 +51,21 @@
 
 
         <main>
+
+            <button id="make-new-page">Make New Page</button>
+            
+            <div id="make-new-page-dialog-container">
+                <div id="make-new-page-dialog">
+                    <h2>Make a New Page</h2>
+                    <label for="webpage-id">
+                        New Webpage ID: <input type="text" id="webpage-id">
+
+                    </label>
+                    <button class="create-new-page">Create New Page</button>
+                    <button class="cancel">Cancel</button>
+                </div>
+            </div>
+
             <div id="page-title">
                 <h1> Welcome to <br> SURA </h1>
             </div>
