@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 
-
     <head>
         <meta charset="UTF-8" />
         <link rel="canonical" href="/welcome-sura" />
         <link rel="icon" href="/favicon.ico" />
-        <link rel="stylesheet" href="/styles/template.css">
-        <link rel="stylesheet" href="/styles/homepage.css">
-        <script src="/scripts/homepage.js" defer></script>
-        <script type="module" src="/scripts/temp.js" defer></script>
+        <title>SURA | Stanford Undergraduate Research Association</title>
+
+        <!-- These two lines provide automatic page and style reloading when files change -->
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/lib/client/updater.js" defer></script>
 
         <!-- Nunito Font -->
         <link rel="preconnect" href="https://fonts.googleapis.com"> 
@@ -19,7 +19,13 @@
         <!-- Set the viewport width to device width for mobile -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <title>SURA | Stanford Undergraduate Research Association</title>
+        <!-- My custom styles -->
+        <link rel="stylesheet" href="/styles/template.css">
+        <link rel="stylesheet" href="/styles/homepage.css">
+
+        <!-- My custom scripts -->
+        <script type="module" src="/scripts/load-webpage.js" defer></script>
+
     </head>
 
     <body>
@@ -43,7 +49,7 @@
                     <li class="leaf"><a href="/treesearch.html">TreeSearch</a></li>
                     <!-- <li class="leaf"><a href="/">Get Involved</a></li>
                     <li class="leaf"><a href="/">About</a></li> -->
-                    <li class="leaf"><a href="/login.html">Login</a></li>
+                    <li id="login-leaf" class="leaf"><a href="/login.html">Login</a></li>
                 </ul>
             </nav>
         </header>
@@ -51,20 +57,36 @@
 
 
         <main>
-
-            <button id="make-new-page">Make New Page</button>
+            <!-- ******************************************************************************************** -->
+            <!-- ****************************** --><!-- Admin Controls --><!-- ****************************** -->
+            <!-- ******************************************************************************************** -->
+            <div id="admin-controls">
+                <button id="make-new-page" class="admin-controls">Make New Page</button>
+                <button id="edit-nav-bar" class="admin-controls">Edit Nav Bar</button>
+                <button id="edit-page" class="admin-controls">Edit Page</button>
+                <button id="delete-page" class="admin-controls">Delete Page</button>
+            </div>
+            
             
             <div id="make-new-page-dialog-container">
                 <div id="make-new-page-dialog">
                     <h2>Make a New Page</h2>
-                    <label for="webpage-id">
-                        New Webpage ID: <input type="text" id="webpage-id">
-
-                    </label>
-                    <button class="create-new-page">Create New Page</button>
-                    <button class="cancel">Cancel</button>
+                    <br>
+                    <div class="content">
+                        <label for="webpage-id">
+                            New Webpage ID: <input type="text" id="webpage-id">
+                        </label>
+                    </div>
+                    <br>
+                    <div class="adjacent-buttons">
+                        <button class="create-new-page">Create</button>
+                        <button class="cancel">Cancel</button>
+                    </div>
                 </div>
             </div>
+            <!-- ******************************************************************************************** -->
+            <!-- ******************************************************************************************** -->
+            <!-- ******************************************************************************************** -->
 
             <div id="page-title">
                 <h1> Welcome to <br> SURA </h1>

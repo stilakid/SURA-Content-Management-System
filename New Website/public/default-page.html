@@ -1,15 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 
-
     <head>
         <meta charset="utf-8" />
         <link rel="canonical" href="/welcome-sura" />
         <link rel="shortcut icon" href="/favicon.ico" />
-        <link rel="stylesheet" href="/styles/template.css" />
-        <link rel="stylesheet" href="/styles/editable-page.css" />
-        <script src="/scripts/editable-page.js" defer></script>
-        <script type="module" src="/scripts/client-api.js" defer></script>
+        <title>SURA | Stanford Undergraduate Research Association</title>
 
         <!-- These two lines provide automatic page and style reloading when files change -->
         <script src="/socket.io/socket.io.js"></script>
@@ -20,12 +16,49 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
         <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     
-    <!-- Set the viewport width to device width for mobile -->
+        <!-- Set the viewport width to device width for mobile -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Welcome to SURA | Stanford Undergraduate Research Association</title>
+
+        <!-- My custom styles -->
+        <link rel="stylesheet" href="/styles/template.css" />
+        <link rel="stylesheet" href="/styles/editable-page.css" />
+
+        <!-- My custom scripts -->
+        <script type="module" src="/scripts/load-webpage.js" defer></script>
+
     </head>
 
     <body>
+        
+        <!-- ******************************************************************************************** -->
+        <!-- ****************************** --><!-- Admin Controls --><!-- ****************************** -->
+        <!-- ******************************************************************************************** -->
+        <div id="admin-controls">
+            <button id="make-new-page" class="admin-controls">Make New Page</button>
+            <button id="edit-nav-bar" class="admin-controls">Edit Nav Bar</button>
+            <button id="edit-page" class="admin-controls">Edit Page</button>
+            <button id="delete-page" class="admin-controls">Delete Page</button>
+        </div>
+        
+        
+        <div id="make-new-page-dialog-container">
+            <div id="make-new-page-dialog">
+                <h2>Make a New Page</h2>
+                <br>
+                <div class="content">
+                    <label for="webpage-id">
+                        New Webpage ID: <input type="text" id="webpage-id">
+                    </label>
+                </div>
+                <br>
+                <div class="adjacent-buttons">
+                    <button class="create-new-page">Create</button>
+                    <button class="cancel">Cancel</button>
+                </div>
+            </div>
+        </div>
+        
+
         <div id="popup-menu-container">
             <div id="popup-menu">
                 <h2>Choose Template</h2>
@@ -69,6 +102,12 @@
             <button id="cancel_changes">Cancel</button>
         </div>
 
+        <!-- ******************************************************************************************** -->
+        <!-- ******************************************************************************************** -->
+        <!-- ******************************************************************************************** -->
+
+
+
         <aside id="preview-area">
             <header>
                 <div id="SURA-div"> 
@@ -89,7 +128,7 @@
                     <li class="leaf"><a href="/treesearch.html">TreeSearch</a></li>
                     <!-- <li class="leaf"><a href="/">Get Involved</a></li>
                     <li class="leaf"><a href="/">About</a></li> -->
-                    <li class="leaf"><a href="/login.html">Login</Inp></a></li>
+                    <li id="login-leaf" class="leaf"><a href="/login.html">Login</a></li>
                     </ul>
                 </nav>
             </header>

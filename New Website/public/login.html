@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 
-
     <head>
         <meta charset="utf-8" />
         <link rel="canonical" href="/welcome-sura" />
-        <link rel="icon" href="/favicon.ico" />
-        <link rel="stylesheet" href="/styles/login.css" />
-        <link rel="stylesheet" href="/styles/template.css" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <title>SURA | Stanford Undergraduate Research Association</title>
         
+        <!-- These two lines provide automatic page and style reloading when files change -->
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/lib/client/updater.js" defer></script>
+
         <!-- Nunito Font -->
         <link rel="preconnect" href="https://fonts.googleapis.com"> 
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
@@ -16,7 +18,17 @@
 
         <!-- Set the viewport width to device width for mobile -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Welcome to SURA | Stanford Undergraduate Research Association</title>
+        
+        <!-- Google Authentication -->
+        <script src="https://accounts.google.com/gsi/client" defer></script>
+        
+        <!-- My custom styles -->
+        <link rel="stylesheet" href="/styles/login.css" />
+        <link rel="stylesheet" href="/styles/template.css" />
+
+        <!-- My custom scripts -->
+        <script type="module" src="/scripts/login.js" defer></script>
+
     </head>
 
     <body>
@@ -39,7 +51,7 @@
                     <li class="leaf"><a href="/treesearch.html">TreeSearch</a></li>
                     <!-- <li class="leaf"><a href="/">Get Involved</a></li>
                     <li class="leaf"><a href="/">About</a></li> -->
-                    <li class="leaf"><a href="/login.html">Login</Inp></a></li>
+                    <li id="login-leaf" class="leaf"><a href="/login.html">Login</a></li>
                 </ul>
             </nav>
         </header>
@@ -80,19 +92,12 @@
                                     <li class="first last"><a href="/user/password" title="Request new password via e-mail.">Forgot password</a></li>
                                 </ul>
                             </div>
-
-
-
-
-                            <!-- <input type="hidden" name="form_build_id" value="form-lhRqK9VrqEZxKYZ8QRbhnGxKwbi2sxP0eIeqRmPY7FI" />
-                            <input type="hidden" name="form_id" value="user_login_block" /> -->
-
-
-                            
-
                         </div>
                     </form>
-                    
+
+                    <div id="google-login"></div>
+                    <div><button id="testing">Hello, Testing</button></div>
+
                 </div>
             </div>
         </main>
@@ -105,3 +110,147 @@
     </body>
 </html>
         
+
+
+
+
+
+Aakanksha
+Aamnah
+Abhishek
+Abigail
+Abisola
+Adam
+Aditya
+Adriel
+Adrien
+Ahmed
+Akshay
+Alex
+Alex
+Alex
+Alex
+Allen
+Amanda
+Amay
+Amirreza
+Anav
+Anaxi
+Andrew
+Andrew
+Andrew
+Andrey
+Angel
+Angela
+Angela
+Angela
+Anji
+Anmol
+Anna
+Anna
+Anna
+Anshul
+Anthony
+Antoine
+Antonio
+Arafat
+Ari
+Aristos
+Arthur
+Ashish
+Ashley
+Austin
+Austin
+Avni
+Avoy
+Ayush
+Bailey
+Benjamin
+Benoit
+Bobby
+Boyao
+Brian
+Bryce
+Cailin
+Caleb
+Calyx
+Cameron
+Carl
+Carly
+Carolyn
+Chase
+Chelsea
+Chen
+Chenyu
+CHINMAY
+Chris
+Cisco
+Claire
+Claire
+Colin
+Colt
+Connor
+Connor
+Daiki
+Dakota
+Daniel
+Daniel
+Dario
+David
+David
+David
+David
+David
+David
+Dea
+Delali
+Demetri
+Derek
+Derek
+Dhruv
+Diego
+Diva
+Dorothy
+Doug
+Edward
+Edward
+Eghosa
+Eli
+Eli
+Elias
+Elise
+Elizabeth
+Emily
+Emily
+Emily
+Emma
+Ende
+Eric
+Eric
+Erik
+Esmeralda
+Esther
+Eugene
+Eva
+Evangeline
+Faizan
+Federico
+Ferdinand
+Filippo
+Francisco
+Gabe
+Gabriel
+Ganyu
+Gaurab
+Gina
+Glynnis
+Grace
+Grace
+Grace
+Grace
+Griffin
+Griffin
+Gunguk
+
+
+

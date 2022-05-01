@@ -57,7 +57,8 @@ body {
 }
 
 #save-cancel {
-    display: flex;
+    display: none;
+    /* display: flex; */
     justify-content: center;
     /* border: black 2px solid; */
 }

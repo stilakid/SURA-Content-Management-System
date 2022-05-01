@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 
-
     <head>
         <meta charset="utf-8" />
         <link rel="canonical" href="/welcome-sura" />
         <link rel="shortcut icon" href="/favicon.ico" />
-        <link rel="stylesheet" href="/styles/template.css" />
-        <link rel="stylesheet" href="/styles/treesearch.css">
-        <script src="/scripts/treesearch.js" defer></script>
+        <title>SURA | Stanford Undergraduate Research Association</title>
 
+        <!-- These two lines provide automatic page and style reloading when files change -->
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/lib/client/updater.js" defer></script>
 
         <!-- Nunito Font -->
         <link rel="preconnect" href="https://fonts.googleapis.com"> 
@@ -18,7 +18,14 @@
         
         <!-- Set the viewport width to device width for mobile -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Welcome to SURA | Stanford Undergraduate Research Association</title>
+
+        <!-- My custom styles -->
+        <link rel="stylesheet" href="/styles/template.css" />
+        <link rel="stylesheet" href="/styles/treesearch.css">
+
+        <!-- My custom scripts -->
+        <script src="/scripts/treesearch.js" defer></script>
+
     </head>
 
     <body>
@@ -41,7 +48,7 @@
                     <li class="leaf"><a href="/treesearch.html">TreeSearch</a></li>
                     <!-- <li class="leaf"><a href="/">Get Involved</a></li>
                     <li class="leaf"><a href="/">About</a></li> -->
-                    <li class="leaf"><a href="/login.html">Login</Inp></a></li>
+                    <li id="login-leaf" class="leaf"><a href="/login.html">Login</a></li>
                 </ul>
             </nav>
         </header>

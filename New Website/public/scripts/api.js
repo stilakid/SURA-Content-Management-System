@@ -1,3 +1,5 @@
+// This is like a helper function for "client-api.js".
+
 // Points requests at your local server.
 let API_URL = "/api";
 
@@ -24,19 +26,36 @@ export class HTTPError extends Error {
    message set to value of the "error" property of the response, which we assume is a user-facing error message. */
 const apiRequest = async (method, path, body = null) => {
   let res;
-  if (body === null) {
+  // Checks if API key is saved to the session storage.
+  let API_KEY = sessionStorage.getItem('API_KEY');
+  const isAdmin = (API_KEY !== null);
+  if (body === null && !isAdmin) {
     res = await fetch(API_URL + path, {
       method: method,
       headers: {"Content-Type": "application/json"}
-
     });
-  } else {
+  }
+  else if (body !== null && !isAdmin) {
     res = await fetch(API_URL + path, {
       method: method,
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify(body)
     });
   }
+  else if (body === null && isAdmin) {
+    res = await fetch(API_URL + path, {
+      method: method,
+      headers: {"Content-Type": "application/json", "Authorization": `Bearer ${API_KEY}`}
+    });
+  }
+  else { // if (body !== null & API_KEY !== null)
+    res = await fetch(API_URL + path, {
+      method: method,
+      headers: {"Content-Type": "application/json", "Authorization": `Bearer ${API_KEY}`},
+      body: JSON.stringify(body)
+    });
+  }
+  
   let data = await res.json();
   let status = res.status;
 

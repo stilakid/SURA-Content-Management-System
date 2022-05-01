@@ -13,7 +13,10 @@
     "express": "^4.17.3",
     "mongodb": "^4.4.0",
     "nodemon": "^2.0.15",
-    "socket.io": "^4.4.1"
+    "socket.io": "^4.4.1",
+
+    "google-auth-library": "^7.14.0",
+    "jsonwebtoken": "^8.5.1"
   },
   "scripts": {
     "start": "nodemon"

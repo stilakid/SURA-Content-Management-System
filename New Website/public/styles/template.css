@@ -1,4 +1,6 @@
 /***************************************************************************/
+/* This is the style for the website */
+/***************************************************************************/
 
 /* Whole Docment */
 
@@ -358,16 +360,24 @@ footer {
 
 }
 
-/* temp */
 
-#make-new-page {
+/***************************************************************************/
+
+/* Admin/Member Features */
+
+/* Button */
+#admin-controls {
+    display: none;
+    flex-direction: column;
     position: fixed;
     z-index: 5;
     right: 0;
     top: 70vh;
+}
 
+#admin-controls button {
     border-radius: 1.5em;
-    border: none;
+    border: black solid 1px;
     background-color: rgb(224, 224, 224);
     width: fit-content(10em);
     padding: 0.5em;
@@ -375,9 +385,11 @@ footer {
     margin: 1em;
 }
 
-#make-new-page:hover {
+/* Button */
+#admin-controls button:hover {
     background-color: rgb(243, 176, 176);
 }
+
 
 #make-new-page-dialog-container {
     position: fixed;
@@ -390,10 +402,31 @@ footer {
     visibility: hidden;
 }
 
-#make-new-page-dialog {
+#make-new-page-dialog, .content {
     display: flex;
     flex-direction: column;
-    width: 30em;
-    height: 15em;
-    background-color: aliceblue;
+}
+
+#make-new-page-dialog {
+    text-align: center;
+    /* width: 15em;
+    height: 5em; */
+    background-color: white;
+    padding: 1em;
+    border: black solid 1px;
+}
+
+.content {
+    align-items: flex-start;
+}
+
+.adjacent-buttons {
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* input field */
+#webpage-id {
+    font-size: medium;
+    height: 1.5em;
 }
