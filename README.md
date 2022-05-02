@@ -3,4 +3,4 @@ This is an ongoing project where I am designing a website for Stanford Undergrad
 
 As you can tell, this is still work in progress. A lot of buttons don't do anything right now and the pages haven't been linked to each other. I have begun setting up the server side of things and now, a local host can be run using nodemon. Just run the command "npm start" in the terminal when you are in the root folder of this project. :)
 
-I expect to finish this project by mid March and I'll upload regular updates until completion.
+I expect to finish this project by mid May and I'll upload regular updates until completion.
