@@ -77,7 +77,23 @@ const addSection = (article_data) => {
 async function load_webpage() {
 
     // Load data for webpage
+    let primary_nav_bar = await apiRequest("GET", "/navbars");
+    let insertBefore = document.querySelector("#login-leaf");
+    for (let link of primary_nav_bar) {
+        let li = document.createElement("li");
+        li.classList.add("leaf");
+
+        let a = document.createElement("a");
+        a.textContent = link[0];
+        a.setAttribute("href", link[1]);
+
+        li.append(a);
+        insertBefore.before(li);
+    }
+
     let id = location.href.split("/").slice(-1)[0];
+    // let secondary_nav_bar = await apiRequest();
+
     let webpage = await apiRequest("GET", "/webpages/" + id);
     let articles = webpage["articles"];
     for (let article of articles) {

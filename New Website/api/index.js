@@ -25,6 +25,7 @@ let conn = null;
 let db = null;
 let webpages = null;
 let admins = null;
+let navbars = null;
 
 const initAPI = async app => {
   app.set("json spaces", 2);
@@ -35,6 +36,7 @@ const initAPI = async app => {
   db = conn.db(DATABASE_NAME);
   webpages = db.collection("webpages");
   admins = db.collection("admins");
+  navbars = db.collection("navbars");
 };
 
 api.use(bodyParser.json());
@@ -46,6 +48,12 @@ api.get("/", (req, res) => {
 
 // Adding endpoints here:
 // express.static(path.join(__dirname, '/public'));
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////    Google Authentication    ////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // For Authentication (Google).
 // Verifies the JWT.
@@ -68,6 +76,59 @@ api.use("/protected", async (req, res, next) => {
     console.error(e);
     error();
   }
+});
+
+
+// For Google Login
+api.post("/login", async (req, res) => {
+  let idToken = req.body.idToken;
+  let client = new OAuth2Client();
+  try {
+    /* "audience" is the client ID the token was created for. A mismatch would mean the user is
+       trying to use an ID token from a different app */
+    let login = await client.verifyIdToken({ idToken, audience: CLIENT_ID });
+    /* Contains a bunch of profile info */
+    let data = login.getPayload();
+    let email = data.email;
+    let name = data.name;
+    //TODO: Do whatever work you'd like here, such as ensuring the user exists in the database
+    /* You can include additional information in the key if you want, as well. */
+
+    // Check if user is in database, if not, deny login.
+    let list_of_admins = await admins.find().toArray();
+    let admin_emails = [];
+    for (let admin of list_of_admins) {
+      admin_emails.push(admin["email"]);
+    }
+    if (!admin_emails.includes(email)) {
+      res.status(404).json({ error: `The user is not an admin. Access denied.`});
+      return;
+    }
+
+
+    let apiKey = jwt.sign({ email }, JWT_SECRET, { expiresIn: "1d" });
+    res.json({ apiKey });
+  } catch (e) {
+    /* Something when wrong when verifying the token. */
+    console.error(e);
+    res.status(403).json({ error: "Invalid ID token" });
+  }
+});
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////    Database Collection: Webpages    ////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Sends the list of webpages in the database.
+api.get("/protected/webpages", async (req, res) => {
+  let list_of_webpages = await webpages.find().toArray();
+  let webpage_ids = [];
+  for (let webpage of list_of_webpages) {
+    webpage_ids.push(webpage["id"]);
+  }
+  res.json(webpage_ids);
 });
 
 
@@ -94,6 +155,7 @@ api.get("/webpages/:id", async (req, res) => {
 });
 
 
+// Checks if webpage exists.
 api.get("/protected/webpages/:id", async (req, res) => {
   let id = req.params.id;
 
@@ -184,6 +246,7 @@ api.post("/protected/webpages", async (req, res) => {
   res.json(webpage);
 });
 
+
 // Deletes an existing webpage and its related data.
 api.delete("/protected/webpages/:id", async (req, res) => {
   let id = req.params.id;
@@ -232,42 +295,18 @@ api.delete("/protected/webpages/:id", async (req, res) => {
 });
 
 
-// For Google Login
-api.post("/login", async (req, res) => {
-  let idToken = req.body.idToken;
-  let client = new OAuth2Client();
-  try {
-    /* "audience" is the client ID the token was created for. A mismatch would mean the user is
-       trying to use an ID token from a different app */
-    let login = await client.verifyIdToken({ idToken, audience: CLIENT_ID });
-    /* Contains a bunch of profile info */
-    let data = login.getPayload();
-    let email = data.email;
-    let name = data.name;
-    //TODO: Do whatever work you'd like here, such as ensuring the user exists in the database
-    /* You can include additional information in the key if you want, as well. */
 
-    // Check if user is in database, if not, deny login.
-    let list_of_admins = await admins.find().toArray();
-    let admin_emails = [];
-    for (let admin of list_of_admins) {
-      admin_emails.push(admin["email"]);
-    }
-    if (!admin_emails.includes(email)) {
-      res.status(404).json({ error: `The user is not an admin. Access denied.`});
-      return;
-    }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////    Database Collection: Navbars    ////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-    let apiKey = jwt.sign({ email }, JWT_SECRET, { expiresIn: "1d" });
-    res.json({ apiKey });
-  } catch (e) {
-    /* Something when wrong when verifying the token. */
-    console.error(e);
-    res.status(403).json({ error: "Invalid ID token" });
-  }
+// Loads primary navbar data.
+api.get("/navbars", async (req, res) => {
+  let navbar = await navbars.findOne({ "id" : "website" })
+  // delete navbar["_id"];
+  // delete navbar["id"];
+  res.json(navbar.links);
 });
-
 
 
 

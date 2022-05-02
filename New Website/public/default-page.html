@@ -33,15 +33,26 @@
         <!-- ******************************************************************************************** -->
         <!-- ****************************** --><!-- Admin Controls --><!-- ****************************** -->
         <!-- ******************************************************************************************** -->
+        
+        <!-- Admin Buttons -->
+
         <div id="admin-controls">
             <button id="make-new-page" class="admin-controls">Make New Page</button>
             <button id="edit-nav-bar" class="admin-controls">Edit Nav Bar</button>
             <button id="edit-page" class="admin-controls">Edit Page</button>
             <button id="delete-page" class="admin-controls">Delete Page</button>
         </div>
+
+        <div id="save-cancel">
+            <button id="save-webpage">Save</button>
+            <button id="cancel_changes">Cancel</button>
+        </div>
         
         
-        <div id="make-new-page-dialog-container">
+
+        <!-- Admin Dialog Boxes -->
+
+        <div class="dialog-box-container">
             <div id="make-new-page-dialog">
                 <h2>Make a New Page</h2>
                 <br>
@@ -59,7 +70,7 @@
         </div>
         
 
-        <div id="popup-menu-container">
+        <div class="dialog-box-container">
             <div id="popup-menu">
                 <h2>Choose Template</h2>
                 
@@ -79,7 +90,7 @@
             </div>
         </div>
 
-        <div id="add-link-dialog-container">
+        <div class="dialog-box-container">
             <div id="add-link-dialog">
                 <h2>Add Link</h2>
 
@@ -96,11 +107,78 @@
                 <button class="cancel">Cancel</button>
             </div>
         </div>
-        
-        <div id="save-cancel">
-            <button id="save-webpage">Save</button>
-            <button id="cancel_changes">Cancel</button>
+
+        <div class="dialog-box-container">
+            <div id="edit-nav-dialog">
+                <h2>Edit Navigtion Bar</h2>
+                <div class="content">
+                    <div class="nav-control-panel">
+                        <h3>Primary Nav Bar</h3>
+                        <div id="primary-nav-control">
+                            <div class="nav-list">
+                                <label for="select1">Exclude:</label>
+                                <select multiple name="select1" id="select1">
+                                    <option value="1">Option 1</option>
+                                    <option value="2">Option 2</option>
+                                    <option value="3">Option 3</option>
+                                </select>
+                            </div>
+                            
+    
+                            <div class="nav-include-exclude">
+                                <button class="include"> >> </button>
+                                <button class="exclude"> << </button>
+                            </div>
+                            
+                            <div class="nav-list">
+                                <label for="select2">Include:</label>
+                                <select multiple name="select2" id="select2">
+                                    <option value="4">Option 4</option>
+                                    <option value="5">Option 5</option>
+                                    <option value="6">Option 6</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="nav-control-panel">
+                        <h3>Secondary Nav Bar (Optional)</h3>
+                        <div id="secondary-nav-control">
+                            <div class="nav-list">
+                                <label for="select3">Exclude:</label>
+                                <select multiple name="select3" id="select3">
+                                    <option value="1">Option 1</option>
+                                    <option value="2">Option 2</option>
+                                    <option value="3">Option 3</option>
+                                </select>
+                            </div>
+                            
+    
+                            <div class="nav-include-exclude">
+                                <button class="include"> >> </button>
+                                <button class="exclude"> << </button>
+                            </div>
+                            
+                            <div class="nav-list">
+                                <label for="select4">Include:</label>
+                                <select multiple name="select4" id="select4">
+                                    <option value="4">Option 4</option>
+                                    <option value="5">Option 5</option>
+                                    <option value="6">Option 6</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div id="handle-navbar-changes">
+                    <button class="save">Apply</button>
+                    <button class="cancel">Cancel</button>
+                </div>
+            </div>
         </div>
+        
+        
 
         <!-- ******************************************************************************************** -->
         <!-- ******************************************************************************************** -->
@@ -120,12 +198,11 @@
                 </div>
                 
                 <nav role="navigation">
-                    <ul class="menu nav">
-                        <!-- <li class="leaf"><a href="/">Team</a></li>
+                    <ul id="primary_nav" class="nav">
+                    <!-- <li class="leaf"><a href="/">Team</a></li>
                     <li class="leaf"><a href="/">Research Conference</a></li>
                     <li class="leaf"><a href="/">Outreach</a></li>
                     <li class="leaf"><a href="/">Mentorship</a></li> -->
-                    <li class="leaf"><a href="/treesearch.html">TreeSearch</a></li>
                     <!-- <li class="leaf"><a href="/">Get Involved</a></li>
                     <li class="leaf"><a href="/">About</a></li> -->
                     <li id="login-leaf" class="leaf"><a href="/login.html">Login</a></li>

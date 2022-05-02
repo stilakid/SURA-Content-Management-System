@@ -391,7 +391,11 @@ footer {
 }
 
 
-#make-new-page-dialog-container {
+/********************************************************************************/
+/* Dialog Boxes */
+/********************************************************************************/
+
+.dialog-box-container {
     position: fixed;
     width: 100vw;
     height: 100vh;
@@ -402,7 +406,10 @@ footer {
     visibility: hidden;
 }
 
-#make-new-page-dialog, .content {
+
+/* Make New Page Dialog Box */
+
+#make-new-page-dialog {
     display: flex;
     flex-direction: column;
 }
@@ -417,7 +424,9 @@ footer {
 }
 
 .content {
+    display: flex;
     align-items: flex-start;
+    flex-direction: row;
 }
 
 .adjacent-buttons {
@@ -429,4 +438,40 @@ footer {
 #webpage-id {
     font-size: medium;
     height: 1.5em;
+}
+
+
+
+/* Edit Navigation Bar */
+#edit-nav-dialog {
+    text-align: center;
+    background-color: white;
+    border: black solid 1px;
+    padding: 1em;
+}
+
+.nav-control-panel {
+    padding: 1em;
+    width: 40vw;
+    border: black solid 1px;
+}
+
+#primary-nav-control, #secondary-nav-control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#primary-nav-control > *, #secondary-nav-control > * {
+    padding: 1em;
+}
+
+.nav-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.nav-include-exclude {
+    display:flex;
+    flex-direction: column;
 }

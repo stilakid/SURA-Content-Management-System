@@ -405,13 +405,16 @@ const delete_edit_buttons = () => {
 
 // Patch data
 const enable_save_page = () => {
+    // Save Edits
     let save = document.querySelector("#save-webpage");
     save.addEventListener("click", saveWebpage);
 
+    // Cancel Edits
     let cancel = document.querySelector("#cancel_changes");
     cancel.addEventListener("click", () => {
         update_admin_buttons("#save-cancel", "#admin-controls");
         delete_edit_buttons();
+        location.reload();
     });
 }
 
@@ -450,6 +453,113 @@ const enable_delete_page = () => {
 
 
 // ###################################################################################################
+// Helper Function: Editing Navigation Bar Functionality
+// ###################################################################################################
+
+
+const initialize_edit_nav_bar_button = () => {
+    let button = document.querySelector("#edit-nav-bar");
+    button.addEventListener("click", () => {
+        let edit_nav_dialog = document.querySelector("#edit-nav-dialog");
+        edit_nav_dialog.style.visibility = "visible";
+    });
+}
+
+
+const move_item_between_lists = (list1, list2) => {
+    let items = [];
+    for (let option of list1.options) {
+        if (option.selected) {
+            items.push(option);
+        }
+    }
+    for (let option of items) {
+        option.remove();
+        list2.append(option);
+    }
+}
+
+
+const prepare_nav_controls = (navbar, list1_id, list2_id) => {
+    let list1 = document.querySelector(list1_id);
+    let list2 = document.querySelector(list2_id);
+    let button = document.querySelector(`${navbar} .include`);
+    button.addEventListener("click", () => {
+        move_item_between_lists(list1, list2);
+    });
+
+    button = document.querySelector(`${navbar} .exclude`);
+    button.addEventListener("click", () => {
+        move_item_between_lists(list2, list1);
+    });
+}
+
+
+const prepare_nav_lists = async (path, list1_id, list2_id) => {
+    let nav_bar_data = await apiRequest("GET", path);
+    let webpages = await apiRequest("GET", "/protected/webpages");
+    let included_webpages = [];
+    for (let link of nav_bar_data) {
+        let webpage = link[1].split("/").slice(-1)[0];
+        included_webpages.push(webpage);
+    }
+
+    let list1 = document.querySelector(list1_id);
+    let list2 = document.querySelector(list2_id);
+
+    for (let webpage of webpages) {
+        let option = document.createElement("option");
+        option.textContent = webpage;
+        if (included_webpages.includes(webpage)) {
+            list1.append(option);
+        }
+        else {
+            list2.append(option);
+        }
+    }
+}
+
+
+const apply_changes_to_nav = () => {
+    let list = document.querySelector(list_id);
+    // Get display names and send it to server along with their filenames.
+    // Keep a list of core html files in the database.
+    // If the filename is not included in the list of core files, then it is in 'html-not-core' directory.
+}
+
+
+const prepare_apply_button = () => {
+    let apply_button = document.querySelector("#handle-navbar-changes .save");
+    apply_button.addEventListener("click", () => {
+        apply_changes_to_nav("#select2");
+        apply_changes_to_nav("#select4");
+        location.reload();
+    });
+}
+
+
+const prepare_cancel_button = () => {
+    let cancel_button = document.querySelector("#handle-navbar-changes .cancel");
+    cancel_button.addEventListener("click", () => {
+        let edit_nav_dialog = document.querySelector("#edit-nav-dialog");
+        edit_nav_dialog.style.visibility = "hidden";
+    });
+}
+
+
+const enable_edit_nav_bar = () => {
+    initialize_edit_nav_bar_button();
+    prepare_nav_controls("#primary-nav-control", "#select1", "#select2");
+    prepare_nav_controls("#secondary-nav-control", "#select3", "#select4");
+    prepare_nav_lists("/navbars", "#select1", "#select2");
+    let page_name = location.href.split("/").slice(-1)[0];
+    // prepare_nav_lists(`/navbars/${page_name}`, "#select3", "#select4");
+    prepare_apply_button();
+    prepare_cancel_button();
+}
+
+
+// ###################################################################################################
 // ########################################## Main Function ##########################################
 // ###################################################################################################
 
@@ -464,6 +574,7 @@ const add_admin_features = () => {
         enable_edit_page();
         enable_save_page();
         enable_delete_page();
+        enable_edit_nav_bar();
     }
 }
 

@@ -290,17 +290,6 @@ footer {
 
 /* Add Link Dialog */
 
-#add-link-dialog-container {
-    position: fixed;
-    width: 100vw;
-    height: 100vh;
-    display:flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 5;
-    visibility: hidden;
-}
-
 #add-link-dialog {
     display: flex;
     flex-direction: column;
