@@ -451,9 +451,14 @@ footer {
 }
 
 .nav-control-panel {
+    display:flex;
+    flex-direction: column;
     padding: 1em;
     width: 40vw;
     border: black solid 1px;
+    justify-content: center;
+    /* Uncomment the code below if the table is too wide in the nav dialog box. */
+    /* align-items: center; */
 }
 
 #primary-nav-control, #secondary-nav-control {

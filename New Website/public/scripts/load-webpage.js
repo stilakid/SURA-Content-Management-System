@@ -76,7 +76,7 @@ const addSection = (article_data) => {
 
 async function load_webpage() {
 
-    // Load data for webpage
+    // Load Primary Nav Bar
     let primary_nav_bar = await apiRequest("GET", "/navbars");
     let insertBefore = document.querySelector("#login-leaf");
     for (let link of primary_nav_bar) {
@@ -91,9 +91,11 @@ async function load_webpage() {
         insertBefore.before(li);
     }
 
+    // Load Secondary Nav Bar
     let id = location.href.split("/").slice(-1)[0];
     // let secondary_nav_bar = await apiRequest();
 
+    // Load Webpage data
     let webpage = await apiRequest("GET", "/webpages/" + id);
     let articles = webpage["articles"];
     for (let article of articles) {

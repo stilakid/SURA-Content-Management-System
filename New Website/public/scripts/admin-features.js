@@ -457,6 +457,11 @@ const enable_delete_page = () => {
 // ###################################################################################################
 
 
+// Keeps track of [display name, url, webpage name], even if not included in the nav bar.
+let primary_nav_cache;
+let secondary_nav_cache;
+
+
 const initialize_edit_nav_bar_button = () => {
     let button = document.querySelector("#edit-nav-bar");
     button.addEventListener("click", () => {
@@ -468,53 +473,62 @@ const initialize_edit_nav_bar_button = () => {
 
 const move_item_between_lists = (list1, list2) => {
     let items = [];
+    let increase_rank = 0;
     for (let option of list1.options) {
         if (option.selected) {
             items.push(option);
+            increase_rank++;
         }
+        option.value -= increase_rank;
     }
-    for (let option of items) {
-        option.remove();
-        list2.append(option);
+    let length = list2.options.length;
+    for (let i = 0; i < items.length; i++) {
+        items[i].value = length + i + 1;
+        items[i].remove();
+
+        list2.append(items[i]);
     }
 }
 
 
-const prepare_nav_controls = (navbar, list1_id, list2_id) => {
+const prepare_include_exclude_buttons = (navbar, nav_cache, list1_id, list2_id) => {
     let list1 = document.querySelector(list1_id);
     let list2 = document.querySelector(list2_id);
     let button = document.querySelector(`${navbar} .include`);
     button.addEventListener("click", () => {
         move_item_between_lists(list1, list2);
+        update_nav_display_names(navbar, nav_cache);
     });
 
     button = document.querySelector(`${navbar} .exclude`);
     button.addEventListener("click", () => {
         move_item_between_lists(list2, list1);
+        update_nav_display_names(navbar, nav_cache);
     });
 }
 
 
-const prepare_nav_lists = async (path, list1_id, list2_id) => {
-    let nav_bar_data = await apiRequest("GET", path);
-    let webpages = await apiRequest("GET", "/protected/webpages");
+const prepare_nav_lists = async (nav_data, webpages, list1_id, list2_id) => {
     let included_webpages = [];
-    for (let link of nav_bar_data) {
+    for (let link of nav_data) {
         let webpage = link[1].split("/").slice(-1)[0];
         included_webpages.push(webpage);
     }
 
     let list1 = document.querySelector(list1_id);
     let list2 = document.querySelector(list2_id);
+    list1.textContent = "";
+    list2.textContent = "";
 
     for (let webpage of webpages) {
         let option = document.createElement("option");
         option.textContent = webpage;
         if (included_webpages.includes(webpage)) {
-            list1.append(option);
+            option.value = list2.options.length + 1;
+            list2.append(option);
         }
         else {
-            list2.append(option);
+            list1.append(option);
         }
     }
 }
@@ -525,7 +539,55 @@ const apply_changes_to_nav = () => {
     // Get display names and send it to server along with their filenames.
     // Keep a list of core html files in the database.
     // If the filename is not included in the list of core files, then it is in 'html-not-core' directory.
+
 }
+
+
+const update_nav_display_names = (nav_bar, nav_cache) => {
+    let list = document.querySelector(`${nav_bar} .included-links`);
+    let num_of_rows = document.querySelector(`${nav_bar} table`).rows.length;
+    // Wipe prior data off the table
+    for (let i = 1; i < num_of_rows; i++) {
+        let label = document.querySelector(`${nav_bar} .row-${i} label`);
+        if (i > 1 && label.textContent === "") {
+            // Make move down button visible if it was made hidden.
+            let button = document.querySelector(`${nav_bar} .row-${i-1} .move_down`);
+            button.style.visibility = null;
+            break;
+        }
+        label.textContent = "";
+        let input = document.querySelector(`${nav_bar} .row-${i} input`);
+        input.value = "";
+        console.log(input.value);
+    }
+    // Add current data to table
+    for (let option of list.options) {
+        let rank = option.value;
+        let row = document.querySelector(`${nav_bar} .row-${rank}`);
+        let label = row.querySelector("label");
+        let webpage_name = option.textContent;
+        label.textContent = webpage_name;
+        let input = row.querySelector("input");
+        input.value = nav_cache[webpage_name][0];
+        row.style.visibility = "visible";
+    }
+    // Hide extra rows
+    for (let i = 1; i < num_of_rows; i++) {
+        let row = document.querySelector(`${nav_bar} .row-${i}`);
+        let webpage_name = row.querySelector("label").textContent;
+        if (webpage_name === "") {
+            row.style.visibility = "hidden";
+        }
+    }
+    // Hide the move down button for the last row
+    let num_of_included_links = list.options.length;
+    if (num_of_included_links > 0 && num_of_included_links < num_of_rows - 1) {
+        let button = document.querySelector(`${nav_bar} .row-${num_of_included_links} .move_down`);
+        button.style.visibility = "hidden";
+    }
+    
+}
+
 
 
 const prepare_apply_button = () => {
@@ -541,19 +603,184 @@ const prepare_apply_button = () => {
 const prepare_cancel_button = () => {
     let cancel_button = document.querySelector("#handle-navbar-changes .cancel");
     cancel_button.addEventListener("click", () => {
+        reset_navbar_dialog_box();
         let edit_nav_dialog = document.querySelector("#edit-nav-dialog");
         edit_nav_dialog.style.visibility = "hidden";
     });
 }
 
 
-const enable_edit_nav_bar = () => {
+const reset_navbar_dialog_box = async () => {
+    let webpage_name = location.href.split("/").slice(-1)[0];
+    let primary_nav_data = await apiRequest("GET", "/navbars");
+    // let secondary_nav_data = await apiRequest("GET", `/navbars/${webpage_name}`);
+    let urls = await apiRequest("GET", "/protected/urls");
+
+    primary_nav_cache = initialize_nav_cache(primary_nav_data, urls);
+    // secondary_nav_cache = initialize_nav_cache(secondary_nav_data, urls);
+    console.log(primary_nav_cache);
+
+    let webpages = await apiRequest("GET", "/protected/webpages");
+    prepare_nav_lists(primary_nav_data, webpages, "#select1", "#select2");
+    // prepare_nav_lists(secondary_nav_data, webpages, "#select3", "#select4");
+
+    update_nav_display_names("#primary-nav-control-panel", primary_nav_cache);
+    // update_nav_display_names("#secondary-nav-control-panel", secondary_nav_cache);
+}
+
+
+// To keep track of display name in global variable.
+const initialize_nav_cache = (nav_data, urls) => {
+    // let nav_cache = new Set();
+    let nav_cache = {};
+    let included_webpages = [];
+    // for (let link of nav_data) {
+    //     link.push(link[1].split("/").slice(-1)[0]);
+    //     nav_cache.add(link);
+    //     included_webpages.push(link[1]);
+    // }
+    for (let link of nav_data) {
+        let webpage_name = link[1].split("/").slice(-1)[0];
+        nav_cache[webpage_name] = link;
+        included_webpages.push(link[1]);
+    }
+    // for (let url of urls) {
+    //     if (!included_webpages.includes(url)) {
+    //         let link = ["", url, url.split("/").slice(-1)[0]]
+    //         nav_cache.add(link);
+    //     }
+    // }
+    for (let url of urls) {
+        if (!included_webpages.includes(url)) {
+            let link = ["", url]
+            let webpage_name = url.split("/").slice(-1)[0];
+            nav_cache[webpage_name] = link;
+        }
+    }
+    return nav_cache;
+}
+
+
+const prepare_move_up_buttons = () => {
+    let buttons = document.querySelectorAll(".move_up");
+    for (let button of buttons) {
+        button.addEventListener("click", (event) => {
+            // Initialize variables
+            let button_1 = event.currentTarget;
+            let input_1 = button_1.closest("td").previousElementSibling;
+            let label_1 = input_1.previousElementSibling;
+            let rank_1 = label_1.previousElementSibling.textContent;
+            let webpage_name_1 = label_1.textContent;
+
+            let button_2 = button_1.closest("tr").previousElementSibling.querySelector("button");
+            let input_2 = button_2.closest("td").previousElementSibling;
+            let label_2 = input_2.previousElementSibling;
+            let rank_2 = label_2.previousElementSibling.textContent;
+            let webpage_name_2 = label_2.textContent;
+
+            // Swap labels and inputs, effectively swapping the two rows
+            label_1.remove();
+            label_2.before(label_1);
+
+            label_2.remove();
+            input_1.before(label_2);
+
+            input_1.remove();
+            button_2.closest("td").before(input_1);
+
+            input_2.remove();
+            button_1.closest("td").before(input_2);
+
+            // Transfer updated ordering data to nav_lists
+            let nav_control = button_1.closest("table").previousElementSibling;
+            let list = nav_control.querySelector(".included-links");
+            for (let option of list.options) {
+                if (option.textContent === webpage_name_1) {
+                    option.value = rank_2;
+                }
+                if (option.textContent === webpage_name_2) {
+                    option.value = rank_1;
+                }
+            }
+        });
+    }
+}
+
+
+const prepare_move_down_buttons = () => {
+    let buttons = document.querySelectorAll(".move_down");
+    for (let button of buttons) {
+        button.addEventListener("click", (event) => {
+            // Initialize variables
+            let button_1 = event.currentTarget;
+            let input_1 = button_1.closest("td").previousElementSibling;
+            let label_1 = input_1.previousElementSibling;
+            let rank_1 = label_1.previousElementSibling.textContent;
+            let webpage_name_1 = label_1.textContent;
+
+            let button_2 = button_1.closest("tr").nextElementSibling.querySelector("button");
+            let input_2 = button_2.closest("td").previousElementSibling;
+            let label_2 = input_2.previousElementSibling;
+            let rank_2 = label_2.previousElementSibling.textContent;
+            let webpage_name_2 = label_2.textContent;
+
+            // Swap labels and inputs, effectively swapping the two rows
+            label_1.remove();
+            label_2.before(label_1);
+
+            label_2.remove();
+            input_1.before(label_2);
+
+            input_1.remove();
+            button_2.closest("td").before(input_1);
+
+            input_2.remove();
+            button_1.closest("td").before(input_2);
+
+            // Transfer updated ordering data to nav_lists
+            let nav_control = button_1.closest("table").previousElementSibling;
+            let list = nav_control.querySelector(".included-links");
+            for (let option of list.options) {
+                if (option.textContent === webpage_name_1) {
+                    option.value = rank_2;
+                }
+                if (option.textContent === webpage_name_2) {
+                    option.value = rank_1;
+                }
+            }
+        });
+    }
+}
+
+
+const prepare_input_fields = (navbar, nav_cache) => {
+    let inputs = document.querySelectorAll(`${navbar} input`);
+    for (let input of inputs) {
+        input.addEventListener("input", (event) => {
+            let webpage_name = event.currentTarget.parentElement.previousElementSibling.querySelector("label").textContent;
+            nav_cache[webpage_name][0] = event.currentTarget.value;
+            console.log(nav_cache);
+        });
+    }
+}
+
+
+// TODO: Make wrapper functions to give less arguments?
+const enable_edit_nav_bar = async () => {
+    // Adds nav bar data
+    await reset_navbar_dialog_box();
+
+    // Makes Navbar Control buttons work
     initialize_edit_nav_bar_button();
-    prepare_nav_controls("#primary-nav-control", "#select1", "#select2");
-    prepare_nav_controls("#secondary-nav-control", "#select3", "#select4");
-    prepare_nav_lists("/navbars", "#select1", "#select2");
-    let page_name = location.href.split("/").slice(-1)[0];
-    // prepare_nav_lists(`/navbars/${page_name}`, "#select3", "#select4");
+    
+    prepare_include_exclude_buttons("#primary-nav-control-panel", primary_nav_cache, "#select1", "#select2");
+    prepare_include_exclude_buttons("#secondary-nav-control-panel", secondary_nav_cache, "#select3", "#select4");
+
+    prepare_move_up_buttons();
+    prepare_move_down_buttons();
+
+    prepare_input_fields("#primary-nav-display-list", primary_nav_cache);
+
     prepare_apply_button();
     prepare_cancel_button();
 }

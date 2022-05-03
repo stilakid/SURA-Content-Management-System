@@ -16,6 +16,7 @@ const JWT_SECRET = "+iG1Zhkv2Y7QDdu7qV7R8XI6pdGSwP04WPb6NVmOYKM=";
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const fs = require('fs');
+const path = require('path');
 
 let DATABASE_NAME = "sura";
 
@@ -113,6 +114,34 @@ api.post("/login", async (req, res) => {
     console.error(e);
     res.status(403).json({ error: "Invalid ID token" });
   }
+});
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////    File System Reports    /////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Sends the list of webpage urls.
+api.get("/protected/urls", async (req, res) => {
+  let files_batch_1 = await fs.promises.readdir("public");
+  for (let i = 0; i < files_batch_1.length; i++) {
+    files_batch_1[i] = `/${files_batch_1[i]}`;
+  }
+
+  let files_batch_2 = await fs.promises.readdir("public/html_not_core");
+  for (let i = 0; i < files_batch_2.length; i++) {
+    files_batch_2[i] = `/html_not_core/${files_batch_2[i]}`;
+  }
+
+  let urls = [];
+  let files = files_batch_1.concat(files_batch_2);
+  for (let i = 0; i < files.length; i++) {
+    if (path.extname(files[i]) == ".html") {
+      urls.push(files[i]);
+    }
+  }
+  res.json(urls);
 });
 
 
@@ -235,6 +264,7 @@ api.post("/protected/webpages", async (req, res) => {
   fs.copyFile("public/default-page.html", file_name, (err) => {
     if (err) {
       console.log("Error Found:", err);
+      throw err;
     }
   });
   // The code below is for testing.
@@ -275,6 +305,7 @@ api.delete("/protected/webpages/:id", async (req, res) => {
   let file_name = "public/html_not_core/" + id;
   fs.unlink(file_name, (err) => {
     if (err) {
+      console.log("Error Found:", err);
       throw err;
     }
   });
