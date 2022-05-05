@@ -320,10 +320,6 @@ article {
     font-size: large;
     width: fit-content;
     height:fit-content;
-    padding-left: 1em;
-    padding-right: 1em;
-    padding-top: 1em;
-    padding-bottom: 1em;
     /* border-radius: 1em; */
     border: none;
     background-color: rgb(77, 123, 221);
@@ -335,6 +331,8 @@ article {
 }
 
 .button-link a {
+    display: flex;
+    padding: 1em;
     color: white;
 }
 
@@ -479,4 +477,23 @@ footer {
 .nav-include-exclude {
     display:flex;
     flex-direction: column;
+}
+
+#add-link-dialog {
+    background-color: white;
+    border: black solid 2px;
+    padding: 1em;
+    text-align: center;
+}
+
+
+#add-link-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+#add-link-buttons {
+    display: flex;
+    justify-content: flex-end;
 }

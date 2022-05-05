@@ -47,9 +47,20 @@ const add_images = (article, images_data) => {
 
 
 const add_links = (article, links_data) => {
-    if (links_data.length != 0) {
-        let links = article.querySelectorAll(".add-link");
-        // TODO
+    let links = article.querySelectorAll(".add-link");
+
+    for (let i = 0; i < links_data.length; i++) {
+        for (let link of links_data[i]) {
+            let a = document.createElement("a");
+            a.textContent = link["text"];
+            a.href = link["url"];
+            
+            let div = document.createElement("div");
+            div.append(a);
+            div.classList.add("button-link");
+
+            links[i].before(div);
+        }
     }
     return article;
 }
@@ -65,7 +76,7 @@ const addSection = (article_data) => {
     article = add_subheadings(article, article_data.subheadings);
     article = add_texts(article, article_data.texts);
     article = add_images(article, article_data.images);
-    article = add_links(article, article_data.links);   
+    article = add_links(article, article_data.links);
     article.classList.add("article");
     
     // Add the node to html
@@ -97,6 +108,8 @@ async function load_webpage() {
 
     // Load Webpage data
     let webpage = await apiRequest("GET", "/webpages/" + id);
+    let page_title = document.querySelector("#page-title h1");
+    page_title.textContent = webpage["title"];
     let articles = webpage["articles"];
     for (let article of articles) {
         addSection(article);

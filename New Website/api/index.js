@@ -255,6 +255,7 @@ api.post("/protected/webpages", async (req, res) => {
   // If no error, add to MongoDB collection "webpages".
   let webpage = {
     "id" : id,
+    "title" : "Page Title",
     "articles" : []
   };
   await webpages.insertOne(webpage);
@@ -333,10 +334,84 @@ api.delete("/protected/webpages/:id", async (req, res) => {
 
 // Loads primary navbar data.
 api.get("/navbars", async (req, res) => {
-  let navbar = await navbars.findOne({ "id" : "website" })
-  // delete navbar["_id"];
-  // delete navbar["id"];
+  let navbar = await navbars.findOne({ "id" : "website" });
   res.json(navbar.links);
+});
+
+
+// When nav bar is edited.
+api.patch("/protected/navbars/:id", async (req, res) => {
+  let id = req.params.id;
+
+  // Handles error
+  // let list_of_webpages = await navbars.find().toArray();
+  // let webpage_ids = [];
+  // for (let webpage of list_of_webpages) {
+  //   webpage_ids.push(webpage["id"]);
+  // }
+  // if (!webpage_ids.includes(id)) {
+  //   res.status(404).json({ error: `The navbar data for this webpage does not exist.`});
+  //   return;
+  // }
+
+  // If no error
+  let navbar_update = req.body;
+  let primary_navbar = await navbars.findOne({ "id" : "website" });
+  // let secondary_navbar = await navbars.findOne({ "id" : id});
+
+  primary_navbar["links"] = navbar_update["primary_navbar"];
+  // secondary_navbar["links"] = navbar_update["secondary_navbar"];
+
+  let navbar_data_in_database = {};
+  navbar_data_in_database["primary_navbar"] = await navbars.replaceOne({"id" : "website"}, primary_navbar);
+  // navbar_data_in_database["secondary_navbar"] = await navbars.replaceOne({"id" : id}, secondary_navbar);
+
+  res.json(navbar_data_in_database);
+});
+
+
+// When webpage is created, creates secondary nav bar data for the webpage.
+api.post("/protected/navbars", async (req, res) => {
+  // Handles error
+  if (!("id" in req.body) || !req.body.id) {
+    res.status(400).json({ error: `No webpage ID was specified!`});
+    return;
+  }
+
+  let id = req.body.id;
+
+  let list_of_webpages = await webpages.find().toArray();
+  let webpage_ids = [];
+  for (let webpage of list_of_webpages) {
+    webpage_ids.push(webpage["id"]);
+  }
+  if (webpage_ids.includes(id)) {
+    res.status(400).json({ error: `A webpage with this ID already exists.`});
+    return;
+  }
+
+  // If no error, add to MongoDB collection "webpages".
+  let webpage = {
+    "id" : id,
+    "articles" : []
+  };
+  await webpages.insertOne(webpage);
+
+  // Make new webpage for it.
+  let file_name = "public/html_not_core/" + id;
+  fs.copyFile("public/default-page.html", file_name, (err) => {
+    if (err) {
+      console.log("Error Found:", err);
+      throw err;
+    }
+  });
+  // The code below is for testing.
+  // fs.writeFile("public/newfile.txt", 'Learn Node FS module', function (err) {
+  //   if (err) throw err;
+  //   console.log('File is created successfully.');
+  // });
+
+  res.json(webpage);
 });
 
 

@@ -11,15 +11,7 @@ let link_button;
 // ##################################### Global Helper Functions #####################################
 
 
-// Hides "Add Link" Dialog box and deletes inputs entered.
-const hideAddLinkDialog = () => {
-    let dialog = document.querySelector("#add-link-dialog");
-    dialog.style.visibility = "hidden";
-    let inputs = dialog.querySelectorAll("input");
-    for (let input of inputs) {
-        input.value = "";
-    }
-}
+
 
 
 // Adds a new section above the 'New Section' button.
@@ -173,6 +165,17 @@ const clone_template = (event) => {
 }
 
 
+// Hides "Add Link" Dialog box and deletes inputs entered.
+const hideAddLinkDialog = () => {
+    let dialog = document.querySelector("#add-link-dialog");
+    dialog.style.visibility = "hidden";
+    let inputs = dialog.querySelectorAll("input");
+    for (let input of inputs) {
+        input.value = "";
+    }
+}
+
+
 // Invokes the dialog box that allows you to add a link to the button.
 const invokeAddLink = (event) => {
     let add_link_dialog = document.querySelector("#add-link-dialog");
@@ -182,9 +185,10 @@ const invokeAddLink = (event) => {
 
 
 // Make add-link button work
-const prepare_add_link_button = (article) => {
+const prepare_add_link_buttons = (article) => {
     let add_link_buttons = article.querySelectorAll(".add-link");
     for (let add_link_button of add_link_buttons) {
+        add_link_button.style.display = "flex";
         add_link_button.addEventListener("click", invokeAddLink);
     }
 }
@@ -238,7 +242,7 @@ const prepare_templates_menu = () => {
             hidePopupMenu();
             let article = clone_template(event);
             prepare_add_image_button(article);
-            prepare_add_link_button(article);
+            prepare_add_link_buttons(article);
             add_template(article);
             add_new_section_button(article);
             add_delete_section_button(article);
@@ -260,7 +264,8 @@ const addLink= () => {
     div.append(a);
     div.classList.add("button-link");
 
-    link_button.replaceWith(div);
+    link_button.before(div);
+    // link_button.replaceWith(div);
     hideAddLinkDialog();
 }
 
@@ -320,6 +325,15 @@ const add_buttons_to_articles = () => {
 }
 
 
+const make_text_editable = () => {
+    let query = "#page-title, article p, article h1, article h2, article h3, article h4, article h5, article h6";
+
+    let editable_texts = document.querySelectorAll(query);
+    for (let tag of editable_texts) {
+        tag.setAttribute("contenteditable", "true");
+    }
+}
+
 
 const enable_edit_page = () => {
     let edit_page_button = document.querySelector("#edit-page");
@@ -327,6 +341,9 @@ const enable_edit_page = () => {
         initialize_dialog_boxes();
         add_buttons_to_footer();
         add_buttons_to_articles();
+        make_text_editable();
+        let main = document.querySelector("main");
+        prepare_add_link_buttons(main);
         update_admin_buttons("#admin-controls", "#save-cancel");
     });
 
@@ -348,6 +365,7 @@ async function saveWebpage () {
     let webpage = {}
     // webpage id is the file name for the current html.
     webpage["id"] = location.href.split("/").slice(-1)[0];
+    webpage["title"] = document.querySelector("#page-title h1").textContent;
     webpage["articles"] = [];
     let articles = document.querySelectorAll(".article");
     for (let article of articles) {
@@ -363,9 +381,12 @@ async function saveWebpage () {
         
         let texts = article.querySelectorAll(".article-text");
         article_obj["texts"] = [];
-        for (let i = 0; i < texts.length; i++) {
-            article_obj["texts"][i] = texts[i].textContent;
+        for (let text of texts) {
+            article_obj["texts"].push(text.textContent);
         }
+        // for (let i = 0; i < texts.length; i++) {
+        //     article_obj["texts"][i] = texts[i].textContent;
+        // }
 
         let images = article.querySelectorAll(".article-image");
         article_obj["images"] = [];
@@ -373,15 +394,29 @@ async function saveWebpage () {
             article_obj["images"][i] = images[i];
         }
 
-        let links = article.querySelectorAll(".button-link a");
-        article_obj["links"] = []
-        for (let i = 0; i < links.length; i++) {
-            let link = {}
-            link["text"] = links[i].textContent;
-            link["url"] = links[i].href;
-            article_obj["links"][i] = link;
+        let add_link_buttons = article.querySelectorAll(".add-link");
+        article_obj["links"] = [];
+        for (let i = 0; i < add_link_buttons.length; i++) {
+            let link_nodes = add_link_buttons[i].parentElement.querySelectorAll(".button-link a");
+            let links_arr = [];
+            for (let link_node of link_nodes) {
+                let link = {};
+                link["text"] = link_node.textContent;
+                link["url"] = link_node.href;
+                links_arr.push(link);
+            }
+            article_obj["links"].push(links_arr);
         }
         webpage["articles"].push(article_obj);
+
+        // let links = article.querySelectorAll(".button-link a");
+        // article_obj["links"] = [];
+        // for (let i = 0; i < links.length; i++) {
+        //     let link = {};
+        //     link["text"] = links[i].textContent;
+        //     link["url"] = links[i].href;
+        //     article_obj["links"][i] = link;
+        // }
     }
 
     let id = location.href.split("/").slice(-1)[0];
@@ -391,29 +426,32 @@ async function saveWebpage () {
 }
 
 
-const delete_edit_buttons = () => {
-    let new_section_buttons = document.querySelectorAll("#preview-area .new-section");
-    let delete_section_buttons = document.querySelectorAll("#preview-area .delete-section");
+// const delete_edit_buttons = () => {
+//     let new_section_buttons = document.querySelectorAll("#preview-area .new-section");
+//     let delete_section_buttons = document.querySelectorAll("#preview-area .delete-section");
 
-    for (let new_sec_button of new_section_buttons) {
-        new_sec_button.remove();
-    }
-    for (let del_sec_but of delete_section_buttons) {
-        del_sec_but.remove();
-    }
-}
+//     for (let new_sec_button of new_section_buttons) {
+//         new_sec_button.remove();
+//     }
+//     for (let del_sec_but of delete_section_buttons) {
+//         del_sec_but.remove();
+//     }
+// }
 
 // Patch data
 const enable_save_page = () => {
     // Save Edits
     let save = document.querySelector("#save-webpage");
-    save.addEventListener("click", saveWebpage);
+    save.addEventListener("click", () => {
+        saveWebpage();
+        location.reload();
+    });
 
     // Cancel Edits
     let cancel = document.querySelector("#cancel_changes");
     cancel.addEventListener("click", () => {
         update_admin_buttons("#save-cancel", "#admin-controls");
-        delete_edit_buttons();
+        // delete_edit_buttons(); <----- Realised this was not required since we are reloading the page anyways.
         location.reload();
     });
 }
@@ -456,10 +494,12 @@ const enable_delete_page = () => {
 // Helper Function: Editing Navigation Bar Functionality
 // ###################################################################################################
 
+// TODO: Don't pass around global variables as parameters. It affects performance.
 
 // Keeps track of [display name, url, webpage name], even if not included in the nav bar.
 let primary_nav_cache;
 let secondary_nav_cache;
+const MAX_NAV_LINKS = 10;
 
 
 const initialize_edit_nav_bar_button = () => {
@@ -491,11 +531,20 @@ const move_item_between_lists = (list1, list2) => {
 }
 
 
+const list_size_exceeded = (list1, list2) => {
+    let num_of_nav_links = list2.options.length + list1.selectedOptions.length;
+    return (num_of_nav_links > MAX_NAV_LINKS);
+}
+
+
 const prepare_include_exclude_buttons = (navbar, nav_cache, list1_id, list2_id) => {
     let list1 = document.querySelector(list1_id);
     let list2 = document.querySelector(list2_id);
     let button = document.querySelector(`${navbar} .include`);
     button.addEventListener("click", () => {
+        if (list_size_exceeded(list1, list2)) {
+            return;
+        }
         move_item_between_lists(list1, list2);
         update_nav_display_names(navbar, nav_cache);
     });
@@ -534,12 +583,35 @@ const prepare_nav_lists = async (nav_data, webpages, list1_id, list2_id) => {
 }
 
 
-const apply_changes_to_nav = () => {
-    let list = document.querySelector(list_id);
+const apply_changes_to_nav = async () => {
     // Get display names and send it to server along with their filenames.
     // Keep a list of core html files in the database.
     // If the filename is not included in the list of core files, then it is in 'html-not-core' directory.
+    let navbar_update = {
+        "primary_navbar" : [],
+        "secondary_navbar" : []
+    };
 
+    // This query search is orderd.
+    let navbar_table_labels = document.querySelectorAll("#primary-nav-display-list label");
+    for (let label of navbar_table_labels) {
+        let webpage_name = label.textContent;
+        if (webpage_name !== "") {
+            navbar_update["primary_navbar"].push(primary_nav_cache[webpage_name]);
+        }
+
+    }
+
+    // navbar_table_labels = document.querySelector("#secondary-nav-display-list label");
+    // for (let label in navbar_table_labels) {
+    //     let webpage_name = label.textContent;
+    //     if (webpage_name !== "") {
+    //         navbar_update["secondary_navbar"].push(secondary_nav_cache[webpage_name]);
+    //     }
+    // }
+
+    let webpage_name = location.href.split("/").slice(-1)[0];
+    let res = await apiRequest("PATCH", `/protected/navbars/${webpage_name}`, navbar_update);
 }
 
 
@@ -558,7 +630,6 @@ const update_nav_display_names = (nav_bar, nav_cache) => {
         label.textContent = "";
         let input = document.querySelector(`${nav_bar} .row-${i} input`);
         input.value = "";
-        console.log(input.value);
     }
     // Add current data to table
     for (let option of list.options) {
@@ -593,8 +664,8 @@ const update_nav_display_names = (nav_bar, nav_cache) => {
 const prepare_apply_button = () => {
     let apply_button = document.querySelector("#handle-navbar-changes .save");
     apply_button.addEventListener("click", () => {
-        apply_changes_to_nav("#select2");
-        apply_changes_to_nav("#select4");
+        apply_changes_to_nav();
+        // apply_changes_to_nav(#secondry...blah..blah..blah);
         location.reload();
     });
 }
@@ -618,7 +689,6 @@ const reset_navbar_dialog_box = async () => {
 
     primary_nav_cache = initialize_nav_cache(primary_nav_data, urls);
     // secondary_nav_cache = initialize_nav_cache(secondary_nav_data, urls);
-    console.log(primary_nav_cache);
 
     let webpages = await apiRequest("GET", "/protected/webpages");
     prepare_nav_lists(primary_nav_data, webpages, "#select1", "#select2");
@@ -759,7 +829,6 @@ const prepare_input_fields = (navbar, nav_cache) => {
         input.addEventListener("input", (event) => {
             let webpage_name = event.currentTarget.parentElement.previousElementSibling.querySelector("label").textContent;
             nav_cache[webpage_name][0] = event.currentTarget.value;
-            console.log(nav_cache);
         });
     }
 }

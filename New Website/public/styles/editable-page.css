@@ -224,6 +224,8 @@ footer {
     border: none;
     background-color: rgb(77, 123, 221);
     color:white;
+    display: none;
+    cursor: pointer;
 }
 
 .add-link:hover {
@@ -290,13 +292,7 @@ footer {
 
 /* Add Link Dialog */
 
-#add-link-dialog {
-    display: flex;
-    flex-direction: column;
-    width: 30em;
-    height: 15em;
-    background-color: aliceblue;
-}
+
 
 
 
