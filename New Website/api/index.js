@@ -1,10 +1,18 @@
 // WELCOME TO THE BACKEND!!! MUUAAAAHAHAHAHAHAAAAAA T^T
 
+// Import the filesystem module
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const fs = require('fs');
+const path = require('path');
+
+
 // Standard Imports
 import bodyParser from "body-parser";
 import cors from "cors";
 import express from "express";
 import { MongoClient } from "mongodb";
+
 
 // For Google Authentication
 import jwt from "jsonwebtoken";
@@ -12,11 +20,59 @@ import { OAuth2Client } from "google-auth-library";
 const CLIENT_ID = "727364268733-vqiv6m0podaak66m0etut6jmef7d9v3d.apps.googleusercontent.com";
 const JWT_SECRET = "+iG1Zhkv2Y7QDdu7qV7R8XI6pdGSwP04WPb6NVmOYKM=";
 
-// Import the filesystem module
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
-const fs = require('fs');
-const path = require('path');
+
+// For making deep copy.
+const v8 = require('v8');
+const structuredClone = obj => {
+  return v8.deserialize(v8.serialize(obj));
+};
+
+
+// For parsing multipart/dataform
+import multer from "multer";
+
+// const storage = multer.memoryStorage();
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    // cb(null, './uploads/');
+    let webpage = req.body.webpage;
+    cb(null, `public/images/${webpage}/`);
+  },
+  filename: async function (req, file, cb) {
+    // Make sure the original name isn't already used in the server.
+    let webpage = req.body.webpage;
+    let filenames = await fs.promises.readdir(`public/images/${webpage}`);
+    // let filenames = await fs.promises.readdir(`./uploads/`);
+
+    // Get primary and secondary filename of the file being saved.
+    let parts_of_filename = file.originalname.split(".");
+    let primary_filename = "";
+    for (let i = 0; i < parts_of_filename.length - 1; i++) {
+      primary_filename += parts_of_filename[i] + ".";
+    }
+    let file_extension = parts_of_filename.slice(-1)[0];
+
+    // Check if a file with that name already exists.
+    let filename = primary_filename + file_extension;
+    let i = 1;
+    while (filenames.includes(filename)) {
+      filename = `${primary_filename}${i}.${file_extension}`;
+      i++;
+    }
+    cb(null, filename);
+    // cb(null, "image_file.jpg");
+    // cb(null, req.body.filename);
+    // Old code for reference:
+    // const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+    // cb(null, file.fieldname + '-' + uniqueSuffix);
+  }
+});
+
+const upload = multer({ storage: storage });
+// const upload = multer({ dest: '/' });
+
+
+
 
 let DATABASE_NAME = "sura";
 
@@ -145,6 +201,45 @@ api.get("/protected/urls", async (req, res) => {
 });
 
 
+// Saves images to the server.
+api.post("/protected/images", upload.array("image"), async (req, res) => {
+  let webpage_name = req.body.webpage;
+  let images_array = req.files;
+
+  // Handles error
+  // Checks if folder exists for webpage specified
+  let dir_contents = await fs.promises.readdir("public/images", { withFileTypes: true });
+  let folders = dir_contents.filter(dirent => dirent.isDirectory()).map(dirent => dirent.name);
+  if (!folders.includes(webpage_name)) {
+    res.status(404).json({ error: `No image directory present for ${id}.html` });
+    return;
+  }
+  // Check for if webpage data exists in database is done already in the api request before this one is called.
+
+
+  // Update file names in the database for files whose names were changed due to naming conflicts in the server.
+  let webpage_data = await webpages.findOne({ "id" : `${webpage_name}.html` });
+  let prior_data = structuredClone(webpage_data);
+
+  let k = 0;
+  for (let i = 0; i < webpage_data["articles"].length; i++) {
+    for (let j = 0; j < webpage_data["articles"][i]["images"].length; j++) {
+      let database_filename = webpage_data["articles"][i]["images"][j].split("/").slice(-1)[0];
+      let server_filename = images_array[k].filename;
+
+      if (database_filename !== server_filename) {
+        webpage_data["articles"][i]["images"][j] = `/images/${webpage_name}/${server_filename}`;
+      }
+      k++;
+    }
+  }
+  let current_data = webpage_data;
+  await webpages.replaceOne({ "id" : `${webpage_name}` }, webpage_data);
+  
+  // Prior is before update. Current is after update.
+  res.json({prior_data, current_data});
+});
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////    Database Collection: Webpages    ////////////////////////////////////
@@ -268,6 +363,17 @@ api.post("/protected/webpages", async (req, res) => {
       throw err;
     }
   });
+
+  // Make new image directory for it.
+  let dir_name = id.slice(0,-5);
+  fs.mkdir(`public/images/${dir_name}`, (err) => {
+    if (err) {
+      console.log("Error Found:", err);
+      throw err;
+    }
+  });
+
+
   // The code below is for testing.
   // fs.writeFile("public/newfile.txt", 'Learn Node FS module', function (err) {
   //   if (err) throw err;
@@ -305,6 +411,15 @@ api.delete("/protected/webpages/:id", async (req, res) => {
   // Deletes the webpage itself.
   let file_name = "public/html_not_core/" + id;
   fs.unlink(file_name, (err) => {
+    if (err) {
+      console.log("Error Found:", err);
+      throw err;
+    }
+  });
+
+  // Delete the image directory for the webpage.
+  let dir_name = id.slice(0,-5);
+  fs.rmdir(`public/images/${dir_name}`, (err) => {
     if (err) {
       console.log("Error Found:", err);
       throw err;

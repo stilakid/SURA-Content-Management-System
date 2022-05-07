@@ -195,14 +195,38 @@ const prepare_add_link_buttons = (article) => {
 
 
 // Adds an image when the "add image" button is clicked.
-const addImage = () => {
+const addImage = (event, img_button) => {
+    let file = event.currentTarget.files[0];
+    if (!file) return;
 
+    // Because of fakepath, we can upload the file but cannot display it before uploading.
+    // So, we will use data url until we save the page.
+    let reader = new FileReader();
+    reader.addEventListener("error", (event) => {
+      throw new Error("Error reading image file");
+    });
+    reader.addEventListener("load", (event) => {
+        let img = document.createElement("img");
+        img.setAttribute("src", reader.result);
+        img_button.replaceWith(img);
+    });
+    reader.readAsDataURL(file);
 }
 
 
 // Make add-image button work
-const prepare_add_image_button = (article) => {
+const prepare_add_image_buttons = (article) => {
+    let add_img_buttons = article.querySelectorAll(".add-image");
+    let import_img_inputs = article.querySelectorAll(".image-container input");
+    for (let i = 0; i < add_img_buttons.length; i++) {
+        add_img_buttons[i].addEventListener("click", () => {
+            import_img_inputs[i].click();
+        });
+        import_img_inputs[i].addEventListener("change", (event) => {
+            addImage(event, add_img_buttons[i]);
+        });
 
+    }
 }
 
 
@@ -241,7 +265,7 @@ const prepare_templates_menu = () => {
         template.addEventListener("click", (event) => {
             hidePopupMenu();
             let article = clone_template(event);
-            prepare_add_image_button(article);
+            prepare_add_image_buttons(article);
             prepare_add_link_buttons(article);
             add_template(article);
             add_new_section_button(article);
@@ -285,6 +309,8 @@ const prepare_add_image_dialog =() => {
     // for (let add_image_button of add_image_buttons) {
     //     add_image_button.addEventListener("click", addImage)
     // }
+
+
 }
 
 
@@ -344,6 +370,7 @@ const enable_edit_page = () => {
         make_text_editable();
         let main = document.querySelector("main");
         prepare_add_link_buttons(main);
+        prepare_add_image_buttons(main);
         update_admin_buttons("#admin-controls", "#save-cancel");
     });
 
@@ -361,12 +388,22 @@ const enable_edit_page = () => {
 
 // Saves webpage info as JSON in MondoDB
 async function saveWebpage () {
+    // If we want to upload new images to the server.
+    let imageData = new FormData();
+    let imageNames = [];
+
+
     // Collect webpage data in an object/dict/map
     let webpage = {}
     // webpage id is the file name for the current html.
     webpage["id"] = location.href.split("/").slice(-1)[0];
     webpage["title"] = document.querySelector("#page-title h1").textContent;
     webpage["articles"] = [];
+
+    let webpage_name = webpage["id"].slice(0, -5);
+    imageData.append("webpage", webpage_name);
+
+
     let articles = document.querySelectorAll(".article");
     for (let article of articles) {
         let article_obj = {};
@@ -388,12 +425,51 @@ async function saveWebpage () {
         //     article_obj["texts"][i] = texts[i].textContent;
         // }
 
-        let images = article.querySelectorAll(".article-image");
-        article_obj["images"] = [];
-        for (let i = 0; i < images.length; i++) {
-            article_obj["images"][i] = images[i];
-        }
 
+        // We get the image info for the database. We upload the files later.
+        // If there is a file name conflict in the server, we resolve it later, not here.
+        let image_selection_inputs = article.querySelectorAll(".image-container > input");
+        article_obj["images"] = [];
+
+        for (let input of image_selection_inputs) {
+            if (input.value !== "") {
+                let filename = input.files[0].name;
+
+                // Make sure that all input file names are different.
+                if (imageNames.includes(filename)) {
+                    let parts_of_filename = input.files[0].name.split(".");
+                    let primary_filename = "";
+                    for (let i = 0; i < parts_of_filename.length - 1; i++) {
+                    primary_filename += parts_of_filename[i] + ".";
+                    }
+                    let file_extension = parts_of_filename.slice(-1)[0];
+    
+                    filename = primary_filename + file_extension;
+                    let i = 1;
+                    while (imageNames.includes(filename)) {
+                        filename = `${primary_filename}${i}.${file_extension}`;
+                        i++;
+                    }
+                    let file = new File([input.files[0]], filename, {
+                        type: input.files[0].type,
+                        lastModified: input.files[0].lastModified
+                    });
+                    imageData.append("image", file);
+                }
+                else {
+                    // Add image file to form, which we will send later to the server.
+                    imageData.append("image", input.files[0]);
+                    // imageData.append("filename", filename);
+                }
+                // Add info to the data to be saved in the database
+                imageNames.push(filename);
+                let url = `/images/${webpage_name}/${filename}`;
+                article_obj["images"].push(url);
+            }
+            else {
+                article_obj["images"].push("");
+            }
+        }
         let add_link_buttons = article.querySelectorAll(".add-link");
         article_obj["links"] = [];
         for (let i = 0; i < add_link_buttons.length; i++) {
@@ -423,6 +499,17 @@ async function saveWebpage () {
     let url = "/protected/webpages/" + id;
     let res = await apiRequest("PATCH", url, webpage);
     console.log(res);
+
+    // Upload images here. We don't want to reload webpage before this point. That would change the filesystem before the database is updated.
+    // Due to the updater module we are using, any changes made to the file system will reload the page.
+    // First, we gotta make sure that all filenames are unique.
+    let images = imageData.getAll("image");
+    for (let image of images) {
+
+    }
+    url = "/protected/images";
+    let response = await apiRequest("POST", url, imageData, "formData");
+    console.log(response);
 }
 
 
@@ -450,7 +537,7 @@ const enable_save_page = () => {
     // Cancel Edits
     let cancel = document.querySelector("#cancel_changes");
     cancel.addEventListener("click", () => {
-        update_admin_buttons("#save-cancel", "#admin-controls");
+        // update_admin_buttons("#save-cancel", "#admin-controls"); <---- This isn't required since we are reloading the page anyways.
         // delete_edit_buttons(); <----- Realised this was not required since we are reloading the page anyways.
         location.reload();
     });
@@ -872,6 +959,38 @@ const add_admin_features = () => {
         enable_delete_page();
         enable_edit_nav_bar();
     }
+
+
+    // // Test for saving images to server...
+    // let input = document.createElement("input");
+    // input.setAttribute("type", "file");
+    // input.setAttribute("accept", "image/*");
+    // let button = document.querySelector("#edit-page");
+    // button.addEventListener("click", () => {
+    //     input.click();
+    // });
+    // input.addEventListener("change", async (event) => {
+    //     let url = "/protected/images";
+    //     let formData = new FormData();
+    //     formData.append("filename", "Sorry.jpg");
+    //     formData.append("webpage", "default-page");
+    //     formData.append("image", input.files[0]);
+
+    //     let file = new File([input.files[0]], "Hello!.jpg", {
+    //         type: input.files[0].type,
+    //         lastModified: input.files[0].lastModified
+    //     });
+    //     formData.append("image", file);
+
+
+    //     console.log(file.name);
+    //     // for (let entry of formData.entries()) {
+    //     //     console.log(entry);
+    //     // }
+    //     // console.log(formData);
+    //     let filename = await apiRequest("POST", url, formData, "formData");
+    //     console.log(filename);
+    // });
 }
 
 

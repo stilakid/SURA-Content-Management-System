@@ -24,12 +24,20 @@ export class HTTPError extends Error {
    The API is assumed to return JSON. If the response status is 200, the response body (as a JS object) is returned.
    If the response has any other status, an HTTPError is thrown, with its status set to the response status and its
    message set to value of the "error" property of the response, which we assume is a user-facing error message. */
-const apiRequest = async (method, path, body = null) => {
+const apiRequest = async (method, path, body = null, body_type = null) => {
   let res;
   // Checks if API key is saved to the session storage.
   let API_KEY = sessionStorage.getItem('API_KEY');
   const isAdmin = (API_KEY !== null);
-  if (body === null && !isAdmin) {
+
+  if (body_type === "formData") {
+    res = await fetch(API_URL + path, {
+      method: method,
+      headers: {"Authorization": `Bearer ${API_KEY}`},
+      body: body
+    });
+  }
+  else if (body === null && !isAdmin) {
     res = await fetch(API_URL + path, {
       method: method,
       headers: {"Content-Type": "application/json"}

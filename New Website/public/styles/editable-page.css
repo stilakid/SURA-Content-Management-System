@@ -193,7 +193,6 @@ footer {
 }
 
 .image-container {
-    display: flex;
     justify-content: center;
     /* border: 2px black solid; */
 }

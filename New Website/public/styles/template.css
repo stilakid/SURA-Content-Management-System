@@ -497,3 +497,20 @@ footer {
     display: flex;
     justify-content: flex-end;
 }
+
+
+
+
+
+.image-container > img {
+    max-width: 100%;
+    height: auto;
+    width: 33em;
+    border-radius: 1em;
+    flex-grow: 1;
+}
+
+
+.image-container > input {
+    display: none;
+}

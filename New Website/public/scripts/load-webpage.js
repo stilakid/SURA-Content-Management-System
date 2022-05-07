@@ -41,7 +41,18 @@ const add_texts = (article, texts_data) => {
 
 
 const add_images = (article, images_data) => {
-    // TODO
+    let image_containers = article.querySelectorAll(".image-container");
+
+    for (let i = 0; i < images_data.length; i++) {
+        let url = images_data[i];
+
+        if (url !== "") {
+            let img_button = image_containers[i].querySelector(".add-image");
+            let img = document.createElement("img");
+            img.setAttribute("src", url);
+            img_button.replaceWith(img);
+        }
+    }
     return article;
 }
 
