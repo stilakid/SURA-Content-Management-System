@@ -225,7 +225,8 @@ article {
 }
 
 .text-container {
-    flex-grow: 1;
+    /* flex-grow: 1; */
+    width: 60vw;
     margin-left: 1em;
     margin-right: 1em;
     display: flex;
@@ -505,12 +506,17 @@ footer {
 .image-container > img {
     max-width: 100%;
     height: auto;
-    width: 33em;
+    width: 25em;
     border-radius: 1em;
     flex-grow: 1;
 }
 
 
 .image-container > input {
+    display: none;
+}
+
+
+.img-url {
     display: none;
 }

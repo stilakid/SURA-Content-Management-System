@@ -5,6 +5,8 @@ import apiRequest from "./api.js";
 
 // ######################################## Global Variables #########################################
 
+const ADD_IMG_PIC = "/images/editable-page/add-image.svg"
+
 let succeeding_article;
 let link_button;
 
@@ -194,13 +196,67 @@ const prepare_add_link_buttons = (article) => {
 }
 
 
+const prepare_delete_link_buttons = (article) => {
+    let links = article.querySelectorAll(".button-link");
+    for (let div of links) {
+        add_delete_link_button(div);
+    }
+}
+
+// Deletes an image.
+const deleteImage = (event) => {
+    let del_button = event.currentTarget;
+    let img_container = del_button.parentElement;
+    let input = img_container.querySelector("input");
+
+    // Create and add default buttons
+    let add_img_button = document.createElement("button");
+    add_img_button.classList.add("add-image");
+    let add_img = document.createElement("img");
+    add_img.setAttribute("src", ADD_IMG_PIC);
+    add_img_button.append(add_img);
+    input.after(add_img_button);
+
+    // Remove previous img and the delete button.
+    let img = img_container.querySelector(".image");
+    img.remove();
+    del_button.remove();
+
+    // Set input value and url holder textContent to empty string.
+    input.value = "";
+    let url_holder = img_container.querySelector(".img-url");
+    url_holder.textContent = "";
+
+    // Pair input with add_img_button
+    add_img_button.addEventListener("click", () => {
+        input.click();
+    });
+    input.addEventListener("change", addImage);
+}
+
+
+const add_delete_image_button = (url_holder) => {
+    let delete_img = document.createElement("button");
+    delete_img.textContent = "Delete Image";
+    delete_img.classList.add("delete-img-button");
+    delete_img.addEventListener("click", deleteImage);
+    url_holder.after(delete_img);
+}
+
+
 // Adds an image when the "add image" button is clicked.
-const addImage = (event, img_button) => {
-    let file = event.currentTarget.files[0];
+const addImage = (event) => {
+    let input = event.currentTarget;
+    let file = input.files[0];
     if (!file) return;
 
     // Because of fakepath, we can upload the file but cannot display it before uploading.
     // So, we will use data url until we save the page.
+    let img_container = input.parentElement;
+    let add_img_button = img_container.querySelector(".add-image");
+    let url_holder = img_container.querySelector(".img-url");
+
+    console.log(img_container);
     let reader = new FileReader();
     reader.addEventListener("error", (event) => {
       throw new Error("Error reading image file");
@@ -208,7 +264,11 @@ const addImage = (event, img_button) => {
     reader.addEventListener("load", (event) => {
         let img = document.createElement("img");
         img.setAttribute("src", reader.result);
-        img_button.replaceWith(img);
+        img.classList.add("image");
+        add_img_button.replaceWith(img);
+
+        // Add delete image button
+        add_delete_image_button(url_holder);
     });
     reader.readAsDataURL(file);
 }
@@ -217,15 +277,25 @@ const addImage = (event, img_button) => {
 // Make add-image button work
 const prepare_add_image_buttons = (article) => {
     let add_img_buttons = article.querySelectorAll(".add-image");
-    let import_img_inputs = article.querySelectorAll(".image-container input");
-    for (let i = 0; i < add_img_buttons.length; i++) {
-        add_img_buttons[i].addEventListener("click", () => {
-            import_img_inputs[i].click();
-        });
-        import_img_inputs[i].addEventListener("change", (event) => {
-            addImage(event, add_img_buttons[i]);
-        });
 
+    for (let add_img_button of add_img_buttons) {
+        let image_container = add_img_button.closest(".image-container");
+        let input = image_container.querySelector("input");
+        
+        add_img_button.addEventListener("click", () => {
+            input.click();
+        });
+        input.addEventListener("change", addImage);
+    }
+}
+
+
+const prepare_delete_image_buttons = (main) => {
+    let img_url_holders = main.querySelectorAll(".img-url");
+    for (let url_holder of img_url_holders) {
+        if (url_holder.textContent !== "") {
+            add_delete_image_button(url_holder);
+        }
     }
 }
 
@@ -267,11 +337,28 @@ const prepare_templates_menu = () => {
             let article = clone_template(event);
             prepare_add_image_buttons(article);
             prepare_add_link_buttons(article);
+            prepare_delete_link_buttons(article);
             add_template(article);
             add_new_section_button(article);
             add_delete_section_button(article);
         });
     }
+}
+
+
+const deleteLink = (event) => {
+    let del_button = event.currentTarget;
+    let link = del_button.parentElement;
+    link.remove();
+}
+
+
+const add_delete_link_button = (div) => {
+    // Add delete link button
+    let delete_link = document.createElement("button");
+    delete_link.textContent = "Delete Link";
+    delete_link.addEventListener("click", deleteLink);
+    div.append(delete_link);
 }
 
 
@@ -289,8 +376,9 @@ const addLink= () => {
     div.classList.add("button-link");
 
     link_button.before(div);
-    // link_button.replaceWith(div);
     hideAddLinkDialog();
+
+    add_delete_link_button(div);
 }
 
 
@@ -303,21 +391,9 @@ const prepare_add_link_dialog = () => {
 }
 
 
-const prepare_add_image_dialog =() => {
-    // Make Add Image Button Work
-    // let add_image_buttons = document.querySelectorAll(".article .add-image");
-    // for (let add_image_button of add_image_buttons) {
-    //     add_image_button.addEventListener("click", addImage)
-    // }
-
-
-}
-
-
 const initialize_dialog_boxes = () => {
     prepare_templates_menu();
     prepare_add_link_dialog();
-    prepare_add_image_dialog();
 }
 
 
@@ -370,7 +446,9 @@ const enable_edit_page = () => {
         make_text_editable();
         let main = document.querySelector("main");
         prepare_add_link_buttons(main);
+        prepare_delete_link_buttons(main);
         prepare_add_image_buttons(main);
+        prepare_delete_image_buttons(main);
         update_admin_buttons("#admin-controls", "#save-cancel");
     });
 
@@ -388,11 +466,6 @@ const enable_edit_page = () => {
 
 // Saves webpage info as JSON in MondoDB
 async function saveWebpage () {
-    // If we want to upload new images to the server.
-    let imageData = new FormData();
-    let imageNames = [];
-
-
     // Collect webpage data in an object/dict/map
     let webpage = {}
     // webpage id is the file name for the current html.
@@ -400,10 +473,8 @@ async function saveWebpage () {
     webpage["title"] = document.querySelector("#page-title h1").textContent;
     webpage["articles"] = [];
 
-    let webpage_name = webpage["id"].slice(0, -5);
-    imageData.append("webpage", webpage_name);
-
-
+    // Get info for each article and add them to the webpage data.
+    // Image data will be handled separately due to its complexity.
     let articles = document.querySelectorAll(".article");
     for (let article of articles) {
         let article_obj = {};
@@ -425,51 +496,6 @@ async function saveWebpage () {
         //     article_obj["texts"][i] = texts[i].textContent;
         // }
 
-
-        // We get the image info for the database. We upload the files later.
-        // If there is a file name conflict in the server, we resolve it later, not here.
-        let image_selection_inputs = article.querySelectorAll(".image-container > input");
-        article_obj["images"] = [];
-
-        for (let input of image_selection_inputs) {
-            if (input.value !== "") {
-                let filename = input.files[0].name;
-
-                // Make sure that all input file names are different.
-                if (imageNames.includes(filename)) {
-                    let parts_of_filename = input.files[0].name.split(".");
-                    let primary_filename = "";
-                    for (let i = 0; i < parts_of_filename.length - 1; i++) {
-                    primary_filename += parts_of_filename[i] + ".";
-                    }
-                    let file_extension = parts_of_filename.slice(-1)[0];
-    
-                    filename = primary_filename + file_extension;
-                    let i = 1;
-                    while (imageNames.includes(filename)) {
-                        filename = `${primary_filename}${i}.${file_extension}`;
-                        i++;
-                    }
-                    let file = new File([input.files[0]], filename, {
-                        type: input.files[0].type,
-                        lastModified: input.files[0].lastModified
-                    });
-                    imageData.append("image", file);
-                }
-                else {
-                    // Add image file to form, which we will send later to the server.
-                    imageData.append("image", input.files[0]);
-                    // imageData.append("filename", filename);
-                }
-                // Add info to the data to be saved in the database
-                imageNames.push(filename);
-                let url = `/images/${webpage_name}/${filename}`;
-                article_obj["images"].push(url);
-            }
-            else {
-                article_obj["images"].push("");
-            }
-        }
         let add_link_buttons = article.querySelectorAll(".add-link");
         article_obj["links"] = [];
         for (let i = 0; i < add_link_buttons.length; i++) {
@@ -484,53 +510,139 @@ async function saveWebpage () {
             article_obj["links"].push(links_arr);
         }
         webpage["articles"].push(article_obj);
-
-        // let links = article.querySelectorAll(".button-link a");
-        // article_obj["links"] = [];
-        // for (let i = 0; i < links.length; i++) {
-        //     let link = {};
-        //     link["text"] = links[i].textContent;
-        //     link["url"] = links[i].href;
-        //     article_obj["links"][i] = link;
-        // }
     }
 
+
+// ###################################################################################################
+//                                  Add Image Data
+
+    // Handling images is complicated. So, we will use a separate loop to make things cleaner.
+    let webpage_name = webpage["id"].slice(0, -5);
+    // For resolving name conflicts, we store img names in the array below.
+    let imageNames = [];
+    // To resolve image file naming conflict on the client side, we want to get all image names first.
+    let image_containers = document.querySelectorAll("main .image-container");
+
+    // If input is empty, it could mean 2 things:
+    //      1) There is no image assigned.
+    //      2) There is an image but it was assigned before this session.
+    // If input is not empty, then the image was assigned in this session.
+    //
+    // To resolve naming conflicts, we need to know the old image names first before the new image names because
+    //  1) We can assume that old images names do not have naming conflicts amongst themselves.
+    //  2) We do not have access to old image files (server sends us data urls) so changing their name is only possible on the server side.
+    //
+    // So, we loop over all inputs to get old image names first
+    // We resolve image name conflicts for new images later as we are posting the images to the server.
+
+    // Loop one for gathering old image names exclusively
+    for (let image_container of image_containers) {
+        let input = image_container.querySelector("input");
+        if (input.value === "") {
+            let elem = image_container.querySelector(".image");
+            // If its an old image, it will be a node object.
+            // If it is empty, it will null.
+            if (elem !== null) {
+                // Url stored in src attribute of img is a dataurl, so we get url from the tag after it,
+                // which is where we saved it whien loading the page.
+                let url = image_container.querySelector(".img-url").textContent;
+                let filename = url.split("/").slice(-1)[0];
+                imageNames.push(filename);
+            }
+        }
+    }
+    
+    // Loop 2 for:
+    //  1) Resolving name conflicts.
+    //  2) Saving images to server.
+    //  3) Adding image data to the data that will be sent to the server.
+    for (let i = 0; i < articles.length; i++) {
+        let article = articles[i];
+        webpage["articles"][i]["images"] = []; // This is the article_obj["images"]
+
+        let image_containers = article.querySelectorAll(".image-container");
+        for (let image_container of image_containers) {
+            let input = image_container.querySelector("input");
+            let elem = image_container.querySelector(".image");
+            
+            // If it's an old image
+            if (input.value === "" && elem !== null) {
+                // Add file url to webpage data
+                let url_holder = image_container.querySelector(".img-url");
+                let url = url_holder.textContent;
+                webpage["articles"][i]["images"].push(url);
+            }
+            // If it's not assigned an image
+            else if (input.value === "" && elem === null) {
+                // Add empty string in place of file url to webpage data
+                webpage["articles"][i]["images"].push("");
+            }
+            // If it's a new image
+            else {
+                // Create image form to be sent to the server
+                let imageData = new FormData();
+                imageData.append("webpage", webpage_name);
+                let filename = input.files[0].name;
+                // If there is no conflict
+                if (!imageNames.includes(filename)) {
+                    // Add file to image form
+                    imageData.append("image", input.files[0]);
+                }
+                // If there is conflict
+                else {
+                    // Generate new unique filename
+                    let parts_of_filename = input.files[0].name.split(".");
+                    let primary_filename = "";
+                    for (let i = 0; i < parts_of_filename.length - 1; i++) {
+                    primary_filename += parts_of_filename[i] + ".";
+                    }
+                    let file_extension = parts_of_filename.slice(-1)[0];
+                    filename = primary_filename + file_extension;
+                    let i = 1;
+                    while (imageNames.includes(filename)) {
+                        filename = `${primary_filename}${i}.${file_extension}`;
+                        i++;
+                    }
+
+                    // Make new file with new filename
+                    let file = new File([input.files[0]], filename, {
+                        type: input.files[0].type,
+                        lastModified: input.files[0].lastModified
+                    });
+
+                    // Add file to image form
+                    imageData.append("image", file);
+                }
+                // Post new image to server and get filename
+                let url = "/protected/images";
+                let updated_filename = await apiRequest("POST", url, imageData, "formData");
+                
+                // Add file url to webpage data
+                let img_url = `/images/${webpage_name}/${updated_filename}`;
+                webpage["articles"][i]["images"].push(img_url);
+            }
+        }
+    }
+
+
+// ###################################################################################################
+//                                  Patch Data to Database
+
+    // Patch data to database.
     let id = location.href.split("/").slice(-1)[0];
     let url = "/protected/webpages/" + id;
     let res = await apiRequest("PATCH", url, webpage);
+    // prior_files = {"images":[], "videos":[], "others":[]};
     console.log(res);
-
-    // Upload images here. We don't want to reload webpage before this point. That would change the filesystem before the database is updated.
-    // Due to the updater module we are using, any changes made to the file system will reload the page.
-    // First, we gotta make sure that all filenames are unique.
-    let images = imageData.getAll("image");
-    for (let image of images) {
-
-    }
-    url = "/protected/images";
-    let response = await apiRequest("POST", url, imageData, "formData");
-    console.log(response);
 }
 
-
-// const delete_edit_buttons = () => {
-//     let new_section_buttons = document.querySelectorAll("#preview-area .new-section");
-//     let delete_section_buttons = document.querySelectorAll("#preview-area .delete-section");
-
-//     for (let new_sec_button of new_section_buttons) {
-//         new_sec_button.remove();
-//     }
-//     for (let del_sec_but of delete_section_buttons) {
-//         del_sec_but.remove();
-//     }
-// }
 
 // Patch data
 const enable_save_page = () => {
     // Save Edits
     let save = document.querySelector("#save-webpage");
-    save.addEventListener("click", () => {
-        saveWebpage();
+    save.addEventListener("click", async () => {
+        await saveWebpage();
         location.reload();
     });
 

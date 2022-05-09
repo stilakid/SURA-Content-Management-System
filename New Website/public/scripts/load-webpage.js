@@ -50,7 +50,11 @@ const add_images = (article, images_data) => {
             let img_button = image_containers[i].querySelector(".add-image");
             let img = document.createElement("img");
             img.setAttribute("src", url);
+            img.classList.add("image");
             img_button.replaceWith(img);
+            
+            let url_holder = img.nextElementSibling;
+            url_holder.textContent = url;
         }
     }
     return article;
