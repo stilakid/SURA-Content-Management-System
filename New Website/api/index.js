@@ -359,8 +359,14 @@ api.post("/protected/webpages", async (req, res) => {
     }
   });
 
-  // Make new image directory for it.
+  // If an image directory exists with this name, delete it.
   let dir_name = id.slice(0,-5);
+  let folders = await fs.promises.readdir("public/images");
+  if (folders.includes(dir_name)) {
+    await fs.promises.rmdir(`public/images/${dir_name}`, { recursive: true });
+  }
+
+  // Make new image directory for it.
   fs.mkdir(`public/images/${dir_name}`, (err) => {
     if (err) {
       console.log("Error Found:", err);
@@ -400,8 +406,11 @@ api.delete("/protected/webpages/:id", async (req, res) => {
   //   return;
   // }
 
-  // Deletes the webpage data in MondoDB.
-  await webpages.deleteOne({"id":id});
+  // Do not delete if this is a core file
+  let folders = await fs.promises.readdir("public");
+  if (folders.includes(id)) {
+    return res.json({"Message" : "Cannot delete a core HTML file."});
+  }
 
   // Deletes the webpage itself.
   let file_name = "public/html_not_core/" + id;
@@ -414,12 +423,16 @@ api.delete("/protected/webpages/:id", async (req, res) => {
 
   // Delete the image directory for the webpage.
   let dir_name = id.slice(0,-5);
-  fs.rmdir(`public/images/${dir_name}`, (err) => {
+  fs.rmdir(`public/images/${dir_name}`, { recursive: true }, (err) => {
     if (err) {
       console.log("Error Found:", err);
       throw err;
     }
   });
+
+
+  // Deletes the webpage data in MondoDB.
+  await webpages.deleteOne({"id":id});
 
 
   // let following = user["following"];
@@ -433,7 +446,7 @@ api.delete("/protected/webpages/:id", async (req, res) => {
   // user["following"].splice(index, 1);
   // await users.replaceOne({"id" : id}, user);
 
-  res.json( {"success" : true} );
+  res.json( {"Message" : "Success"} );
 });
 
 

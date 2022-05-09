@@ -2,6 +2,11 @@
 /* This is the style for the website */
 /***************************************************************************/
 
+
+/***************************************************************************/
+/* Foundation */
+/***************************************************************************/
+
 /* Whole Docment */
 
 :root {
@@ -23,7 +28,9 @@ a:hover {
     text-decoration: underline;
 }
 
-
+#hidden {
+    display: none;
+}
 
 /***************************************************************************/
 
@@ -34,7 +41,14 @@ body {
     background-repeat: no-repeat;
     background-size: cover;
     background-attachment: fixed;
+
+    /* For footer and the new section button above footer to show up properly */
+    display:flex;
+    flex-direction: column;
+    align-items: center;
 }
+
+/***************************************************************************/
 
 /* Page Title */
 
@@ -55,6 +69,7 @@ body {
     text-align: center;
 }
 
+/***************************************************************************/
 
 /* One Viewport worth of Empty Space */
 
@@ -63,8 +78,42 @@ body {
     width: 100vw;
 }
 
+/***************************************************************************/
 
+/* Border with SURA logo */
 
+.border {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1em;
+}
+
+#sura-logo-box {
+    width: 5.5em;
+    height: 5.5em;
+    background-color: white;
+    border-radius: 1em;
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+#sura-logo {
+    width: 5em;
+    display: block;
+    margin: auto;
+    padding-top: 0.15em;
+}
+
+.line {
+    background-color: white;
+    height:3px;
+    width:35vw;
+    flex-shrink: 1;
+}
+
+/***************************************************************************/
+/* Navigaiton Bars */
 /***************************************************************************/
 
 /* Header Bar */
@@ -77,6 +126,8 @@ header {
     background-color: rgb(165, 0, 0);
     /* background-color: #c50000; */
 }
+
+/***************************************************************************/
 
 /* SURA homepage Link */
 
@@ -100,7 +151,7 @@ header {
     padding-right: 5px;
 }
 
-
+/***************************************************************************/
 
 /* Navigation Links */
 
@@ -139,44 +190,8 @@ nav > ul {
     background-color: darkred;
 }
 
-
-
 /***************************************************************************/
-
-/* Border */
-
-.border {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 1em;
-}
-
-#sura-logo-box {
-    width: 5.5em;
-    height: 5.5em;
-    background-color: white;
-    border-radius: 1em;
-    margin-left: 1em;
-    margin-right: 1em;
-}
-
-#sura-logo {
-    width: 5em;
-    display: block;
-    margin: auto;
-    padding-top: 0.15em;
-}
-
-.line {
-    background-color: white;
-    height:3px;
-    width:35vw;
-    flex-shrink: 1;
-}
-
-
-
+/* Content Area */
 /***************************************************************************/
 
 /* Articles */
@@ -191,6 +206,24 @@ main {
     padding-top: 1em;
     padding-bottom: 1em;
     background-color: rgb(240, 248, 255);
+}
+
+#first-article {
+    background-color: darkred;
+    /* background-color: #c50000; */
+    padding-top: 1em;
+    /* padding-bottom: 1em; */
+}
+
+.odd-article {
+    background-color: #3a4750;
+    color: white;
+    /* background-color: rgba(255, 40, 40, 0.733); */
+}
+
+.even-article {
+    /* background-color: #f6e1e1; */
+    background-color: rgba(240, 248, 255, 0.89);
 }
 
 article {
@@ -213,25 +246,6 @@ article {
 
 .article-body {
     display: flex;
-}
-
-.template-4 .article-body {
-    flex-direction: column;
-    margin:0px;
-}
-
-.image-container {
-    margin: 1em;
-}
-
-.text-container {
-    /* flex-grow: 1; */
-    width: 60vw;
-    margin-left: 1em;
-    margin-right: 1em;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
 }
 
 .section {
@@ -257,11 +271,74 @@ article {
     flex-grow: 1;
 }
 
+.text-container {
+    /* flex-grow: 1; */
+    width: 60vw;
+    margin-left: 1em;
+    margin-right: 1em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.image-container {
+    margin: 1em;
+    justify-content: center;
+}
+
+.image-container > img {
+    max-width: 100%;
+    height: auto;
+    width: 25em;
+    border-radius: 1em;
+    flex-grow: 1;
+}
+
+.image-container > input {
+    display: none;
+}
+
+.img-url {
+    display: none;
+}
+
+.button-link {
+    margin: 1em;
+    font-size: large;
+    width: fit-content;
+    height:fit-content;
+    /* border-radius: 1em; */
+    border: none;
+    background-color: rgb(77, 123, 221);
+    color:white;
+}
+
+.button-link:hover {
+    background-color: rgb(86, 131, 226);
+}
+
+.button-link a {
+    display: flex;
+    padding: 1em;
+    color: white;
+}
+
+.button-link a:hover {
+    text-decoration: none;
+}
+
+/***************************************************************************/
+
+/* Template Specific Styles */
+
+.template-4 .article-body {
+    flex-direction: column;
+    margin:0px;
+}
+
 .template-5 .has-background-vertical {
     margin: 0px;
 }
-
-
 
 .template-7 .has-background-vertical {
     margin-left: 1em;
@@ -297,53 +374,9 @@ article {
     align-items: center;
 }
 
-.odd-article {
-    background-color: #3a4750;
-    color: white;
-    /* background-color: rgba(255, 40, 40, 0.733); */
-}
-
-.even-article {
-    /* background-color: #f6e1e1; */
-    background-color: rgba(240, 248, 255, 0.89);
-}
-
-#first-article {
-    background-color: darkred;
-    /* background-color: #c50000; */
-    padding-top: 1em;
-    /* padding-bottom: 1em; */
-}
-
-
-.button-link {
-    margin: 1em;
-    font-size: large;
-    width: fit-content;
-    height:fit-content;
-    /* border-radius: 1em; */
-    border: none;
-    background-color: rgb(77, 123, 221);
-    color:white;
-}
-
-.button-link:hover {
-    background-color: rgb(86, 131, 226);
-}
-
-.button-link a {
-    display: flex;
-    padding: 1em;
-    color: white;
-}
-
-.button-link a:hover {
-    text-decoration: none;
-}
-
 /***************************************************************************/
-
 /* Footer */
+/***************************************************************************/
 
 footer {
     height: 3em;
@@ -359,12 +392,12 @@ footer {
 
 }
 
-
+/***************************************************************************/
+/* Admin/Member Features */
 /***************************************************************************/
 
-/* Admin/Member Features */
+/* Master Buttons */
 
-/* Button */
 #admin-controls {
     display: none;
     flex-direction: column;
@@ -384,15 +417,13 @@ footer {
     margin: 1em;
 }
 
-/* Button */
 #admin-controls button:hover {
     background-color: rgb(243, 176, 176);
 }
 
+/********************************************************************************/
 
-/********************************************************************************/
 /* Dialog Boxes */
-/********************************************************************************/
 
 .dialog-box-container {
     position: fixed;
@@ -404,9 +435,6 @@ footer {
     z-index: 5;
     visibility: hidden;
 }
-
-
-/* Make New Page Dialog Box */
 
 #make-new-page-dialog {
     display: flex;
@@ -433,15 +461,63 @@ footer {
     justify-content: flex-end;
 }
 
-/* input field */
 #webpage-id {
     font-size: medium;
     height: 1.5em;
 }
 
+/***************************************************************************/
 
+/* Template Menu */
 
-/* Edit Navigation Bar */
+#popup-menu-container * {
+    margin: 0;
+    padding: 0;
+}
+
+#popup-menu-container {
+    /* display: none; */
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    visibility: hidden;
+}
+
+#popup-menu {
+    width: 80vw;
+    height: 80vh;
+    background-color: antiquewhite;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#popup-menu h2 {
+    padding: 0.5em;
+}
+
+#templates {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    overflow-y:scroll;
+}
+
+#templates li button {
+    height: 20vw;
+    width: 34vw;
+    margin: 2vw;
+}
+
+/********************************************************************************/
+
+/* Navbar Controls */
+
 #edit-nav-dialog {
     text-align: center;
     background-color: white;
@@ -487,7 +563,6 @@ footer {
     text-align: center;
 }
 
-
 #add-link-content {
     display: flex;
     flex-direction: column;
@@ -499,24 +574,117 @@ footer {
     justify-content: flex-end;
 }
 
+/***************************************************************************/
 
+/* More Admin Buttons */
 
+#save-cancel {
+    position: fixed;
+    z-index: 5;
+    right: 0;
+    top: 70vh;
+    display: none;
+}
 
+#save-webpage {
+    border-radius: 100%;
+    border: none;
+    background-color: aqua;
+    width: 4em;
+    height: 4em;
+    margin: 1em;
+}
 
-.image-container > img {
-    max-width: 100%;
-    height: auto;
-    width: 25em;
-    border-radius: 1em;
+#cancel_changes {
+    border-radius: 100%;
+    border: none;
+    background-color: aqua;
+    width: 4em;
+    height: 4em;
+    margin: 1em;
+}
+
+.new-section {
+    transform: translateY(0.85em);
+    font-size: 1.1em;
+    width: 8em;
+    height: 1.7em;
+    border-radius: 0.8em;
+    background-color: rgb(62, 126, 185);
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-top: -1.7em;
+    z-index: 1;
+}
+
+.new-section:hover {
+    background-color: rgb(73, 135, 194);
+}
+
+.delete-section {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+
+}
+
+.delete-section {
+    border: none;
+    background-color: rgb(240, 240, 240);
+    border-radius: 0.5em;
+    font-size: medium;
+}
+
+.delete-section img {
+    width: 2em;
+}
+
+.delete-section img:hover {
+    transform: scale(1.1);
+}
+
+.add-image {
     flex-grow: 1;
+    width: 20vw;
+    height: 20vw;
+    border: none;
+    background-color: transparent;
+    transform: scale(1.05);
 }
 
+.add-image img {
+    width: 20vw;
+    border-radius: 1em;
+}
 
-.image-container > input {
+.add-image img:hover {
+    transform: scale(1.05);
+}
+
+.add-link {
+    margin: 1em;
+    font-size: large;
+    width: fit-content;
+    height:fit-content;
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-top: 1em;
+    padding-bottom: 1em;
+    /* border-radius: 1em; */
+    border: none;
+    background-color: rgb(77, 123, 221);
+    color:white;
     display: none;
+    cursor: pointer;
 }
 
-
-.img-url {
-    display: none;
+.add-link:hover {
+    background-color: rgb(86, 131, 226);
 }
+
+/* .new-section > button:hover {
+    transform: scale(1.05);
+} */
+
+/***************************************************************************/

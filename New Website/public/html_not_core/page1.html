@@ -20,7 +20,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         <!-- My custom styles -->
-        <link rel="stylesheet" href="/styles/template.css">
+        <link rel="stylesheet" href="/styles/template.css" />
+        <link rel="stylesheet" href="/styles/editable-page.css" />
 
         <!-- My custom scripts -->
         <script type="module" src="/scripts/load-webpage.js" defer></script>
@@ -36,10 +37,10 @@
         <!-- Admin Buttons -->
 
         <div id="admin-controls">
-            <button id="make-new-page">Make New Page</button>
-            <button id="edit-nav-bar">Edit Nav Bar</button>
-            <button id="edit-page">Edit Page</button>
-            <button id="delete-page">Delete Page</button>
+            <button id="make-new-page" class="admin-controls">Make New Page</button>
+            <button id="edit-nav-bar" class="admin-controls">Edit Nav Bar</button>
+            <button id="edit-page" class="admin-controls">Edit Page</button>
+            <button id="delete-page" class="admin-controls">Delete Page</button>
         </div>
 
         <div id="save-cancel">
@@ -416,57 +417,58 @@
             </div>
         </div>
         
-        <!-- ******************************************************************************************** -->
-        <!-- ******************************************************************************************** -->
-        <!-- ******************************************************************************************** -->
-
-        <header>
-            <div id="SURA-div"> 
-                <a id="SURA" href="/" title="Home" rel="home">
-                    <img id="sura-logo-home" src="/images/sura_logo_white.png">
-                    <p>SURA</p>
-                </a>
-                <!-- We need this empty div to not make the SURA homelink be clickable across half of the header. -->
-                <div></div>
-            </div>
-            
-            <nav role="navigation">
-                <ul id="primary_nav" class="nav">
-                <!-- <li class="leaf"><a href="/">Team</a></li>
-                <li class="leaf"><a href="/">Research Conference</a></li>
-                <li class="leaf"><a href="/">Outreach</a></li>
-                <li class="leaf"><a href="/">Mentorship</a></li> -->
-                <!-- <li class="leaf"><a href="/">Get Involved</a></li>
-                <li class="leaf"><a href="/">About</a></li> -->
-                <li id="login-leaf" class="leaf"><a href="/login.html">Login</a></li>
-                </ul>
-            </nav>
-        </header>
         
-        <main>
-            <div id="page-title">
-                <h1></h1>
-            </div>
+
+        <!-- ******************************************************************************************** -->
+        <!-- ******************************************************************************************** -->
+        <!-- ******************************************************************************************** -->
+
+
+
+        <aside id="preview-area">
+            <header>
+                <div id="SURA-div"> 
+                    <a id="SURA" href="/" title="Home" rel="home">
+                        <img id="sura-logo-home" src="/images/sura_logo_white.png">
+                        <p>SURA</p>
+                    </a>
+                    <!-- We need this empty div to not make the SURA homelink be clickable across half of the header. -->
+                    <div></div>
+                </div>
+                
+                <nav role="navigation">
+                    <ul id="primary_nav" class="nav">
+                    <!-- <li class="leaf"><a href="/">Team</a></li>
+                    <li class="leaf"><a href="/">Research Conference</a></li>
+                    <li class="leaf"><a href="/">Outreach</a></li>
+                    <li class="leaf"><a href="/">Mentorship</a></li> -->
+                    <!-- <li class="leaf"><a href="/">Get Involved</a></li>
+                    <li class="leaf"><a href="/">About</a></li> -->
+                    <li id="login-leaf" class="leaf"><a href="/login.html">Login</a></li>
+                    </ul>
+                </nav>
+            </header>
             
-            <div id="empty-space"></div>
+            <main>
+                <div id="page-title">
+                    <h1></h1>
+                </div>
+                
+                <div id="empty-space"></div>
+    
+                <article id="pre-article" class="even-article">
+                </article>
 
-            <article id="pre-article" class="even-article">
-            </article>
+                <!-- This is where the sections were before -->
+                
+            </main>
+    
+            <footer>
+                Copyright © 2022. Stanford Undergraduate Research Association.
+            </footer>
+        </aside>
 
-            <!-- This is where the sections were before -->
-            
-        </main>
-
-        <footer>
-            Copyright © 2022. Stanford Undergraduate Research Association.
-        </footer>
-
-
-        <!-- ******************************************************************************************** -->
-        <!-- ******************************************************************************************** -->
-        <!-- ******************************************************************************************** -->
-
-        <!-- Permanently hidden stuff -->
+        
         
         <div id="hidden">
             
@@ -474,28 +476,28 @@
             
             
 
-            <button class="new-section">New Section</button>
+            <button class="new-section temporary">New Section</button>
 
-            <button class="delete-section"><img src="/images/editable-page/delete.png"></button>
+            <button class="delete-section temporary"><img src="/images/editable-page/delete.png"></button>
             
             <!-- Heading and Text -->
             <article class="template-1">
-                <h1 class="article-title">Heading Goes Here</h1>
-                <p class="article-text">Enter text here</p>
-                <button class="add-link">Add Link</button>
+                <h1 class="hide article-title">Heading Goes Here</h1>
+                <p class="hide article-text">Enter text here</p>
+                <button class="add-link hide">Add Link</button>
             </article>
 
             <!-- Heading, Image, and Text | Img on the right -->
             <article class="template-2">
-                <h1 class="article-title">Heading Goes Here</h1>
+                <h1 class="hide article-title">Heading Goes Here</h1>
                 <div class="article-body">
                     <div class="text-container">
-                        <p class="article-text">Enter text here</p>
-                        <button class="add-link">Add Link</button>
+                        <p class="hide article-text">Enter text here</p>
+                        <button class="add-link hide">Add Link</button>
                     </div>
                     <div class="image-container">
                         <input type="file" accept="image/*">
-                        <button class="add-image"><img src="/images/editable-page/add-image.svg"></button>
+                        <button class="add-image hide"><img src="/images/editable-page/add-image.svg"></button>
                         <p class="img-url"></p>
                     </div>
                 </div>
@@ -503,36 +505,36 @@
 
             <!-- Heading, Image, and Text | Img on the left -->
             <article class="template-3">
-                <h1 class="article-title">Heading Goes Here</h1>
+                <h1 class="hide article-title">Heading Goes Here</h1>
                 <div class="article-body">
                     <div class="image-container">
                         <input type="file" accept="image/*">
-                        <button class="add-image"><img src="/images/editable-page/add-image.svg"></button>
+                        <button class="add-image hide"><img src="/images/editable-page/add-image.svg"></button>
                         <p class="img-url"></p>
                     </div>
                     <div class="text-container">
-                        <p class="article-text">Enter text here</p>
-                        <button class="add-link">Add Link</button>
+                        <p class="hide article-text">Enter text here</p>
+                        <button class="add-link hide">Add Link</button>
                     </div>
                 </div>
             </article>
 
             <!-- Heading, Image, and Text with Background | Img on the right -->
             <article class="template-4">
-                <h1 class="article-title">Heading Goes Here</h1>
+                <h1 class="hide article-title">Heading Goes Here</h1>
                 
                 <div class="article-body">
 
                     <div class="has-background-horizontal">
                         <div class="text-container">
-                            <h2 class="article-subheading">Enter Secondary Heading</h2>
-                            <p class="article-text">Enter text here</p>
-                            <button class="add-link">Add Link</button>
+                            <h2 class="article-subheading hide">Enter Secondary Heading</h2>
+                            <p class="hide article-text">Enter text here</p>
+                            <button class="add-link hide">Add Link</button>
                         </div>
 
                         <div class="image-container">
                             <input type="file" accept="image/*">
-                            <button class="add-image"><img src="/images/editable-page/add-image.svg"></button>
+                            <button class="add-image hide"><img src="/images/editable-page/add-image.svg"></button>
                             <p class="img-url"></p>
                         </div>
                     </div>
@@ -541,21 +543,21 @@
 
             <!-- Heading, Image, and Text with Background | Img on the left -->
             <article class="template-5">
-                <h1 class="article-title">Heading Goes Here</h1>
+                <h1 class="hide article-title">Heading Goes Here</h1>
                 
                 <div class="article-body">
                     
                     <div class="has-background-horizontal">
                         <div class="image-container">
                             <input type="file" accept="image/*">
-                            <button class="add-image"><img src="/images/editable-page/add-image.svg"></button>
+                            <button class="add-image hide"><img src="/images/editable-page/add-image.svg"></button>
                             <p class="img-url"></p>
                         </div>
 
                         <div class="text-container">
-                            <h2 class="article-subheading">Enter Secondary Heading</h2>
-                            <p class="article-text">Enter text here</p>
-                            <button class="add-link">Add Link</button>
+                            <h2 class="article-subheading hide">Enter Secondary Heading</h2>
+                            <p class="hide article-text">Enter text here</p>
+                            <button class="add-link hide">Add Link</button>
                         </div>
                     </div>
                     
@@ -564,31 +566,31 @@
 
             <!-- Heading, Two Images, and Two Texts -->
             <article class="template-6">
-                <h1 class="article-title">Heading Goes Here</h1>
+                <h1 class="hide article-title">Heading Goes Here</h1>
                 
                 <div class="article-body">
                     <div class="section">
                         <div class="image-container">
                             <input type="file" accept="image/*">
-                            <button class="add-image"><img src="/images/editable-page/add-image.svg"></button>
+                            <button class="add-image hide"><img src="/images/editable-page/add-image.svg"></button>
                             <p class="img-url"></p>
                         </div>
                         <div class="text-container">
-                            <h2 class="article-subheading">Enter Secondary Heading</h2>
-                            <p class="article-text">Enter text here</p>
-                            <button class="add-link">Add Link</button>
+                            <h2 class="article-subheading hide">Enter Secondary Heading</h2>
+                            <p class="hide article-text">Enter text here</p>
+                            <button class="add-link hide">Add Link</button>
                         </div>
                     </div>
                     <div class="section">
                         <div class="image-container">
                             <input type="file" accept="image/*">
-                            <button class="add-image"><img src="/images/editable-page/add-image.svg"></button>
+                            <button class="add-image hide"><img src="/images/editable-page/add-image.svg"></button>
                             <p class="img-url"></p>
                         </div>
                         <div class="text-container">
-                            <h2 class="article-subheading">Enter Secondary Heading</h2>
-                            <p class="article-text">Enter text here</p>
-                            <button class="add-link">Add Link</button>
+                            <h2 class="article-subheading hide">Enter Secondary Heading</h2>
+                            <p class="hide article-text">Enter text here</p>
+                            <button class="add-link hide">Add Link</button>
                         </div>
                     </div>
                 </div>
@@ -596,20 +598,20 @@
 
             <!-- Heading, Two Images, and Two Texts with Background -->
             <article class="template-7">
-                <h1 class="article-title">Heading Goes Here</h1>
+                <h1 class="hide article-title">Heading Goes Here</h1>
                 
                 <div class="article-body">
                     <div class="section">
                         <div class="has-background-vertical">
                             <div class="image-container">
                                 <input type="file" accept="image/*">
-                                <button class="add-image"><img src="/images/editable-page/add-image.svg"></button>
+                                <button class="add-image hide"><img src="/images/editable-page/add-image.svg"></button>
                                 <p class="img-url"></p>
                             </div>
                             <div class="text-container">
-                                <h2 class="article-subheading">Enter Secondary Heading</h2>
-                                <p class="article-text">Enter text here</p>
-                                <button class="add-link">Add Link</button>
+                                <h2 class="article-subheading hide">Enter Secondary Heading</h2>
+                                <p class="hide article-text">Enter text here</p>
+                                <button class="add-link hide">Add Link</button>
                             </div>
                         </div>
                     </div>
@@ -617,13 +619,13 @@
                         <div class="has-background-vertical">
                             <div class="image-container">
                                 <input type="file" accept="image/*">
-                                <button class="add-image"><img src="/images/editable-page/add-image.svg"></button>
+                                <button class="add-image hide"><img src="/images/editable-page/add-image.svg"></button>
                                 <p class="img-url"></p>
                             </div>
                             <div class="text-container">
-                                <h2 class="article-subheading">Enter Secondary Heading</h2>
-                                <p class="article-text">Enter text here</p>
-                                <button class="add-link">Add Link</button>
+                                <h2 class="article-subheading hide">Enter Secondary Heading</h2>
+                                <p class="hide article-text">Enter text here</p>
+                                <button class="add-link hide">Add Link</button>
                             </div>
                         </div>
                     </div>
@@ -632,51 +634,51 @@
 
             <!-- Heading, Two Images, and Two Texts | Images attached -->
             <article class="template-8">
-                <h1 class="article-title">Heading Goes Here</h1>
+                <h1 class="hide article-title">Heading Goes Here</h1>
 
                 <div class="article-body">
                     <div class="section">
                         <div class="image-container">
                             <input type="file" accept="image/*">
-                            <button class="add-image"><img src="/images/editable-page/add-image.svg"></button>
+                            <button class="add-image hide"><img src="/images/editable-page/add-image.svg"></button>
                             <p class="img-url"></p>
                         </div>
                         <div class="text-container">
-                            <h2 class="article-subheading">Enter Secondary Heading</h2>
-                            <p class="article-text">Enter text here</p>
-                            <button class="add-link">Add Link</button>
+                            <h2 class="article-subheading hide">Enter Secondary Heading</h2>
+                            <p class="hide article-text">Enter text here</p>
+                            <button class="add-link hide">Add Link</button>
                         </div>
                     </div>
                     <div class="section">
                         <div class="image-container">
                             <input type="file" accept="image/*">
-                            <button class="add-image"><img src="/images/editable-page/add-image.svg"></button>
+                            <button class="add-image hide"><img src="/images/editable-page/add-image.svg"></button>
                             <p class="img-url"></p>
                         </div>
                         <div class="text-container">
-                            <h2 class="article-subheading">Enter Secondary Heading</h2>
-                            <p class="article-text">Enter text here</p>
-                            <button class="add-link">Add Link</button>
+                            <h2 class="article-subheading hide">Enter Secondary Heading</h2>
+                            <p class="hide article-text">Enter text here</p>
+                            <button class="add-link hide">Add Link</button>
                         </div>
                     </div>
                 </div>
             </article>
 
             <article class="template-9">
-                <h1 class="article-title">Heading Goes Here</h1>
+                <h1 class="hide article-title">Heading Goes Here</h1>
                 
                 <div class="article-body">
                     <div class="section">
                         <div class="has-background-vertical">
                             <div class="image-container">
                                 <input type="file" accept="image/*">
-                                <button class="add-image"><img src="/images/editable-page/add-image.svg"></button>
+                                <button class="add-image hide"><img src="/images/editable-page/add-image.svg"></button>
                                 <p class="img-url"></p>
                             </div>
                             <div class="text-container">
-                                <h2 class="article-subheading">Enter Secondary Heading</h2>
-                                <p class="article-text">Enter text here</p>
-                                <button class="add-link">Add Link</button>
+                                <h2 class="article-subheading hide">Enter Secondary Heading</h2>
+                                <p class="hide article-text">Enter text here</p>
+                                <button class="add-link hide">Add Link</button>
                             </div>
                         </div>
                     </div>
@@ -684,13 +686,13 @@
                         <div class="has-background-vertical">
                             <div class="image-container">
                                 <input type="file" accept="image/*">
-                                <button class="add-image"><img src="/images/editable-page/add-image.svg"></button>
+                                <button class="add-image hide"><img src="/images/editable-page/add-image.svg"></button>
                                 <p class="img-url"></p>
                             </div>
                             <div class="text-container">
-                                <h2 class="article-subheading">Enter Secondary Heading</h2>
-                                <p class="article-text">Enter text here</p>
-                                <button class="add-link">Add Link</button>
+                                <h2 class="article-subheading hide">Enter Secondary Heading</h2>
+                                <p class="hide article-text">Enter text here</p>
+                                <button class="add-link hide">Add Link</button>
                             </div>
                         </div>
                     </div>
@@ -699,22 +701,22 @@
 
             <!-- Heading, Image, and Text with Background | Img on the right -->
             <article class="template-10">
-                <h1 class="article-title">Heading Goes Here</h1>
+                <h1 class="hide article-title">Heading Goes Here</h1>
                 
                 <div class="article-body">
                     <div class="text-card">
                         <div class="has-background">
                             <div class="text-container">
-                                <h2 class="article-subheading">Enter Secondary Heading</h2>
-                                <p class="article-text">Enter text here</p>
-                                <button class="add-link">Add Link</button>
+                                <h2 class="article-subheading hide">Enter Secondary Heading</h2>
+                                <p class="hide article-text">Enter text here</p>
+                                <button class="add-link hide">Add Link</button>
                             </div>
                         </div>
                     </div>
                     
                     <div class="image-container image-card">
                         <input type="file" accept="image/*">
-                        <button class="add-image"><img src="/images/editable-page/add-image.svg"></button>
+                        <button class="add-image hide"><img src="/images/editable-page/add-image.svg"></button>
                         <p class="img-url"></p>
                     </div>
                 </div>

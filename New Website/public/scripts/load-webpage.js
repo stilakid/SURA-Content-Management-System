@@ -53,7 +53,7 @@ const add_images = (article, images_data) => {
             img.classList.add("image");
             img_button.replaceWith(img);
             
-            let url_holder = img.nextElementSibling;
+            let url_holder = image_containers[i].querySelector(".img-url");
             url_holder.textContent = url;
         }
     }
@@ -101,6 +101,10 @@ const addSection = (article_data) => {
 
 
 async function load_webpage() {
+    let id = location.href.split("/").slice(-1)[0];
+    if (id === "") {
+        location.href = location.href + "index.html";
+    }    
 
     // Load Primary Nav Bar
     let primary_nav_bar = await apiRequest("GET", "/navbars");
@@ -118,7 +122,6 @@ async function load_webpage() {
     }
 
     // Load Secondary Nav Bar
-    let id = location.href.split("/").slice(-1)[0];
     // let secondary_nav_bar = await apiRequest();
 
     // Load Webpage data

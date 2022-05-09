@@ -78,32 +78,18 @@ const show_admin_controls = () => {
 // ###################################################################################################
 
 
-// When creating a new page, the file system changes. So, the page reloads automatically.
-// However, we want to load the new page instead.
-const redirect_if_page_reloaded_while_creating_newpage = async () => {
-    let page_name = sessionStorage.getItem("newpage");
-    if (page_name !== null) {
-        let res = await apiRequest("GET", "/protected/webpages/" + page_name);
-        sessionStorage.removeItem("newpage");
-
-        if (res["Page Exists"] === true) {
-            let url = "/html_not_core/" + page_name;
-            window.location.href = url;
-        }
-    }
-}
-
-
 const makeNewPage = async (e) => {
     // Makes a copy of the default page.
     // Registers this new webpage in MongoDB webpages collection.
     let file_name = document.querySelector("#make-new-page-dialog input").value + ".html";
-    // We store info in session storage because the post method below may create a new file in the same
-    // directory as the one this file is in.
-    // This forces the webpage to reload.
-    // So, we cannot directly redirect our webpage to the new webpage.
-    sessionStorage.setItem("newpage", file_name);
     await apiRequest("POST", "/protected/webpages", {"id": file_name});
+
+    // Checks if the new webpage has been added to the mondoDB database.
+    let res = await apiRequest("GET", "/protected/webpages/" + file_name);
+    if (res["Page Exists"] === true) {
+        let url = "/html_not_core/" + file_name;
+        window.location.href = url;
+    }
 }
 
 
@@ -122,8 +108,6 @@ const showMakeNewPageDialog = () => {
 
 
 const enable_make_new_page = () => {
-    redirect_if_page_reloaded_while_creating_newpage();
-
     // Make "Make New Page" dialog box work
     let make_new_page = document.querySelector("#make-new-page-dialog .create-new-page");
     let do_not_make_new_page = document.querySelector("#make-new-page-dialog .cancel");
@@ -632,7 +616,6 @@ async function saveWebpage () {
     let id = location.href.split("/").slice(-1)[0];
     let url = "/protected/webpages/" + id;
     let res = await apiRequest("PATCH", url, webpage);
-    // prior_files = {"images":[], "videos":[], "others":[]};
     console.log(res);
 }
 
@@ -649,8 +632,6 @@ const enable_save_page = () => {
     // Cancel Edits
     let cancel = document.querySelector("#cancel_changes");
     cancel.addEventListener("click", () => {
-        // update_admin_buttons("#save-cancel", "#admin-controls"); <---- This isn't required since we are reloading the page anyways.
-        // delete_edit_buttons(); <----- Realised this was not required since we are reloading the page anyways.
         location.reload();
     });
 }
@@ -661,29 +642,40 @@ const enable_save_page = () => {
 // ###################################################################################################
 
 
-const finishDeletePage = async () => {
-    let page_name = sessionStorage.getItem("Delete Page");
-    if (page_name !== null) {
-        let res = await apiRequest("GET", "/protected/webpages/" + page_name);
-        sessionStorage.removeItem("Delete Page");
+// const finishDeletePage = async () => {
+//     let page_name = sessionStorage.getItem("Delete Page");
+//     if (page_name !== null) {
+//         let res = await apiRequest("GET", "/protected/webpages/" + page_name);
+//         sessionStorage.removeItem("Delete Page");
 
-        if (res["Page Exists"] === true) {
-            let url = "/protected/webpages/" + page_name;
-            await apiRequest("DELETE", url, {});
+//         if (res["Page Exists"] === true) {
+//             let url = "/protected/webpages/" + page_name;
+//             await apiRequest("DELETE", url, {});
+//         }
+//     }
+// }
+
+
+const startDeletePage = async () => {
+    let file_name = location.href.split("/").slice(-1)[0];
+    let res = await apiRequest("GET", "/protected/webpages/" + file_name);
+
+    if (res["Page Exists"] === true) {
+        let url = "/protected/webpages/" + file_name;
+        let response = await apiRequest("DELETE", url, {});
+        if (response["Message"] === "Success") {
+            window.location.href = "/index.html";
+        }
+        else {
+            console.log(response["Message"]);
+            alert(response["Message"]);
         }
     }
 }
 
 
-const startDeletePage = async () => {
-    let file_name = location.href.split("/").slice(-1)[0];
-    sessionStorage.setItem("Delete Page", file_name);
-    window.location.href = "/default-page.html";
-}
-
-
 const enable_delete_page = () => {
-    finishDeletePage();
+    // finishDeletePage();
     let delete_button = document.querySelector("#delete-page");
     delete_button.addEventListener("click", startDeletePage);
 }
@@ -839,7 +831,7 @@ const update_nav_display_names = (nav_bar, nav_cache) => {
         label.textContent = webpage_name;
         let input = row.querySelector("input");
         input.value = nav_cache[webpage_name][0];
-        row.style.visibility = "visible";
+        row.style.visibility = "inherit";
     }
     // Hide extra rows
     for (let i = 1; i < num_of_rows; i++) {
@@ -1071,38 +1063,6 @@ const add_admin_features = () => {
         enable_delete_page();
         enable_edit_nav_bar();
     }
-
-
-    // // Test for saving images to server...
-    // let input = document.createElement("input");
-    // input.setAttribute("type", "file");
-    // input.setAttribute("accept", "image/*");
-    // let button = document.querySelector("#edit-page");
-    // button.addEventListener("click", () => {
-    //     input.click();
-    // });
-    // input.addEventListener("change", async (event) => {
-    //     let url = "/protected/images";
-    //     let formData = new FormData();
-    //     formData.append("filename", "Sorry.jpg");
-    //     formData.append("webpage", "default-page");
-    //     formData.append("image", input.files[0]);
-
-    //     let file = new File([input.files[0]], "Hello!.jpg", {
-    //         type: input.files[0].type,
-    //         lastModified: input.files[0].lastModified
-    //     });
-    //     formData.append("image", file);
-
-
-    //     console.log(file.name);
-    //     // for (let entry of formData.entries()) {
-    //     //     console.log(entry);
-    //     // }
-    //     // console.log(formData);
-    //     let filename = await apiRequest("POST", url, formData, "formData");
-    //     console.log(filename);
-    // });
 }
 
 
