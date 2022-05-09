@@ -127,7 +127,9 @@ async function load_webpage() {
     // Load Webpage data
     let webpage = await apiRequest("GET", "/webpages/" + id);
     let page_title = document.querySelector("#page-title h1");
-    page_title.textContent = webpage["title"];
+    if (page_title !== null) { // Login page does not have page_title.
+        page_title.textContent = webpage["title"];
+    }
     let articles = webpage["articles"];
     for (let article of articles) {
         addSection(article);
