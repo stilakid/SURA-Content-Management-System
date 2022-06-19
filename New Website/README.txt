@@ -1,6 +1,5 @@
 CS193X Final Project
 ====================
-Mid-March 2022
 
 Project Name: SURA Website redesign
 Your Name: Juben Rana

@@ -19,6 +19,10 @@
         <!-- Set the viewport width to device width for mobile -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+        <!-- Google Icons -->
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+        rel="stylesheet">
+        
         <!-- My custom styles -->
         <link rel="stylesheet" href="/styles/template.css">
 
@@ -36,15 +40,24 @@
         <!-- Admin Buttons -->
 
         <div id="admin-controls">
-            <button id="make-new-page">Make New Page</button>
-            <button id="edit-nav-bar">Edit Nav Bar</button>
-            <button id="edit-page">Edit Page</button>
-            <button id="delete-page">Delete Page</button>
+            <button id="make-new-page"><span class="material-icons">note_add</span>Make New Page</button>
+            <button id="edit-nav-bar"><span class="material-icons">build</span>Edit Nav Bar</button>
+            <button id="edit-page"><span class="material-icons">edit</span>Edit Page</button>
+            <button id="make-sidebar"><span class="material-icons">add</span>Make Sidebar</button>
+            <button id="edit-sidebar"><span class="material-icons">view_sidebar</span>Edit Sidebar</button>
+            <button id="delete-sidebar"><span class="material-icons">delete_sweep</span>Delete Sidebar</button>
+            <button id="delete-page"><span class="material-icons">delete</span>Delete Page</button>
         </div>
 
         <div id="save-cancel">
-            <button id="save-webpage">Save</button>
-            <button id="cancel_changes">Cancel</button>
+            <button id="save-webpage">
+                <span class="material-icons">done</span>
+                Save
+            </button>
+            <button id="cancel_changes">
+                <span class="material-icons">close</span>
+                Cancel
+            </button>
         </div>
         
         
@@ -84,6 +97,7 @@
                     <li><button id="template-8" class="template">Template 8</button></li>
                     <li><button id="template-9" class="template">Template 9</button></li>
                     <li><button id="template-10" class="template">Template 10</button></li>
+                    <li><button id="template-11" class="template">Template 11</button></li>
                 </ul>
                 
             </div>
@@ -110,6 +124,32 @@
                 
             </div>
         </div>
+
+
+        <div class="dialog-box-container">
+            <div id="add-navlink-dialog">
+                <h2>Add Nav Link</h2>
+                <br>
+                <div id="add-navlink-content">
+                    <label for="navlink-name">
+                        Enter button label: <input type="text" id="navlink-name">
+                    </label>
+                    <label for="nav-URL">
+                        Enter link here: <input type="text" id="nav-URL">
+                    </label>
+                    Click this button to get a link to a location on the current page.
+                    <button class="generate-link">Generate Link</button>
+                </div>
+                
+                <br>
+                <div id="add-navlink-buttons">
+                    <button class="save">Add Link</button>
+                    <button class="cancel">Cancel</button>
+                </div>
+                
+            </div>
+        </div>
+
 
         <div class="dialog-box-container">
             <div id="edit-nav-dialog">
@@ -430,7 +470,7 @@
                 <div></div>
             </div>
             
-            <nav role="navigation">
+            <nav id="primary-navbar" role="navigation">
                 <ul id="primary_nav" class="nav">
                 <!-- <li class="leaf"><a href="/">Team</a></li>
                 <li class="leaf"><a href="/">Research Conference</a></li>
@@ -481,9 +521,11 @@
             <!-- Heading and Text -->
             <article class="template-1">
                 <h1 class="article-title">Heading Goes Here</h1>
-                <p class="article-text">Enter text here</p>
-                <button class="add-link">Add Link</button>
-            </article>
+                <div class="text-container">
+                    <p class="article-text">Enter text here</p>
+                    <button class="add-link">Add Link</button>
+                </div>
+                </article>
 
             <!-- Heading, Image, and Text | Img on the right -->
             <article class="template-2">
@@ -720,6 +762,64 @@
                 </div>
                 
             </article>
+
+            <article class="template-11">
+                <h1 class="article-title">Heading Goes Here</h1>
+
+                <div class="article-body team-members many-images">
+            <!-- Example of how one entry will look like when loaded on the webpage -->
+                    <!--
+                    <div class="team-member">
+                        <div class="image-container">
+                            <input type="file" accept="image/*">
+                            <img src="/images/Albert.jpg" class="image member-photo">
+                            <p class="img-url"></p>
+                        </div>
+                        <div class="text-container member-info">
+                            <h3 class="article-subheading">Name</h3>
+                            <p class="article-text">Designation</p>
+                        </div>
+                    </div>
+                     -->
+                    
+                    <!-- The commented code below only appears when admin clicks on edit page button -->
+                    <!-- <div class="team-member">
+                        <div class="image-container">
+                            <input type="file" accept="image/*">
+                            <button class="add-image member-photo"><img src="/images/editable-page/add-image.svg"></button>
+                            <p class="img-url"></p>
+                        </div>
+                    </div> -->
+
+                </div>
+            </article>
+
+            
+        <!-- ******************************************************************************************** -->
+            
+            <div class="display-area">
+                    
+                <!-- Sidebar -->
+                <aside class="sidebar">
+                    <div class="sticky-sidebar">
+                        <h2 class="sidebar-title">Navigation Pane</h2>
+                        <nav class="tertiary-navbar">
+                            <ul>
+                                <!-- <li><a href="#anchor-executives">Executives</a></li> -->
+
+                            </ul>
+                        </nav>
+                    </div>
+                </aside>
+
+
+                <!-- Content -->
+                <section class="main-content">
+                    
+                    <!-- Articles/sections go here -->
+
+                </section>
+            </div>
 
         </div>
     </body>

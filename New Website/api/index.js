@@ -317,8 +317,8 @@ api.patch("/protected/webpages/:id", async (req, res) => {
       });
     }
   }
-
-  res.json({"current" : current_images, "prior": prior_images});
+  res.json(webpage);
+  // res.json({"current" : current_images, "prior": prior_images});
 });
 
 
@@ -363,7 +363,7 @@ api.post("/protected/webpages", async (req, res) => {
   let dir_name = id.slice(0,-5);
   let folders = await fs.promises.readdir("public/images");
   if (folders.includes(dir_name)) {
-    await fs.promises.rmdir(`public/images/${dir_name}`, { recursive: true });
+    await fs.promises.rm(`public/images/${dir_name}`, { recursive: true });
   }
 
   // Make new image directory for it.
@@ -423,7 +423,7 @@ api.delete("/protected/webpages/:id", async (req, res) => {
 
   // Delete the image directory for the webpage.
   let dir_name = id.slice(0,-5);
-  fs.rmdir(`public/images/${dir_name}`, { recursive: true }, (err) => {
+  fs.rm(`public/images/${dir_name}`, { recursive: true }, (err) => {
     if (err) {
       console.log("Error Found:", err);
       throw err;
@@ -433,6 +433,25 @@ api.delete("/protected/webpages/:id", async (req, res) => {
 
   // Deletes the webpage data in MondoDB.
   await webpages.deleteOne({"id":id});
+
+  // Delete the webpage link from navbar.
+  let navbar_data = await navbars.find().toArray();
+  for (let webpage of navbar_data) {
+    let need_update = false;
+    for (let i = 0; i < webpage["links"].length; i++) {
+      let link = webpage["links"][i];
+      let name_of_linked_page = link[1].split("/").slice(-1)[0];
+      if (name_of_linked_page === id) {
+        webpage["links"].splice(i, 1);
+        i--;
+        need_update = true;
+      }
+    }
+
+    if (need_update) {
+      await navbars.replaceOne({id : webpage["id"]}, webpage);
+    }
+  }
 
 
   // let following = user["following"];

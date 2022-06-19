@@ -16,6 +16,10 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
         <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     
+        <!-- Google Icons -->
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+        rel="stylesheet">
+
         <!-- Set the viewport width to device width for mobile -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -39,6 +43,9 @@
             <button id="make-new-page">Make New Page</button>
             <button id="edit-nav-bar">Edit Nav Bar</button>
             <button id="edit-page">Edit Page</button>
+            <button id="make-sidebar">Make Sidebar</button>
+            <button id="edit-sidebar">Edit Sidebar</button>
+            <button id="delete-sidebar">Delete Sidebar</button>
             <button id="delete-page">Delete Page</button>
         </div>
 
@@ -84,6 +91,7 @@
                     <li><button id="template-8" class="template">Template 8</button></li>
                     <li><button id="template-9" class="template">Template 9</button></li>
                     <li><button id="template-10" class="template">Template 10</button></li>
+                    <li><button id="template-11" class="template">Template 11</button></li>
                 </ul>
                 
             </div>
@@ -104,6 +112,30 @@
                 
                 <br>
                 <div id="add-link-buttons">
+                    <button class="save">Add Link</button>
+                    <button class="cancel">Cancel</button>
+                </div>
+                
+            </div>
+        </div>
+
+        <div class="dialog-box-container">
+            <div id="add-navlink-dialog">
+                <h2>Add Nav Link</h2>
+                <br>
+                <div id="add-navlink-content">
+                    <label for="navlink-name">
+                        Enter button label: <input type="text" id="navlink-name">
+                    </label>
+                    <label for="nav-URL">
+                        Enter link here: <input type="text" id="nav-URL">
+                    </label>
+                    Click this button to get a link to a location on the current page.
+                    <button>Generate Link</button>
+                </div>
+                
+                <br>
+                <div id="add-navlink-buttons">
                     <button class="save">Add Link</button>
                     <button class="cancel">Cancel</button>
                 </div>
@@ -430,15 +462,15 @@
                 <div></div>
             </div>
             
-            <nav role="navigation">
+            <nav id="primary-navbar" role="navigation">
                 <ul id="primary_nav" class="nav">
-                <!-- <li class="leaf"><a href="/">Team</a></li>
-                <li class="leaf"><a href="/">Research Conference</a></li>
-                <li class="leaf"><a href="/">Outreach</a></li>
-                <li class="leaf"><a href="/">Mentorship</a></li> -->
-                <!-- <li class="leaf"><a href="/">Get Involved</a></li>
-                <li class="leaf"><a href="/">About</a></li> -->
-                <li id="login-leaf" class="leaf"><a href="/login.html">Login</a></li>
+                    <!-- <li class="leaf"><a href="/">Team</a></li>
+                    <li class="leaf"><a href="/">Research Conference</a></li>
+                    <li class="leaf"><a href="/">Outreach</a></li>
+                    <li class="leaf"><a href="/">Mentorship</a></li> -->
+                    <!-- <li class="leaf"><a href="/">Get Involved</a></li>
+                    <li class="leaf"><a href="/">About</a></li> -->
+                    <li id="login-leaf" class="leaf"><a href="/login.html">Login</a></li>
                 </ul>
             </nav>
         </header>
@@ -452,6 +484,97 @@
 
             <article id="pre-article" class="even-article">
             </article>
+
+
+
+        <!-- ******************************************************************************************** -->
+            <!-- Sidebar -->
+
+            <div id="display-area">
+                <aside id="sidebar">
+                    <div id="sticky-sidebar">
+                        <h2>Navigation Pane</h2>
+                        <nav id="tertiary-navbar">
+                            <ul>
+                                <li><a href="#anchor-executives">Executives</a></li>
+                                <li><a href="#anchor-interns">Interns</a></li>
+                                <li><a href="#anchor-join-us">Join Us</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </aside>
+    
+    
+                <!-- area for team photo section -->
+                <section id="main-content">
+                    <article id="team-section">
+                        <div class="team-sub-section">
+                            <h2 id="anchor-executives">Executives</h2>
+                            <div class="team-members">
+                                <div class="team-member">
+                                    <img src="/images/Albert.jpg" class="member-photo">
+                                    <h3>Name</h3>
+                                    <p>Designation</p>
+                                </div>
+                                <div class="team-member">
+                                    <img src="/images/Albert.jpg" class="member-photo">
+                                    <h3>Name</h3>
+                                    <p>Designation</p>
+                                </div>
+                                <div class="team-member">
+                                    <img src="/images/Albert.jpg" class="member-photo">
+                                    <h3>Name</h3>
+                                    <p>Designation</p>
+                                </div>
+                                <div class="team-member">
+                                    <button><img src="/images/editable-page/add-image.svg"></button>
+                                </div>
+                                <!-- <div class="image-container">
+                                    <input type="file" accept="image/*">
+                                    <button class="add-image"><img src="/images/editable-page/add-image.svg"></button>
+                                    <p class="img-url"></p>
+                                </div> -->
+                            </div>
+                        </div>
+        
+                        <div class="team-sub-section">
+                            <h2 id="anchor-interns">Interns</h2>
+                            <div class="team-members">
+                                <div class="team-member">
+                                    <img src="/images/Albert.jpg" class="member-photo">
+                                    <h3>Name</h3>
+                                    <p>Designation</p>
+                                </div>
+                                <div class="team-member">
+                                    <img src="/images/Albert.jpg" class="member-photo">
+                                    <h3>Name</h3>
+                                    <p>Designation</p>
+                                </div>
+                                <div class="team-member">
+                                    <img src="/images/Albert.jpg" class="member-photo">
+                                    <h3>Name</h3>
+                                    <p>Designation</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h2 id="anchor-join-us">Join Us!</h2>
+                            <div class="button-link">
+                                <a href="/">Apply</a>
+                            </div>
+                        </div>
+        
+                        
+                    </article>
+                </section>
+            </div>
+            
+        <!-- ******************************************************************************************** -->
+
+
+
+
 
             <!-- This is where the sections were before -->
             
@@ -481,9 +604,11 @@
             <!-- Heading and Text -->
             <article class="template-1">
                 <h1 class="article-title">Heading Goes Here</h1>
-                <p class="article-text">Enter text here</p>
-                <button class="add-link">Add Link</button>
-            </article>
+                <div class="text-container">
+                    <p class="article-text">Enter text here</p>
+                    <button class="add-link">Add Link</button>
+                </div>
+                </article>
 
             <!-- Heading, Image, and Text | Img on the right -->
             <article class="template-2">
@@ -720,6 +845,64 @@
                 </div>
                 
             </article>
+
+            <article class="template-11">
+                <h1 class="article-title">Heading Goes Here</h1>
+
+                <div class="article-body team-members many-images">
+            <!-- Example of how one entry will look like when loaded on the webpage -->
+                    <!--
+                    <div class="team-member">
+                        <div class="image-container">
+                            <input type="file" accept="image/*">
+                            <img src="/images/Albert.jpg" class="image member-photo">
+                            <p class="img-url"></p>
+                        </div>
+                        <div class="text-container member-info">
+                            <h3 class="article-subheading">Name</h3>
+                            <p class="article-text">Designation</p>
+                        </div>
+                    </div>
+                     -->
+                    
+                    <!-- The commented code below only appears when admin clicks on edit page button -->
+                    <!-- <div class="team-member">
+                        <div class="image-container">
+                            <input type="file" accept="image/*">
+                            <button class="add-image member-photo"><img src="/images/editable-page/add-image.svg"></button>
+                            <p class="img-url"></p>
+                        </div>
+                    </div> -->
+
+                </div>
+            </article>
+
+            
+        <!-- ******************************************************************************************** -->
+            
+            <div class="display-area">
+                
+                <!-- Sidebar -->
+                <aside class="sidebar">
+                    <div class="sticky-sidebar">
+                        <h2 class="sidebar-title"></h2>
+                        <nav class="tertiary-navbar">
+                            <ul>
+                                <!-- <li><a href="#anchor-executives">Executives</a></li> -->
+
+                            </ul>
+                        </nav>
+                    </div>
+                </aside>
+    
+    
+                <!-- Content -->
+                <section class="main-content">
+                    
+                    <!-- Articles/sections go here -->
+
+                </section>
+            </div>
 
         </div>
     </body>

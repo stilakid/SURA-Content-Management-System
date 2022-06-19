@@ -19,6 +19,10 @@
         <!-- Set the viewport width to device width for mobile -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+        <!-- Google Icons -->
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+        rel="stylesheet">
+        
         <!-- My custom styles -->
         <link rel="stylesheet" href="/styles/template.css" />
         <link rel="stylesheet" href="/styles/treesearch.css">
@@ -41,6 +45,9 @@
             <button id="make-new-page">Make New Page</button>
             <button id="edit-nav-bar">Edit Nav Bar</button>
             <button id="edit-page">Edit Page</button>
+            <button id="make-sidebar">Make Sidebar</button>
+            <button id="edit-sidebar">Edit Sidebar</button>
+            <button id="delete-sidebar">Delete Sidebar</button>
             <button id="delete-page">Delete Page</button>
         </div>
 
@@ -106,6 +113,30 @@
                 
                 <br>
                 <div id="add-link-buttons">
+                    <button class="save">Add Link</button>
+                    <button class="cancel">Cancel</button>
+                </div>
+                
+            </div>
+        </div>
+
+        <div class="dialog-box-container">
+            <div id="add-navlink-dialog">
+                <h2>Add Nav Link</h2>
+                <br>
+                <div id="add-navlink-content">
+                    <label for="navlink-name">
+                        Enter button label: <input type="text" id="navlink-name">
+                    </label>
+                    <label for="nav-URL">
+                        Enter link here: <input type="text" id="nav-URL">
+                    </label>
+                    Click this button to get a link to a location on the current page.
+                    <button>Generate Link</button>
+                </div>
+                
+                <br>
+                <div id="add-navlink-buttons">
                     <button class="save">Add Link</button>
                     <button class="cancel">Cancel</button>
                 </div>
@@ -433,7 +464,7 @@
                 <div></div>
             </div>
             
-            <nav role="navigation">
+            <nav id="primary-navbar" role="navigation">
                 <ul class="nav">
                     <!-- <li class="leaf"><a href="/">Team</a></li>
                     <li class="leaf"><a href="/">Research Conference</a></li>
@@ -459,7 +490,7 @@
             <article id="pre-article" class="even-article">
             </article>
 
-            <article id="first-article" class="odd-article">
+            <!-- <article id="first-article" class="odd-article">
                 <div class="border">
                     <div class="line"></div>
                     <div id="sura-logo-box"><img id="sura-logo" src="/images/sura_logo.png"></div>
@@ -471,9 +502,9 @@
                     SURA curates and publishes a monthly newsletter, TreeSearch, that highlights undergraduate research opportunities across campus. <br>
                     <br>
                     Subscribe to our newsletter here, and see some of our past newsletters below.</p>
-            </article>
+            </article> -->
 
-            <article id="newsletter_list" class="odd-article">
+            <article id="first-article" class="odd-article">
                 <h1 class="article-title">New Q&A Section!</h1>
                 <p>Got any burning questions about research? Fill out this quick form and we will get back to you with answers in our next newsletter:</p>
                 <a>https://tinyurl.com/2dzvkb4h</a>
@@ -772,6 +803,64 @@
                 </div>
                 
             </article>
+
+            <article class="template-11">
+                <h1 class="article-title">Heading Goes Here</h1>
+
+                <div class="article-body team-members many-images">
+            <!-- Example of how one entry will look like when loaded on the webpage -->
+                    <!--
+                    <div class="team-member">
+                        <div class="image-container">
+                            <input type="file" accept="image/*">
+                            <img src="/images/Albert.jpg" class="image member-photo">
+                            <p class="img-url"></p>
+                        </div>
+                        <div class="text-container member-info">
+                            <h3 class="article-subheading">Name</h3>
+                            <p class="article-text">Designation</p>
+                        </div>
+                    </div>
+                     -->
+                    
+                    <!-- The commented code below only appears when admin clicks on edit page button -->
+                    <!-- <div class="team-member">
+                        <div class="image-container">
+                            <input type="file" accept="image/*">
+                            <button class="add-image member-photo"><img src="/images/editable-page/add-image.svg"></button>
+                            <p class="img-url"></p>
+                        </div>
+                    </div> -->
+
+                </div>
+            </article>
+
+            
+        <!-- ******************************************************************************************** -->
+            
+            <div class="display-area">
+                
+                <!-- Sidebar -->
+                <aside class="sidebar">
+                    <div class="sticky-sidebar">
+                        <h2 class="sidebar-title"></h2>
+                        <nav class="tertiary-navbar">
+                            <ul>
+                                <!-- <li><a href="#anchor-executives">Executives</a></li> -->
+
+                            </ul>
+                        </nav>
+                    </div>
+                </aside>
+    
+    
+                <!-- Content -->
+                <section class="main-content">
+                    
+                    <!-- Articles/sections go here -->
+
+                </section>
+            </div>
 
         </div>
 

@@ -1,3 +1,17 @@
+// Table of Content
+
+// Global Variables
+// Global Helper Functions
+// Helper Function: Logout Button
+// Helper Function: Show Admin Controls Functionality
+// Helper Function: Make New Page Functionality
+// Helper Function: Edit Page Functionality
+// Helper Function: Save Page Functionality
+// Helper Function: Delete Page Functionality
+// Helper Function: Editing Navigation Bar Functionality
+// Main Function
+
+
 // For creating new page mechanism.
 
 import apiRequest from "./api.js";
@@ -9,6 +23,7 @@ const ADD_IMG_PIC = "/images/editable-page/add-image.svg"
 
 let succeeding_article;
 let link_button;
+let anchor;
 
 // ##################################### Global Helper Functions #####################################
 
@@ -42,7 +57,7 @@ const update_admin_buttons = (old_id, new_id) => {
 
 
 // ###################################################################################################
-// Helper Function: Log Out Button
+// Helper Function: Logout Button
 // ###################################################################################################
 
 
@@ -81,6 +96,12 @@ const show_admin_controls = () => {
 const makeNewPage = async (e) => {
     // Makes a copy of the default page.
     // Registers this new webpage in MongoDB webpages collection.
+    let input = document.querySelector("#make-new-page-dialog input").value;
+    if (!input.match(/^[0-9A-Za-z]+$/)) {
+        alert("Input is not alphanumeric");
+        return;
+    }
+
     let file_name = document.querySelector("#make-new-page-dialog input").value + ".html";
     await apiRequest("POST", "/protected/webpages", {"id": file_name});
 
@@ -219,12 +240,59 @@ const deleteImage = (event) => {
 }
 
 
+const deleteMember = (event) => {
+    let del_button = event.currentTarget;
+    let team_member = del_button.closest(".team-member");
+    team_member.remove();
+}
+
+
 const add_delete_image_button = (url_holder) => {
     let delete_img = document.createElement("button");
     delete_img.textContent = "Delete Image";
     delete_img.classList.add("delete-img-button");
-    delete_img.addEventListener("click", deleteImage);
+    delete_img.addEventListener("click", (event) => {
+        // for template 11.
+        let many_images = url_holder.closest(".many-images.team-members");
+        if (many_images !== null) {
+            deleteMember(event);
+        }
+        else {
+            deleteImage(event);
+        }
+    });
     url_holder.after(delete_img);
+}
+
+
+const makeAddMemberButton = (parent_element) => {
+    let new_team_member = document.createElement("div");
+    let new_image_container = document.createElement("div");
+    let new_input = document.createElement("input");
+    let new_button = document.createElement("button");
+    let new_url_holder = document.createElement("p");
+    let new_img = document.createElement("img");
+
+    new_button.append(new_img);
+    new_image_container.append(new_input);
+    new_image_container.append(new_button);
+    new_image_container.append(new_url_holder);
+    new_team_member.append(new_image_container);
+    parent_element.append(new_team_member);
+
+    new_team_member.classList.add("team-member");
+    new_image_container.classList.add("image-container");
+    new_input.setAttribute("type", "file");
+    new_input.setAttribute("accept", "image/*");
+    new_button.classList.add("add-image");
+    new_img.setAttribute("src", ADD_IMG_PIC);
+    new_url_holder.classList.add("img-url");
+
+    // This will activate the else statement in the function being called since the argument
+    // being passed is not an article. That is how this is supposed to work.
+    // This will not create an infinite loop even when the callee function can call the caller
+    // in a particular if statement.
+    prepare_add_image_buttons(new_team_member);
 }
 
 
@@ -240,7 +308,6 @@ const addImage = (event) => {
     let add_img_button = img_container.querySelector(".add-image");
     let url_holder = img_container.querySelector(".img-url");
 
-    console.log(img_container);
     let reader = new FileReader();
     reader.addEventListener("error", (event) => {
       throw new Error("Error reading image file");
@@ -253,23 +320,70 @@ const addImage = (event) => {
 
         // Add delete image button
         add_delete_image_button(url_holder);
+
+        // Adds a class to img for a specific template.
+        let template = input.closest(".template-11");
+        if (template !== null) {
+            img.classList.add("member-photo");
+        }
     });
     reader.readAsDataURL(file);
+
+
+    // Extra bit for templates that accept infinite images.
+    // Adds back the add image button
+    let query = input.closest(".many-images");
+    if (query !== null) {
+        let team_members = input.closest(".team-members");
+        makeAddMemberButton(team_members);
+    }
+
+    // Specifically for template-11 (team members template)
+    // Adds fields for name and designation.
+    let template = input.closest(".template-11");
+    if (template !== null) {
+        let member_info = document.createElement("div");
+        let name = document.createElement("h3");
+        let designation = document.createElement("textarea");
+        let team_member = input.closest(".team-member");
+        
+        member_info.append(name);
+        member_info.append(designation);
+        team_member.append(member_info);
+
+        member_info.classList.add("text-container", "member-info");
+        name.classList.add("article-subheading");
+        designation.classList.add("article-text");
+
+        name.setAttribute("contenteditable", "true");
+        designation.setAttribute("contenteditable", "true");
+
+        name.textContent = "Name";
+        designation.textContent = "Designation";
+    }
 }
 
 
 // Make add-image button work
 const prepare_add_image_buttons = (article) => {
-    let add_img_buttons = article.querySelectorAll(".add-image");
+    // If template 11, button does not exist. Make it first.
+    if (article.classList.contains("template-11")) {
+        let parent_element = article.querySelector(".team-members");
+        makeAddMemberButton(parent_element);
+    }
+    // Button exists. Make it dynamic.
+    else {
+        let add_img_buttons = article.querySelectorAll(".add-image");
 
-    for (let add_img_button of add_img_buttons) {
-        let image_container = add_img_button.closest(".image-container");
-        let input = image_container.querySelector("input");
-        
-        add_img_button.addEventListener("click", () => {
-            input.click();
-        });
-        input.addEventListener("change", addImage);
+        for (let add_img_button of add_img_buttons) {
+            let image_container = add_img_button.closest(".image-container");
+            let input = image_container.querySelector("input");
+            
+            add_img_button.addEventListener("click", () => {
+                input.click();
+            });
+            input.addEventListener("change", addImage);
+        }
     }
 }
 
@@ -287,9 +401,17 @@ const prepare_delete_image_buttons = (main) => {
 const add_template = (article) => {
     // Takes care of the edge case of footer since footer is outside main and articles are inside main.
     // Hence, we cannot just append the new article/section directly above the footer.
-    if (succeeding_article == document.querySelector("footer")) {
+    if (succeeding_article == document.querySelector("footer").previousElementSibling) {
+        console.log("hey there");
         let main = document.querySelector("main");
-        main.append(article);
+        let main_content_area = main.querySelector(".main-content");
+
+        if (main_content_area === null) {
+            main.append(article);
+        }
+        else {
+            main_content_area.append(article);
+        }
     } else {
         succeeding_article.before(article);
     }
@@ -312,6 +434,11 @@ const add_delete_section_button = (article) => {
 }
 
 
+const give_article_id = (article) => {
+    article.id = `article${Date.now()}`;
+}
+
+
 const prepare_templates_menu = () => {
     //  Make Templates Menu Ready
     let templates = document.querySelectorAll(".template");
@@ -319,6 +446,7 @@ const prepare_templates_menu = () => {
         template.addEventListener("click", (event) => {
             hidePopupMenu();
             let article = clone_template(event);
+            give_article_id(article);
             prepare_add_image_buttons(article);
             prepare_add_link_buttons(article);
             prepare_delete_link_buttons(article);
@@ -411,13 +539,31 @@ const add_buttons_to_articles = () => {
 }
 
 
+// To preserve new line character
+const convert_p_to_textarea = () => {
+    let query = ".text-container p";
+
+    let editable_texts = document.querySelectorAll(query);
+    for (let tag of editable_texts) {
+        let textarea = document.createElement("textarea");
+        textarea.innerHTML = tag.innerText;
+        textarea.setAttribute("contenteditable", "true");
+        textarea.classList.add("article-text");
+
+        tag.replaceWith(textarea);
+    }
+}
+
+
 const make_text_editable = () => {
-    let query = "#page-title, article p, article h1, article h2, article h3, article h4, article h5, article h6";
+    let query = "#page-title, article h1, article h2, article h3, article h4, article h5, article h6";
 
     let editable_texts = document.querySelectorAll(query);
     for (let tag of editable_texts) {
         tag.setAttribute("contenteditable", "true");
     }
+
+    convert_p_to_textarea();
 }
 
 
@@ -428,11 +574,17 @@ const enable_edit_page = () => {
         add_buttons_to_footer();
         add_buttons_to_articles();
         make_text_editable();
+
         let main = document.querySelector("main");
-        prepare_add_link_buttons(main);
-        prepare_delete_link_buttons(main);
-        prepare_add_image_buttons(main);
         prepare_delete_image_buttons(main);
+
+        let articles = main.querySelectorAll(".article");
+        for (let article of articles) {
+            prepare_add_link_buttons(article);
+            prepare_delete_link_buttons(article);
+            prepare_add_image_buttons(article);
+        }
+
         update_admin_buttons("#admin-controls", "#save-cancel");
     });
 
@@ -453,17 +605,39 @@ async function saveWebpage () {
     // Collect webpage data in an object/dict/map
     let webpage = {}
     // webpage id is the file name for the current html.
-    webpage["id"] = location.href.split("/").slice(-1)[0];
+    let id = location.href.split("/").slice(-1)[0];
+    id = id.split("#").slice(0, 1)[0];
+    webpage["id"] = id;
     webpage["title"] = document.querySelector("#page-title h1").textContent;
     webpage["articles"] = [];
 
+    // let old_webpage = await apiRequest("GET", "/webpages/" + id);
+    // webpage["sidebar"] = old_webpage["sidebar"];
+
+    webpage["sidebar_title"] = "Navigation Pane";
+    webpage["sidebar"] = [];
+    let tertiary_navbar = document.querySelector("main .tertiary-navbar");
+    if (tertiary_navbar !== null) {
+        webpage["sidebar_title"] = document.querySelector("main .sidebar-title").textContent;
+
+        let navlinks = tertiary_navbar.querySelectorAll("li a");
+        for (let navlink of navlinks) {
+            webpage["sidebar"].push([navlink.textContent, navlink.href]);
+        }
+    }
+
+
     // Get info for each article and add them to the webpage data.
     // Image data will be handled separately due to its complexity.
+    // Make text editable for when save is called from edit sidebar, which does not do this earlier.
+    // If we do not do this, the code for saving texts will not work.
+    make_text_editable();
     let articles = document.querySelectorAll(".article");
     for (let article of articles) {
         let article_obj = {};
         article_obj["template"] = article.classList[0];
         article_obj["heading"] = article.querySelector(".article-title").textContent;
+        article_obj["article_id"] = article.id;
         
         let subheadings = article.querySelectorAll(".article-subheading");
         article_obj["subheadings"] = [];
@@ -473,12 +647,11 @@ async function saveWebpage () {
         
         let texts = article.querySelectorAll(".article-text");
         article_obj["texts"] = [];
-        for (let text of texts) {
-            article_obj["texts"].push(text.textContent);
+        for (let i = 0; i < texts.length; i++) {
+            article_obj["texts"][i] = [];
+            let text = texts[i].value.split(/\n/g);
+            article_obj["texts"][i] = text;
         }
-        // for (let i = 0; i < texts.length; i++) {
-        //     article_obj["texts"][i] = texts[i].textContent;
-        // }
 
         let add_link_buttons = article.querySelectorAll(".add-link");
         article_obj["links"] = [];
@@ -598,6 +771,7 @@ async function saveWebpage () {
                     imageData.append("image", file);
                 }
                 // Post new image to server and get filename
+                // The server checks if an old image that was deleted in this session and a new image added in this session has the same filename.
                 let url = "/protected/images";
                 let updated_filename = await apiRequest("POST", url, imageData, "formData");
                 
@@ -613,10 +787,27 @@ async function saveWebpage () {
 //                                  Patch Data to Database
 
     // Patch data to database.
-    let id = location.href.split("/").slice(-1)[0];
     let url = "/protected/webpages/" + id;
+    console.log(url);
     let res = await apiRequest("PATCH", url, webpage);
     console.log(res);
+}
+
+// To retrieve info correctly.
+const prepare_webpage = () => {
+    // Template 11
+    let team_members = document.querySelectorAll(".template-11.article .team-members");
+
+    console.log(team_members[0]);
+    for (let i = 0; i < team_members.length; i++) {
+        let children = team_members[i].children;
+        let last_child = children[children.length - 1];
+        console.log(last_child);
+        if (typeof last_child !== "undefined" && last_child.querySelector(".member-info") !== null) {
+            last_child.remove();
+        }
+    }
+    console.log(team_members[0]);
 }
 
 
@@ -625,14 +816,17 @@ const enable_save_page = () => {
     // Save Edits
     let save = document.querySelector("#save-webpage");
     save.addEventListener("click", async () => {
+        // To retrieve info correctly
+        prepare_webpage();
         await saveWebpage();
-        location.reload();
+        // We do not simple use location.reload because the location may have an anchor that is no longer pre
+        window.location.href=document.location.href.match(/(^[^#]*)/)[0];
     });
 
     // Cancel Edits
     let cancel = document.querySelector("#cancel_changes");
     cancel.addEventListener("click", () => {
-        location.reload();
+        window.location.href=document.location.href.match(/(^[^#]*)/)[0];
     });
 }
 
@@ -658,11 +852,13 @@ const enable_save_page = () => {
 
 const startDeletePage = async () => {
     let file_name = location.href.split("/").slice(-1)[0];
+    file_name = file_name.split("#").slice(0, 1)[0];
     let res = await apiRequest("GET", "/protected/webpages/" + file_name);
 
     if (res["Page Exists"] === true) {
         let url = "/protected/webpages/" + file_name;
         let response = await apiRequest("DELETE", url, {});
+        // console.log(response);
         if (response["Message"] === "Success") {
             window.location.href = "/index.html";
         }
@@ -802,6 +998,7 @@ const apply_changes_to_nav = async () => {
     // }
 
     let webpage_name = location.href.split("/").slice(-1)[0];
+    webpage_name = webpage_name.split("#").slice(0, 1)[0];
     let res = await apiRequest("PATCH", `/protected/navbars/${webpage_name}`, navbar_update);
 }
 
@@ -851,7 +1048,6 @@ const update_nav_display_names = (nav_bar, nav_cache) => {
 }
 
 
-
 const prepare_apply_button = () => {
     let apply_button = document.querySelector("#handle-navbar-changes .save");
     apply_button.addEventListener("click", () => {
@@ -874,6 +1070,7 @@ const prepare_cancel_button = () => {
 
 const reset_navbar_dialog_box = async () => {
     let webpage_name = location.href.split("/").slice(-1)[0];
+    webpage_name = webpage_name.split("#").slice(0, 1)[0];
     let primary_nav_data = await apiRequest("GET", "/navbars");
     // let secondary_nav_data = await apiRequest("GET", `/navbars/${webpage_name}`);
     let urls = await apiRequest("GET", "/protected/urls");
@@ -1047,6 +1244,220 @@ const enable_edit_nav_bar = async () => {
 
 
 // ###################################################################################################
+// Helper Function: Enabeling/Disabeling Sidebar Functionality
+// ###################################################################################################
+
+
+const make_header_editable = () => {
+    let header = document.querySelector(".sidebar h2");
+    header.setAttribute("contenteditable", "true");
+}
+
+
+const insert_add_navlink_button = () => {
+    let button = document.createElement("button");
+    button.classList.add("add-navlink");
+    button.textContent = "Add Navlink";
+
+    let navbar = document.querySelector(".tertiary-navbar ul");
+    navbar.append(button);
+
+    button.addEventListener("click", (event) => {
+        let add_navlink_dialog = document.querySelector("#add-navlink-dialog");
+        add_navlink_dialog.style.visibility = "visible";
+    });
+}
+
+
+// Hides "Add Link" Dialog box and deletes inputs entered.
+const hideAddNavlinkDialog = () => {
+    let dialog = document.querySelector("#add-navlink-dialog");
+    dialog.style.visibility = "hidden";
+    let inputs = dialog.querySelectorAll("input");
+    for (let input of inputs) {
+        input.value = "";
+    }
+}
+
+
+const deleteNavlink = (event) => {
+    let del_button = event.currentTarget;
+    let link = del_button.closest("li");
+    link.remove();
+}
+
+
+const add_delete_navlink_button = (div) => {
+    // Add delete link button
+    let delete_link = document.createElement("button");
+    delete_link.textContent = "Delete Link";
+    delete_link.addEventListener("click", deleteNavlink);
+    div.append(delete_link);
+}
+
+
+// Adds a link to the button.
+const addNavlink= () => {
+    let a = document.createElement("a");
+
+    let button_label = document.querySelector("#navlink-name");
+    let button_link = document.querySelector("#nav-URL");
+
+    let div = document.createElement("div");
+    let li = document.createElement("li");
+    a.textContent = button_label.value;
+    a.href = button_link.value;
+    div.classList.add("button-navlink");
+    div.append(a);
+    li.append(div);
+    
+    let add_navlink_button = document.querySelector(".tertiary-navbar .add-navlink");
+    add_navlink_button.before(li);
+    hideAddNavlinkDialog();
+
+    add_delete_navlink_button(div);
+}
+
+
+const get_article_id = (event) => {
+    let elem = event.target;
+
+    let article = elem.closest(".article");
+    if (article !== null) {
+        let dialog = document.querySelector("#add-navlink-dialog");
+        dialog.style.visibility = "visible";
+
+        document.removeEventListener("click", get_article_id);
+
+        let button_link = document.querySelector("#nav-URL");
+        button_link.value = `#${article.id}`;
+    }
+}
+
+
+const prepare_add_navlink_dialog = () => {
+    // Make "Add Navlink" dialog box work
+    let save_link = document.querySelector("#add-navlink-dialog .save");
+    let do_not_save_link = document.querySelector("#add-navlink-dialog .cancel");
+    let generate_link = document.querySelector("body .generate-link");
+    save_link.addEventListener("click", addNavlink);
+    do_not_save_link.addEventListener("click", hideAddNavlinkDialog);
+
+
+    generate_link.addEventListener("click", () => {
+        let dialog = document.querySelector("#add-navlink-dialog");
+        dialog.style.visibility = "hidden";
+
+        document.addEventListener("click", get_article_id);
+    });
+}
+
+
+// Make add-link button work
+// const prepare_add_navlink_buttons = (article) => {
+//     let add_link_buttons = article.querySelectorAll(".add-navlink");
+//     for (let add_link_button of add_link_buttons) {
+//         add_link_button.style.display = "flex";
+//         add_link_button.addEventListener("click", invokeAddNavlink);
+//     }
+// }
+
+
+const prepare_delete_navlink_buttons = () => {
+    let links = document.querySelectorAll(".button-navlink");
+    for (let div of links) {
+        add_delete_navlink_button(div);
+    }
+}
+
+
+// Invokes the dialog box that allows you to add a link to the button.
+// const invokeAddNavlink = (event) => {
+//     let add_navlink_dialog = document.querySelector("#add-navlink-dialog");
+//     add_navlink_dialog.style.visibility = "visible";
+//     link_button = event.currentTarget;
+// }
+
+
+
+const prepare_edit_sb_but = (edit_sidebar_button) => {
+    edit_sidebar_button.addEventListener("click", () => {
+        make_header_editable();
+        insert_add_navlink_button();
+        prepare_add_navlink_dialog();
+        prepare_delete_navlink_buttons();
+        update_admin_buttons("#admin-controls", "#save-cancel");
+    });
+}
+
+
+
+const sidebar_exists = () => {
+    let main = document.querySelector("main");
+    if (main.querySelector(".sidebar") !== null) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+
+const add_or_delete_sidebar = async (sidebar) => {
+    // Get data of current webpage
+    let id = location.href.split("/").slice(-1)[0];
+    id = id.split("#").slice(0, 1)[0];
+    let webpage = await apiRequest("GET", "/webpages/" + id);
+
+    // Update the data to reflect the inclusion of a sidebar.
+    webpage["sidebar"] = sidebar;
+    webpage["sidebar_title"] = "Navigation Pane";
+
+    // Patch data to database.
+    let url = "/protected/webpages/" + id;
+    console.log(url);
+    let res = await apiRequest("PATCH", url, webpage);
+    console.log(res);
+
+    location.reload();
+}
+
+
+const prepare_mk_sb_but = (make_sidebar_button) => {
+    make_sidebar_button.addEventListener("click", () => {
+        add_or_delete_sidebar([["This Webpage", location.href]]);
+    });
+}
+
+
+const prepare_del_sb_but = (delete_sidebar_button) => {
+    delete_sidebar_button.addEventListener("click", () => {
+        add_or_delete_sidebar([]);
+    });
+}
+
+
+const enable_edit_sidebar = () => {
+    let make_sidebar_button = document.querySelector("#make-sidebar");
+    let delete_sidebar_button = document.querySelector("#delete-sidebar");
+    let edit_sidebar_button = document.querySelector("#edit-sidebar");
+
+    prepare_mk_sb_but(make_sidebar_button);
+    prepare_del_sb_but(delete_sidebar_button);
+    prepare_edit_sb_but(edit_sidebar_button);
+
+    if (sidebar_exists()) {
+        make_sidebar_button.style.display = "none";
+    }
+    else {
+        delete_sidebar_button.style.display = "none";
+        edit_sidebar_button.style.display = "none";
+    }
+}
+
+
+
+// ###################################################################################################
 // ########################################## Main Function ##########################################
 // ###################################################################################################
 
@@ -1062,6 +1473,7 @@ const add_admin_features = () => {
         enable_save_page();
         enable_delete_page();
         enable_edit_nav_bar();
+        enable_edit_sidebar();
     }
 }
 

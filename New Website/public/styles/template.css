@@ -32,6 +32,26 @@ a:hover {
     display: none;
 }
 
+
+/***************************************************************************/
+
+/* Google Icons */
+
+/* Rules for sizing the icon. */
+.material-icons.md-18 { font-size: 18px; }
+.material-icons.md-24 { font-size: 24px; }
+.material-icons.md-36 { font-size: 36px; }
+.material-icons.md-48 { font-size: 48px; }
+
+/* Rules for using icons as black on a light background. */
+.material-icons.md-dark { color: rgba(0, 0, 0, 0.54); }
+.material-icons.md-dark.md-inactive { color: rgba(0, 0, 0, 0.26); }
+
+/* Rules for using icons as white on a dark background. */
+.material-icons.md-light { color: rgba(255, 255, 255, 1); }
+.material-icons.md-light.md-inactive { color: rgba(255, 255, 255, 0.3); }
+
+
 /***************************************************************************/
 
 /* Background layer */
@@ -63,8 +83,8 @@ body {
 }
 
 #page-title > * {
-    color: white;
-    font-family: serif;
+    color: rgb(255, 255, 255);
+    /* font-family: serif; */
     font-size: 10em;
     text-align: center;
 }
@@ -168,7 +188,7 @@ header {
     flex-grow: 1;
 }
 
-nav > ul {
+#primary-navbar > ul {
     display: flex;
     align-items: flex-end;
     /* margin: 15px; */
@@ -209,7 +229,7 @@ main {
 }
 
 #first-article {
-    background-color: darkred;
+    background-color: rgb(115, 0, 0);
     /* background-color: #c50000; */
     padding-top: 1em;
     /* padding-bottom: 1em; */
@@ -252,10 +272,10 @@ article {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
+    /* border: 1px solid black; */
 }
 
 .has-background-vertical {
-    flex-grow: 1;
     background-color: rgba(0, 0, 0, 0.342);
     display: flex;
     flex-direction: column;
@@ -272,8 +292,7 @@ article {
 }
 
 .text-container {
-    /* flex-grow: 1; */
-    width: 60vw;
+    flex-grow: 1;
     margin-left: 1em;
     margin-right: 1em;
     display: flex;
@@ -284,9 +303,14 @@ article {
 .image-container {
     margin: 1em;
     justify-content: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.image-container > img {
+/* .image-container > img */
+
+.image {
     max-width: 100%;
     height: auto;
     width: 25em;
@@ -331,14 +355,29 @@ article {
 
 /* Template Specific Styles */
 
-.template-4 .article-body {
+.template-11 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.template-11 .article-subheading {
+    text-align: center;
+}
+
+/* .template-4 .article-body {
     flex-direction: column;
     margin:0px;
 }
 
-.template-5 .has-background-vertical {
+.template-5 .article-body {
+    flex-direction: column;
     margin: 0px;
-}
+} */
+
+/* .template-5 .has-background-vertical {
+    margin: 0px;
+} */
 
 .template-7 .has-background-vertical {
     margin-left: 1em;
@@ -403,23 +442,35 @@ footer {
     flex-direction: column;
     position: fixed;
     z-index: 5;
-    right: 0;
-    top: 70vh;
+    bottom: 2em;
+    background-color:#000000b4;
+    right: 2em;
+    width: 15rem;
 }
 
 #admin-controls button {
-    border-radius: 1.5em;
-    border: black solid 1px;
-    background-color: rgb(224, 224, 224);
-    width: fit-content(10em);
-    padding: 0.5em;
-    height: 2.5em;
+    /* border-radius: 1.5em; */
+    border: none;
+    background-color: transparent;
+    /* width: fit-content(10em); */
+    /* padding: 0.5em;
+    height: 2.5em; */
     margin: 1em;
+    cursor: pointer;
+    align-items: center;
+    display: flex;
+    color: rgba(255, 255, 255, 0.3);
+    font-size: medium;
 }
 
 #admin-controls button:hover {
-    background-color: rgb(243, 176, 176);
+    color: rgb(255, 255, 255, 1);
 }
+
+#admin-controls button * {
+    margin-right: 0.5em;
+}
+
 
 /********************************************************************************/
 
@@ -556,20 +607,20 @@ footer {
     flex-direction: column;
 }
 
-#add-link-dialog {
+#add-link-dialog, #add-navlink-dialog {
     background-color: white;
     border: black solid 2px;
     padding: 1em;
     text-align: center;
 }
 
-#add-link-content {
+#add-link-content, #add-navlink-content {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
 }
 
-#add-link-buttons {
+#add-link-buttons, #add-navlink-buttons {
     display: flex;
     justify-content: flex-end;
 }
@@ -581,27 +632,34 @@ footer {
 #save-cancel {
     position: fixed;
     z-index: 5;
-    right: 0;
-    top: 70vh;
+    right: 2em;
+    bottom: 2em;
     display: none;
+    flex-direction: column;
+    background-color:#000000b4;
+    width: 15rem;
 }
 
-#save-webpage {
-    border-radius: 100%;
+#save-cancel button {
+    /* border-radius: 100%; */
     border: none;
-    background-color: aqua;
-    width: 4em;
-    height: 4em;
+    background-color: transparent;
+    /* width: 4em;
+    height: 4em; */
     margin: 1em;
+    display: flex;
+    align-items: center;
+    font-size: medium;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.3);
 }
 
-#cancel_changes {
-    border-radius: 100%;
-    border: none;
-    background-color: aqua;
-    width: 4em;
-    height: 4em;
-    margin: 1em;
+#save-cancel button:hover {
+    color: rgb(255, 255, 255, 1);
+}
+
+#save-cancel button * {
+    margin-right: 0.5em;
 }
 
 .new-section {
@@ -688,3 +746,150 @@ footer {
 } */
 
 /***************************************************************************/
+
+/* Editable Text Boxes */
+
+
+textarea {
+    font-family: "Nunito", sans-serif;
+    font-size: large;
+}
+
+
+/***************************************************************************/
+
+/* Navigation Side Bar */
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    width: 20rem;
+    /* height:auto; */
+    background-color: white;
+    position: relative;
+    /* justify-content: center; */
+    align-items: center;
+}
+
+.sticky-sidebar {
+    position: sticky;
+    top: 8.8vh;
+    margin: 1em;
+}
+
+/* This two CSS code below is for preventing the hyperlink taget from headbutting the fixed floating navbar. */
+/* h2::before {
+    display: block;
+    content: " ";
+    height: 5rem;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+h2 {
+    margin-top: -5rem;
+} */
+
+.sidebar h2 {
+    font-size: 2.3em;
+    margin-bottom: 1em;
+    padding-top: 0.5rem;
+}
+
+.tertiary-navbar > ul {
+    display: flex;
+    flex-direction: column;
+    margin: 15px;
+    list-style-type: none; /* Remove bullets */
+}
+
+.tertiary-navbar li {
+    margin-bottom: 1.5em;
+}
+
+.tertiary-navbar a {
+    color: #000000;
+    text-decoration: none;
+    font-size: x-large;
+}
+
+.add-navlink {
+    cursor: pointer;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+.member-photo {
+    border-radius: 50%;
+    width: 15em;
+    height: 15em;
+    object-fit: cover;
+}
+
+.team-member {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 2em;
+}
+
+.team-members {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.team-sub-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.display-area {
+    display: flex;
+    width: 100vw;
+}
+
+.main-content {
+    flex-grow: 1;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0em;
+}
+
+.main-content article {
+    width: calc(80vw - 20rem);
+}
+
+
+
+
+
+/* Obsolete stuff */
+
+#team-section {
+    background-color: #55171c;
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    padding-top: 1.5rem;
+}
+
+#team-section h2, #team-section h3, #team-section p {
+    color: white;
+}
+
+#team-section h2 {
+    font-size: 3em;
+}
