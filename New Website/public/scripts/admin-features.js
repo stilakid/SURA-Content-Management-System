@@ -12,23 +12,14 @@
 // Main Function
 
 
-// For creating new page mechanism.
-
-import apiRequest from "./api.js";
-
-
 // ######################################## Global Variables #########################################
 
-const ADD_IMG_PIC = "/images/editable-page/add-image.svg"
 
 let succeeding_article;
 let link_button;
-let anchor;
+let active_admin_buttons = "#admin-controls";
 
 // ##################################### Global Helper Functions #####################################
-
-
-
 
 
 // Adds a new section above the 'New Section' button.
@@ -41,8 +32,25 @@ const addNewSection = (event) => {
 
 // Deletes an existing section.
 const deleteSection = (event) => {
-    event.currentTarget.parentElement.previousElementSibling.remove();
-    event.currentTarget.parentElement.remove();
+    event.currentTarget.closest(".article").previousElementSibling.remove();
+    event.currentTarget.closest(".article").remove();
+}
+
+const makeEditSectionMenu = () => {
+    let container = document.createElement('div');
+    container.classList.add("section-menu");
+    let content = document.createElement('div');
+    container.append(content);
+
+    let button_container = document.createElement('div');
+
+    return container;
+}
+
+// Shows the edit section menu for the particular section.
+const showEditSectionMenu = () => {
+    let menu = makeEditSectionMenu();
+    document.body.append(menu);
 }
 
 
@@ -52,6 +60,55 @@ const update_admin_buttons = (old_id, new_id) => {
 
     let new_admin_controls = document.querySelector(new_id);
     new_admin_controls.style.display = "flex";
+
+    active_admin_buttons = new_id;
+}
+
+
+const set_up_color_picker = (color, button, theme) => {
+    const pickr = Pickr.create({
+        el: button,
+        theme: theme, // or 'monolith', or 'nano'
+        default: color,     // Set to existing value for bg color.
+        swatches: [             // Set to colors used in the theme of the page.
+            'rgba(244, 67, 54, 1)',
+            'rgba(233, 30, 99, 0.95)',
+            'rgba(156, 39, 176, 0.9)',
+            'rgba(103, 58, 183, 0.85)',
+            'rgba(63, 81, 181, 0.8)',
+            'rgba(33, 150, 243, 0.75)',
+            'rgba(3, 169, 244, 0.7)',
+            'rgba(0, 188, 212, 0.7)',
+            'rgba(0, 150, 136, 0.75)',
+            'rgba(76, 175, 80, 0.8)',
+            'rgba(139, 195, 74, 0.85)',
+            'rgba(205, 220, 57, 0.9)',
+            'rgba(255, 235, 59, 0.95)',
+            'rgba(255, 193, 7, 1)'
+        ],
+    
+        components: {
+    
+            // Main components
+            preview: true,
+            opacity: true,
+            hue: true,
+    
+            // Input / output Options
+            interaction: {
+                hex: true,
+                rgba: true,
+                hsla: true,
+                hsva: true,
+                cmyk: true,
+                input: true,
+                clear: true,
+                save: true
+            }
+        }
+    });
+
+    return pickr;
 }
 
 
@@ -82,9 +139,38 @@ const make_logout_button = () => {
 // Helper Function: Show Admin Controls Functionality
 // ###################################################################################################
 
+const expand_admin_controls = () => {
+    $(active_admin_buttons).show("slide", { direction: "down" }, 500);
+    // let admin_controls = document.querySelector(active_admin_buttons);
+    // admin_controls.style.display = "flex";
+
+    let circle = document.querySelector("#expand");
+    circle.style.visibility = "hidden";
+
+    circle = document.querySelector("#collapse");
+    circle.style.visibility = "visible";
+}
+
+const collapse_admin_controls = () => {
+    $(active_admin_buttons).hide("slide", { direction: "down" }, 500);
+    // let admin_controls = document.querySelector(active_admin_buttons);
+    // admin_controls.style.display = "none";
+
+    let circle = document.querySelector("#collapse");
+    circle.style.visibility = "hidden";
+
+    circle = document.querySelector("#expand");
+    circle.style.visibility = "visible";
+}
+
 const show_admin_controls = () => {
-    let admin_controls = document.querySelector("#admin-controls");
-    admin_controls.style.display = "flex";
+
+    let circle = document.querySelector("#expand");
+    circle.addEventListener("click", expand_admin_controls);
+    circle.style.visibility = "visible";
+
+    circle = document.querySelector("#collapse");
+    circle.addEventListener("click", collapse_admin_controls);
 }
 
 
@@ -93,53 +179,55 @@ const show_admin_controls = () => {
 // ###################################################################################################
 
 
-const makeNewPage = async (e) => {
-    // Makes a copy of the default page.
-    // Registers this new webpage in MongoDB webpages collection.
-    let input = document.querySelector("#make-new-page-dialog input").value;
-    if (!input.match(/^[0-9A-Za-z]+$/)) {
-        alert("Input is not alphanumeric");
-        return;
-    }
+// const makeNewPage = async (e) => {
+//     // Makes a copy of the default page.
+//     // Registers this new webpage in MongoDB webpages collection.
+//     let input = document.querySelector("#make-new-page-dialog input").value;
+//     if (!input.match(/^[0-9A-Za-z]+$/)) {
+//         alert("Input is not alphanumeric");
+//         return;
+//     }
 
-    let file_name = document.querySelector("#make-new-page-dialog input").value + ".html";
-    await apiRequest("POST", "/protected/webpages", {"id": file_name});
+//     let file_name = document.querySelector("#make-new-page-dialog input").value + ".html";
+//     await apiRequest("POST", "/protected/webpages", {"id": file_name});
 
-    // Checks if the new webpage has been added to the mondoDB database.
-    let res = await apiRequest("GET", "/protected/webpages/" + file_name);
-    if (res["Page Exists"] === true) {
-        let url = "/html_not_core/" + file_name;
-        window.location.href = url;
-    }
-}
-
-
-const hideMakeNewPageDialog = () => {
-    let dialog = document.querySelector("#make-new-page-dialog");
-    dialog.style.visibility = "hidden";
-    let input = dialog.querySelector("input");
-    input.value = "";
-}
+//     // Checks if the new webpage has been added to the mondoDB database.
+//     let res = await apiRequest("GET", "/protected/webpages/" + file_name);
+//     if (res["Page Exists"] === true) {
+//         let url = "/html_not_core/" + file_name;
+//         window.location.href = url;
+//     }
+// }
 
 
-const showMakeNewPageDialog = () => {
-    let dialog = document.querySelector("#make-new-page-dialog");
-    dialog.style.visibility = "visible";
-}
+// const hideMakeNewPageDialog = () => {
+//     let dialog = document.querySelector("#make-new-page-dialog");
+//     let dialog_container = dialog.closest(".dialog-box-container");
+//     dialog_container.style.visibility = "hidden";
+//     let input = dialog.querySelector("input");
+//     input.value = "";
+// }
 
 
-const enable_make_new_page = () => {
-    // Make "Make New Page" dialog box work
-    let make_new_page = document.querySelector("#make-new-page-dialog .create-new-page");
-    let do_not_make_new_page = document.querySelector("#make-new-page-dialog .cancel");
+// const showMakeNewPageDialog = () => {
+//     let dialog = document.querySelector("#make-new-page-dialog");
+//     let dialog_container = dialog.closest(".dialog-box-container");
+//     dialog_container.style.visibility = "visible";
+// }
+
+
+// const enable_make_new_page = () => {
+//     // Make "Make New Page" dialog box work
+//     let make_new_page = document.querySelector("#make-new-page-dialog .create-new-page");
+//     let do_not_make_new_page = document.querySelector("#make-new-page-dialog .cancel");
     
-    make_new_page.addEventListener("click", makeNewPage);
-    do_not_make_new_page.addEventListener("click", hideMakeNewPageDialog);
+//     make_new_page.addEventListener("click", makeNewPage);
+//     do_not_make_new_page.addEventListener("click", hideMakeNewPageDialog);
 
-    // Make "Make New page" dialog box accessible
-    let button = document.querySelector("#make-new-page");
-    button.addEventListener("click", showMakeNewPageDialog);
-}
+//     // Make "Make New page" dialog box accessible
+//     let button = document.querySelector("#make-new-page");
+//     button.addEventListener("click", showMakeNewPageDialog);
+// }
 
 
 
@@ -175,7 +263,8 @@ const clone_template = (event) => {
 // Hides "Add Link" Dialog box and deletes inputs entered.
 const hideAddLinkDialog = () => {
     let dialog = document.querySelector("#add-link-dialog");
-    dialog.style.visibility = "hidden";
+    let dialog_box_container = dialog.closest(".dialog-box-container");
+    dialog_box_container.style.visibility = "hidden";
     let inputs = dialog.querySelectorAll("input");
     for (let input of inputs) {
         input.value = "";
@@ -185,8 +274,9 @@ const hideAddLinkDialog = () => {
 
 // Invokes the dialog box that allows you to add a link to the button.
 const invokeAddLink = (event) => {
-    let add_link_dialog = document.querySelector("#add-link-dialog");
-    add_link_dialog.style.visibility = "visible";
+    let dialog = document.querySelector("#add-link-dialog");
+    let dialog_box_container = dialog.closest(".dialog-box-container");
+    dialog_box_container.style.visibility = "visible";
     link_button = event.currentTarget;
 }
 
@@ -218,7 +308,7 @@ const deleteImage = (event) => {
     let add_img_button = document.createElement("button");
     add_img_button.classList.add("add-image");
     let add_img = document.createElement("img");
-    add_img.setAttribute("src", ADD_IMG_PIC);
+    add_img.setAttribute("src", Util.addImgPic);
     add_img_button.append(add_img);
     input.after(add_img_button);
 
@@ -285,7 +375,7 @@ const makeAddMemberButton = (parent_element) => {
     new_input.setAttribute("type", "file");
     new_input.setAttribute("accept", "image/*");
     new_button.classList.add("add-image");
-    new_img.setAttribute("src", ADD_IMG_PIC);
+    new_img.setAttribute("src", Util.addImgPic);
     new_url_holder.classList.add("img-url");
 
     // This will activate the else statement in the function being called since the argument
@@ -426,16 +516,16 @@ const add_new_section_button = (article) => {
 }
 
 
-const add_delete_section_button = (article) => {
+const add_modify_section_buttons = (article) => {
     // Add 'Delete Section' button
-    let delete_section_button = document.querySelector("#hidden .delete-section").cloneNode(true);
-    article.prepend(delete_section_button);
+    let modify_section_buttons = document.querySelector("#hidden .modify-section").cloneNode(true);
+    article.prepend(modify_section_buttons);
+
+    let delete_section_button = modify_section_buttons.querySelector(".delete-section");
     delete_section_button.addEventListener("click", deleteSection);
-}
 
-
-const give_article_id = (article) => {
-    article.id = `article${Date.now()}`;
+    let edit_section_button = modify_section_buttons.querySelector(".edit-section");
+    edit_section_button.addEventListener("click", showEditSectionMenu);
 }
 
 
@@ -446,13 +536,13 @@ const prepare_templates_menu = () => {
         template.addEventListener("click", (event) => {
             hidePopupMenu();
             let article = clone_template(event);
-            give_article_id(article);
+            Util.generateID(article);
             prepare_add_image_buttons(article);
             prepare_add_link_buttons(article);
             prepare_delete_link_buttons(article);
             add_template(article);
             add_new_section_button(article);
-            add_delete_section_button(article);
+            add_modify_section_buttons(article);
         });
     }
 }
@@ -468,6 +558,7 @@ const deleteLink = (event) => {
 const add_delete_link_button = (div) => {
     // Add delete link button
     let delete_link = document.createElement("button");
+    delete_link.classList.add("delete-link-button");
     delete_link.textContent = "Delete Link";
     delete_link.addEventListener("click", deleteLink);
     div.append(delete_link);
@@ -482,10 +573,13 @@ const addLink= () => {
     let button_link = document.querySelector("#URL");
 
     let div = document.createElement("div");
+    let button = document.createElement("button");
     a.textContent = button_label.value;
     a.href = button_link.value;
-    div.append(a);
+    button.append(a);
+    div.append(button);
     div.classList.add("button-link");
+    button.classList.add("link-button");
 
     link_button.before(div);
     hideAddLinkDialog();
@@ -516,10 +610,13 @@ const add_buttons_to_footer = () => {
     footer.before(new_section_button);
     new_section_button.addEventListener("click", addNewSection);
 
-    //      Add 'Delete Section' Buttons
-    let delete_section_button = document.querySelector("#hidden .delete-section").cloneNode(true);
-    footer.prepend(delete_section_button);
+    //      Add 'Edit Section' and 'Delete Section' Buttons
+    let modify_section_buttons = document.querySelector("#hidden .modify-section").cloneNode(true);
+    footer.prepend(modify_section_buttons);
+    let delete_section_button = modify_section_buttons.querySelector(".delete-section");
     delete_section_button.addEventListener("click", deleteSection);
+    let edit_section_button = modify_section_buttons.querySelector(".edit-section");
+    edit_section_button.addEventListener("click", showEditSectionMenu);
 }
 
 
@@ -531,10 +628,13 @@ const add_buttons_to_articles = () => {
         article.before(new_section_button);
         new_section_button.addEventListener("click", addNewSection);
 
-        //  Add 'Delete Section' Buttons
-        let delete_section_button = document.querySelector("#hidden .delete-section").cloneNode(true);
-        article.prepend(delete_section_button);
-        delete_section_button.addEventListener("click", deleteSection);
+        //  Add 'Edit Section' and 'Delete Section' Buttons
+        // let modify_section_buttons = document.querySelector("#hidden .modify-section").cloneNode(true);
+        // article.prepend(modify_section_buttons);
+        // let delete_section_button = modify_section_buttons.querySelector(".delete-section");
+        // delete_section_button.addEventListener("click", deleteSection);
+        // let edit_section_button = modify_section_buttons.querySelector(".edit-section");
+        // edit_section_button.addEventListener("click", showEditSectionMenu);
     }
 }
 
@@ -567,22 +667,221 @@ const make_text_editable = () => {
 }
 
 
-const enable_edit_page = () => {
+const addBackgroundImage = (event) => {
+    let input = event.currentTarget;
+    let file = input.files[0];
+    if (!file) return;
+
+    // Because of fakepath, we can upload the file but cannot display it before uploading.
+    // So, we will use data url until we save the page.
+    let reader = new FileReader();
+    reader.addEventListener("error", (event) => {
+      throw new Error("Error reading image file");
+    });
+    reader.addEventListener("load", (event) => {
+        background_image = reader.result;
+        background_video = "";
+
+        let body = document.querySelector("body");
+        body.style.backgroundImage = `linear-gradient(${background_color[0]}, ${background_color[1]}), url(${encodeURI(background_image)})`;
+        let page_background_video = document.querySelector("#page-background-video source");
+        page_background_video.removeAttribute("src");
+        let vid = document.querySelector("#page-background-video");
+        vid.load();
+    });
+    reader.readAsDataURL(file);
+}
+
+
+const addBackgroundVideo = (event) => {
+    let input = event.currentTarget;
+    let file = input.files[0];
+    if (!file) return;
+
+    // Because of fakepath, we can upload the file but cannot display it before uploading.
+    // So, we will use data url until we save the page.
+    let reader = new FileReader();
+    reader.addEventListener("error", (event) => {
+      throw new Error("Error reading image file");
+    });
+    reader.addEventListener("load", (event) => {
+        background_image = "";
+        background_video = reader.result;
+
+        let body = document.querySelector("body");
+        body.style.backgroundImage = `linear-gradient(${background_color[0]}, ${background_color[1]})`;
+        let page_background_video = document.querySelector("#page-background-video source");
+        page_background_video.src = encodeURI(background_video);
+        let vid = document.querySelector("#page-background-video");
+        vid.load();
+    });
+    reader.readAsDataURL(file);
+}
+
+const addBackgroundColor = (event) => {
+    let body = document.querySelector("body");
+    if (background_image !== "") {
+        body.style.backgroundImage = `linear-gradient(${background_color[0]}, ${background_color[1]}), url(${encodeURI(background_image)})`;
+    }
+    // if bg video is present, it is handled by video tag. So, the bg-image property is the same as the case with only colors.
+    else {
+        body.style.backgroundImage = `linear-gradient(${background_color[0]}, ${background_color[1]})`;
+    }
+}
+
+
+function add_button_for_image(button_container) {
+    let add_img_button = document.createElement("button");
+    let input_img = document.createElement("input");
+    add_img_button.classList.add("add-bg-img");
+
+    let label = document.createElement("div");
+    label.classList.add("bg-button-text");
+    let icon = document.createElement("div");
+    label.textContent = "Background Image";
+    icon.innerHTML = "<span class='material-icons'>image</span>";
+    add_img_button.append(label);
+    add_img_button.append(icon);
+
+    input_img.classList.add("bg-img-input");
+    input_img.type = "file";
+    input_img.accept = "image/*";
+
+    add_img_button.addEventListener("click", () => {
+        input_img.click();
+    });
+    input_img.addEventListener("change", addBackgroundImage);
+
+    button_container.append(add_img_button);
+    button_container.append(input_img);
+}
+
+function add_button_for_video(button_container) {
+    let add_vid_button = document.createElement("button");
+    let input_vid = document.createElement("input");
+    add_vid_button.classList.add("add-bg-vid");
+
+    let label = document.createElement("div");
+    label.classList.add("bg-button-text");
+    let icon = document.createElement("div");
+    label.textContent = "Background Video";
+    icon.innerHTML = "<span class='material-icons'>movie</span>";
+    add_vid_button.append(label);
+    add_vid_button.append(icon);
+
+    input_vid.classList.add("bg-vid-input");
+    input_vid.type = "file";
+    input_vid.accept = "video/*";
+
+    add_vid_button.addEventListener("click", () => {
+        input_vid.click();
+    });
+    input_vid.addEventListener("change", addBackgroundVideo);
+
+    button_container.append(add_vid_button);
+    button_container.append(input_vid);
+}
+
+const add_button_for_color = (button_container) => {
+    let add_color_button_top = document.createElement("button");
+    let add_color_button_bot = document.createElement("button");
+
+    let label_1 = document.createElement("div");
+    label_1.classList.add("bg-color-label");
+    let label_2 = document.createElement("div");
+    label_2.classList.add("bg-color-label");
+    label_1.textContent = "Color - Top:"
+    label_2.textContent = "Color - Bottom:"
+
+    let button_sub_container_1 = document.createElement("div");
+    let button_sub_container_2 = document.createElement("div");
+    button_sub_container_1.classList.add("bg-color-container");
+    button_sub_container_2.classList.add("bg-color-container");
+
+    button_sub_container_1.append(label_1);
+    button_sub_container_1.append(add_color_button_top);
+    button_sub_container_2.append(label_2);
+    button_sub_container_2.append(add_color_button_bot);
+
+    button_container.append(button_sub_container_1);
+    button_container.append(button_sub_container_2);
+    
+    let pickr_top = set_up_color_picker(background_color[0], add_color_button_top, 'monolith');
+    let pickr_bot = set_up_color_picker(background_color[1], add_color_button_bot, 'monolith');
+
+    pickr_top.on('save', (color) => {
+        if (color !== null) {
+            background_color[0] = color.toHEXA().toString();
+            console.log(color.toHEXA().toString());
+            console.log(background_color[0]);
+        }
+        else {
+            background_color[0] = "transparent";
+            console.log(color);
+            console.log(background_color[0]);
+        }
+        addBackgroundColor();
+    });
+    pickr_bot.on('save', (color) => {
+        if (color !== null) {
+            background_color[1] = color.toHEXA().toString();
+            console.log(color.toHEXA().toString());
+            console.log(background_color[0]);
+        }
+        else {
+            background_color[1] = "transparent";
+            console.log(color);
+            console.log(background_color[0]);
+        }
+        addBackgroundColor();
+    });
+
+}
+
+const add_button_to_background = () => {
+    let button_container = document.createElement("div");
+    let button_container_wrapper = document.createElement("div");
+    button_container.classList.add("bg-button-container");
+    button_container_wrapper.classList.add("bg-button-container-wrapper");
+    add_button_for_image(button_container);
+    add_button_for_video(button_container);
+    add_button_for_color(button_container);
+
+    let empty_space = document.querySelector("#empty-space");
+    button_container_wrapper.append(button_container);
+    empty_space.append(button_container_wrapper);
+
+    // let bg_color_1 = document.createElement("button");
+    // bg_color_1.classList.add("change-bg-color");
+    // bg_color_1.textContent = "Change Background Color";
+
+    // let bg_color_2 = document.createElement("button");
+    // bg_color_2.classList.add("change-bg-color");
+    // bg_color_2.textContent = "Change Background Color";
+}
+
+
+const enable_edit_page = (data_model) => {
     let edit_page_button = document.querySelector("#edit-page");
-    edit_page_button.addEventListener("click", () => {
+    edit_page_button.addEventListener("click", async () => {
         initialize_dialog_boxes();
+        add_button_to_background();
         add_buttons_to_footer();
         add_buttons_to_articles();
-        make_text_editable();
+        // make_text_editable();
 
         let main = document.querySelector("main");
         prepare_delete_image_buttons(main);
 
+        console.log("dm3", data_model);
+        await Article.enterArticlesEditMode(main, data_model);
+
+
         let articles = main.querySelectorAll(".article");
         for (let article of articles) {
-            prepare_add_link_buttons(article);
-            prepare_delete_link_buttons(article);
-            prepare_add_image_buttons(article);
+            // prepare_add_link_buttons(article);
+            // prepare_delete_link_buttons(article);
+            // prepare_add_image_buttons(article);
         }
 
         update_admin_buttons("#admin-controls", "#save-cancel");
@@ -596,24 +895,23 @@ const enable_edit_page = () => {
 }
 
 
+
+
+
+
 // ###################################################################################################
 // Helper Function: Save Page Functionality
 // ###################################################################################################
 
-// Saves webpage info as JSON in MondoDB
-async function saveWebpage () {
-    // Collect webpage data in an object/dict/map
-    let webpage = {}
-    // webpage id is the file name for the current html.
-    let id = location.href.split("/").slice(-1)[0];
-    id = id.split("#").slice(0, 1)[0];
+
+
+function handle_basic_webpage_info(webpage, id) {
     webpage["id"] = id;
-    webpage["title"] = document.querySelector("#page-title h1").textContent;
+    webpage["title"] = document.querySelector("#page-title").textContent;
     webpage["articles"] = [];
 
     // let old_webpage = await apiRequest("GET", "/webpages/" + id);
     // webpage["sidebar"] = old_webpage["sidebar"];
-
     webpage["sidebar_title"] = "Navigation Pane";
     webpage["sidebar"] = [];
     let tertiary_navbar = document.querySelector("main .tertiary-navbar");
@@ -625,12 +923,10 @@ async function saveWebpage () {
             webpage["sidebar"].push([navlink.textContent, navlink.href]);
         }
     }
+}
 
 
-    // Get info for each article and add them to the webpage data.
-    // Image data will be handled separately due to its complexity.
-    // Make text editable for when save is called from edit sidebar, which does not do this earlier.
-    // If we do not do this, the code for saving texts will not work.
+function handle_article_info(webpage) {
     make_text_editable();
     let articles = document.querySelectorAll(".article");
     for (let article of articles) {
@@ -638,13 +934,13 @@ async function saveWebpage () {
         article_obj["template"] = article.classList[0];
         article_obj["heading"] = article.querySelector(".article-title").textContent;
         article_obj["article_id"] = article.id;
-        
+
         let subheadings = article.querySelectorAll(".article-subheading");
         article_obj["subheadings"] = [];
         for (let i = 0; i < subheadings.length; i++) {
             article_obj["subheadings"][i] = subheadings[i].textContent;
         }
-        
+
         let texts = article.querySelectorAll(".article-text");
         article_obj["texts"] = [];
         for (let i = 0; i < texts.length; i++) {
@@ -668,123 +964,356 @@ async function saveWebpage () {
         }
         webpage["articles"].push(article_obj);
     }
+    return articles;
+}
 
 
-// ###################################################################################################
-//                                  Add Image Data
+// async function handle_new_image(webpage_name, input, imageNames) {
+//     let imageData = new FormData();
+//     imageData.append("webpage", webpage_name);
+//     imageData.append("media", "image");
+//     let filename = input.files[0].name;
 
-    // Handling images is complicated. So, we will use a separate loop to make things cleaner.
+//     // If there is no conflict
+//     if (!imageNames.includes(filename)) {
+//         // Add file to image form
+//         imageData.append("image", input.files[0]);
+//     }
+//     // If there is conflict
+//     else {
+//         // Generate new unique filename
+//         let parts_of_filename = input.files[0].name.split(".");
+//         let primary_filename = "";
+//         for (let i = 0; i < parts_of_filename.length - 1; i++) {
+//             primary_filename += parts_of_filename[i] + ".";
+//         }
+//         let file_extension = parts_of_filename.slice(-1)[0];
+//         filename = primary_filename + file_extension;
+//         let i = 1;
+//         while (imageNames.includes(filename)) {
+//             filename = `${primary_filename}${i}.${file_extension}`;
+//             i++;
+//         }
+
+//         // Make new file with new filename
+//         let file = new File([input.files[0]], filename, {
+//             type: input.files[0].type,
+//             lastModified: input.files[0].lastModified
+//         });
+
+//         // Add file to image form
+//         imageData.append("image", file);
+//     }
+
+//     // Post new image to server and get filename
+//     // The server checks if an old image that was deleted in this session and a new image added in this session has the same filename.
+//     let url = "/protected/images";
+//     let updated_filename = await apiRequest("POST", url, imageData, "formData");
+
+//     // Adds updated filename to the array imageNames to keep track of new names.
+//     imageNames.push(updated_filename);
+//     return updated_filename;
+// }
+
+
+async function handle_images(webpage, articles) {
+//     let webpage_name = webpage["id"].slice(0, -5);
+//     // For resolving name conflicts, we store img names in the array below.
+//     let imageNames = [];
+//     // To resolve image file naming conflict on the client side, we want to get all image names first.
+//     let image_containers = document.querySelectorAll("main .image-container");
+
+//     // If input is empty, it could mean 2 things:
+//     //      1) There is no image assigned.
+//     //      2) There is an image but it was assigned before this session.
+//     // If input is not empty, then the image was assigned in this session.
+//     //
+//     // To resolve naming conflicts, we need to know the old image names first before the new image names because
+//     //  1) We can assume that old images names do not have naming conflicts amongst themselves.
+//     //  2) We do not have access to old image files (server sends us data urls) so changing their name is only possible on the server side.
+//     //
+//     // So, we loop over all inputs to get old image names first
+//     // We resolve image name conflicts for new images later as we are posting the images to the server.
+//     // Loop one for gathering old image names exclusively
+//     for (let image_container of image_containers) {
+//         let input = image_container.querySelector("input");
+//         if (input.value === "") {
+//             let elem = image_container.querySelector(".image");
+//             // If its an old image, it will be a node object.
+//             // If it is empty, it will null.
+//             if (elem !== null) {
+//                 // Url stored in src attribute of img is a dataurl, so we get url from the tag after it,
+//                 // which is where we saved it whien loading the page.
+//                 let url = image_container.querySelector(".img-url").textContent;
+//                 let filename = url.split("/").slice(-1)[0];
+//                 imageNames.push(filename);
+//             }
+//         }
+//     }
+    // Add bg image name if it exists.
+    let input = document.querySelector(".bg-img-input");
+    if (input.value === "" && background_image !== "") {
+        let filename = background_image.split("/").slice(-1)[0];
+        imageNames.push(filename);
+    }
+
+//     // Loop 2 for:
+//     //  1) Resolving name conflicts.
+//     //  2) Saving images to server.
+//     //  3) Adding image data to the data that will be sent to the server.
+//     for (let i = 0; i < articles.length; i++) {
+//         let article = articles[i];
+//         webpage["articles"][i]["images"] = []; // This is the article_obj["images"]
+
+//         let image_containers = article.querySelectorAll(".image-container");
+//         for (let image_container of image_containers) {
+//             let input = image_container.querySelector("input");
+//             let elem = image_container.querySelector(".image");
+
+//             // If it's an old image
+//             if (input.value === "" && elem !== null) {
+//                 // Add file url to webpage data
+//                 let url_holder = image_container.querySelector(".img-url");
+//                 let url = url_holder.textContent;
+//                 webpage["articles"][i]["images"].push(url);
+//             }
+
+//             // If it's not assigned an image
+//             else if (input.value === "" && elem === null) {
+//                 // Add empty string in place of file url to webpage data
+//                 webpage["articles"][i]["images"].push("");
+//             }
+
+//             // If it's a new image
+//             else {
+//                 // Create image form to be sent to the server
+//                 let updated_filename = await handle_new_image(webpage_name, input, imageNames);
+//                 // Add file url to webpage data
+//                 let img_url = `/images/${webpage_name}/${updated_filename}`;
+//                 webpage["articles"][i]["images"].push(img_url);
+//             }
+//         }
+//     }
+
+//     return imageNames;
+}
+
+
+const handle_new_video = async (webpage_name, input, videoNames) => {
+    let videoData = new FormData();
+    videoData.append("webpage", webpage_name);
+    videoData.append("media", "video");
+    let filename = input.files[0].name;
+
+    // If there is no conflict
+    if (!videoNames.includes(filename)) {
+        // Add file to video form
+        videoData.append("video", input.files[0]);
+    }
+    // If there is conflict
+    else {
+        // Generate new unique filename
+        let parts_of_filename = input.files[0].name.split(".");
+        let primary_filename = "";
+        for (let i = 0; i < parts_of_filename.length - 1; i++) {
+            primary_filename += parts_of_filename[i] + ".";
+        }
+        let file_extension = parts_of_filename.slice(-1)[0];
+        filename = primary_filename + file_extension;
+        let i = 1;
+        while (videoNames.includes(filename)) {
+            filename = `${primary_filename}${i}.${file_extension}`;
+            i++;
+        }
+
+        // Make new file with new filename
+        let file = new File([input.files[0]], filename, {
+            type: input.files[0].type,
+            lastModified: input.files[0].lastModified
+        });
+
+        // Add file to video form
+        videoData.append("video", file);
+    }
+
+    // Post new video to server and get filename
+    // The server checks if an old video that was deleted in this session and a new video added in this session has the same filename.
+    let url = "/protected/videos";
+    let updated_filename = await apiRequest("POST", url, videoData, "formData");
+
+    // Adds updated filename to the array videoNames to keep track of new names.
+    videoNames.push(updated_filename);
+    return updated_filename;
+}
+
+
+
+const handle_videos = async (webpage, articles) => {
     let webpage_name = webpage["id"].slice(0, -5);
-    // For resolving name conflicts, we store img names in the array below.
-    let imageNames = [];
-    // To resolve image file naming conflict on the client side, we want to get all image names first.
-    let image_containers = document.querySelectorAll("main .image-container");
+    // For resolving name conflicts, we store vid names in the array below.
+    let videoNames = [];
+    // To resolve video file naming conflict on the client side, we want to get all video names first.
+    let video_containers = document.querySelectorAll("main .video-container");
 
     // If input is empty, it could mean 2 things:
-    //      1) There is no image assigned.
-    //      2) There is an image but it was assigned before this session.
-    // If input is not empty, then the image was assigned in this session.
+    //      1) There is no video assigned.
+    //      2) There is a video but it was assigned before this session.
+    // If input is not empty, then the video was assigned in this session.
     //
-    // To resolve naming conflicts, we need to know the old image names first before the new image names because
-    //  1) We can assume that old images names do not have naming conflicts amongst themselves.
-    //  2) We do not have access to old image files (server sends us data urls) so changing their name is only possible on the server side.
+    // To resolve naming conflicts, we need to know the old video names first before the new video names because
+    //  1) We can assume that old video names do not have naming conflicts amongst themselves.
+    //  2) We do not have access to old video files (server sends us data urls) so changing their name is only possible on the server side.
     //
-    // So, we loop over all inputs to get old image names first
-    // We resolve image name conflicts for new images later as we are posting the images to the server.
-
-    // Loop one for gathering old image names exclusively
-    for (let image_container of image_containers) {
-        let input = image_container.querySelector("input");
+    // So, we loop over all inputs to get old video names first
+    // We resolve video name conflicts for new videos later as we are posting the videos to the server.
+    // Loop one for gathering old video names exclusively
+    for (let video_container of video_containers) {
+        let input = video_container.querySelector("input");
         if (input.value === "") {
-            let elem = image_container.querySelector(".image");
-            // If its an old image, it will be a node object.
+            let elem = video_container.querySelector(".video");
+            // If its an old video, it will be a node object.
             // If it is empty, it will null.
             if (elem !== null) {
-                // Url stored in src attribute of img is a dataurl, so we get url from the tag after it,
+                // Url stored in src attribute of vid is a dataurl, so we get url from the tag after it,
                 // which is where we saved it whien loading the page.
-                let url = image_container.querySelector(".img-url").textContent;
+                let url = video_container.querySelector(".vid-url").textContent;
                 let filename = url.split("/").slice(-1)[0];
-                imageNames.push(filename);
+                videoNames.push(filename);
             }
         }
     }
-    
+    // Add bg video name if it exists.
+    let input = document.querySelector(".bg-vid-input");
+    if (input.value === "" && background_video !== "") {
+        let filename = background_video.split("/").slice(-1)[0];
+        videoNames.push(filename);
+    }
+
     // Loop 2 for:
     //  1) Resolving name conflicts.
-    //  2) Saving images to server.
-    //  3) Adding image data to the data that will be sent to the server.
+    //  2) Saving videos to server.
+    //  3) Adding video data to the data that will be sent to the server.
     for (let i = 0; i < articles.length; i++) {
         let article = articles[i];
-        webpage["articles"][i]["images"] = []; // This is the article_obj["images"]
+        webpage["articles"][i]["videos"] = []; // This is the article_obj["videos"]
 
-        let image_containers = article.querySelectorAll(".image-container");
-        for (let image_container of image_containers) {
-            let input = image_container.querySelector("input");
-            let elem = image_container.querySelector(".image");
-            
-            // If it's an old image
+        let video_containers = article.querySelectorAll(".video-container");
+        for (let video_container of video_containers) {
+            let input = video_container.querySelector("input");
+            let elem = video_container.querySelector(".video");
+
+            // If it's an old video
             if (input.value === "" && elem !== null) {
                 // Add file url to webpage data
-                let url_holder = image_container.querySelector(".img-url");
+                let url_holder = video_container.querySelector(".vid-url");
                 let url = url_holder.textContent;
-                webpage["articles"][i]["images"].push(url);
+                webpage["articles"][i]["videos"].push(url);
             }
-            // If it's not assigned an image
+
+            // If it's not assigned an video
             else if (input.value === "" && elem === null) {
                 // Add empty string in place of file url to webpage data
-                webpage["articles"][i]["images"].push("");
+                webpage["articles"][i]["videos"].push("");
             }
-            // If it's a new image
+
+            // If it's a new video
             else {
-                // Create image form to be sent to the server
-                let imageData = new FormData();
-                imageData.append("webpage", webpage_name);
-                let filename = input.files[0].name;
-                // If there is no conflict
-                if (!imageNames.includes(filename)) {
-                    // Add file to image form
-                    imageData.append("image", input.files[0]);
-                }
-                // If there is conflict
-                else {
-                    // Generate new unique filename
-                    let parts_of_filename = input.files[0].name.split(".");
-                    let primary_filename = "";
-                    for (let i = 0; i < parts_of_filename.length - 1; i++) {
-                    primary_filename += parts_of_filename[i] + ".";
-                    }
-                    let file_extension = parts_of_filename.slice(-1)[0];
-                    filename = primary_filename + file_extension;
-                    let i = 1;
-                    while (imageNames.includes(filename)) {
-                        filename = `${primary_filename}${i}.${file_extension}`;
-                        i++;
-                    }
-
-                    // Make new file with new filename
-                    let file = new File([input.files[0]], filename, {
-                        type: input.files[0].type,
-                        lastModified: input.files[0].lastModified
-                    });
-
-                    // Add file to image form
-                    imageData.append("image", file);
-                }
-                // Post new image to server and get filename
-                // The server checks if an old image that was deleted in this session and a new image added in this session has the same filename.
-                let url = "/protected/images";
-                let updated_filename = await apiRequest("POST", url, imageData, "formData");
-                
+                // Create video form to be sent to the server
+                let updated_filename = await handle_new_video(webpage_name, input, videoNames);
                 // Add file url to webpage data
-                let img_url = `/images/${webpage_name}/${updated_filename}`;
-                webpage["articles"][i]["images"].push(img_url);
+                let vid_url = `/videos/${webpage_name}/${updated_filename}`;
+                webpage["articles"][i]["videos"].push(vid_url);
             }
         }
     }
 
+    return videoNames;
+}
 
-// ###################################################################################################
-//                                  Patch Data to Database
+
+
+// The following code body is for the page background image, which is handled separately from the rest of the images.
+const handle_bg_image = async (webpage, imageNames) => {
+    let webpage_name = webpage["id"].slice(0, -5);
+    let input = document.querySelector(".bg-img-input");
+
+    // If new image has been selected
+    if (input.value !== "") {
+        // Create image form to be sent to the server
+        let updated_filename = await handle_new_image(webpage_name, input, imageNames);
+        
+        // Add file url to webpage data
+        let img_url = `/images/${webpage_name}/${updated_filename}`;
+        webpage["background"]["image"] = img_url;
+        console.log("1");
+        console.log(webpage["background"]["image"]);
+    }
+    // If existing bg image is the bg
+    else if (background_image !== "") {
+        webpage["background"]["image"] = background_image;
+        console.log(webpage["background"]["image"]);
+    }
+    // If no bg image has been specified
+    else {
+        webpage["background"]["image"] = "";
+    }
+}
+
+// The following code body is for the page background video, which is handled separately from the rest of the videos.
+const handle_bg_video = async (webpage, videoNames) => {
+    let webpage_name = webpage["id"].slice(0, -5);
+    let input = document.querySelector(".bg-vid-input");
+    
+    // If new video has been selected
+    if (input.value !== "") {
+        // Create video form to be sent to the server
+        let updated_filename = await handle_new_video(webpage_name, input, videoNames);
+
+        // Add file url to webpage data
+        let vid_url = `/videos/${webpage_name}/${updated_filename}`;
+        webpage["background"]["video"] = vid_url;
+    }
+    // If existing bg video is the bg
+    else if (background_video !== "") {
+        webpage["background"]["video"] = background_video;
+    }
+    // If no bg video has been specified
+    else {
+        webpage["background"]["video"] = "";
+    }
+}
+
+const handle_bg_color = (webpage) => {
+    webpage["background"]["color"] = background_color;
+}
+
+// Saves webpage info as JSON in MondoDB
+async function saveWebpage () {
+    // Collect webpage data in an object/dict/map
+    let webpage = {}
+    // webpage id is the file name for the current html.
+    let id = location.href.split("/").slice(-1)[0];
+    id = id.split("#").slice(0, 1)[0];
+
+
+    handle_basic_webpage_info(webpage, id);
+
+    // Get info for each article and add them to the webpage data.
+    // Image data will be handled separately due to its complexity.
+    // Make text editable for when save is called from edit sidebar, which does not do this earlier.
+    // If we do not do this, the code for saving texts will not work.
+    let articles = handle_article_info(webpage);
+
+    // Add image data.
+    // Handling images is complicated. So, we will use a separate loop to make things cleaner.
+    let imageNames = await handle_images(webpage, articles);
+    let videoNames = await handle_videos(webpage, articles);
+
+    // Add page background data.
+    webpage["background"] = {};
+    await handle_bg_image(webpage, imageNames);
+    await handle_bg_video(webpage, videoNames);
+    handle_bg_color(webpage);
 
     // Patch data to database.
     let url = "/protected/webpages/" + id;
@@ -793,12 +1322,12 @@ async function saveWebpage () {
     console.log(res);
 }
 
+
 // To retrieve info correctly.
 const prepare_webpage = () => {
     // Template 11
     let team_members = document.querySelectorAll(".template-11.article .team-members");
 
-    console.log(team_members[0]);
     for (let i = 0; i < team_members.length; i++) {
         let children = team_members[i].children;
         let last_child = children[children.length - 1];
@@ -807,7 +1336,6 @@ const prepare_webpage = () => {
             last_child.remove();
         }
     }
-    console.log(team_members[0]);
 }
 
 
@@ -820,14 +1348,14 @@ const enable_save_page = () => {
         prepare_webpage();
         await saveWebpage();
         // We do not simple use location.reload because the location may have an anchor that is no longer pre
-        window.location.href=document.location.href.match(/(^[^#]*)/)[0];
+        // window.location.href=document.location.href.match(/(^[^#]*)/)[0];
     });
 
-    // Cancel Edits
-    let cancel = document.querySelector("#cancel_changes");
-    cancel.addEventListener("click", () => {
-        window.location.href=document.location.href.match(/(^[^#]*)/)[0];
-    });
+//     // Cancel Edits
+//     let cancel = document.querySelector("#cancel_changes");
+//     cancel.addEventListener("click", () => {
+//         window.location.href=document.location.href.match(/(^[^#]*)/)[0];
+//     });
 }
 
 
@@ -893,7 +1421,8 @@ const initialize_edit_nav_bar_button = () => {
     let button = document.querySelector("#edit-nav-bar");
     button.addEventListener("click", () => {
         let edit_nav_dialog = document.querySelector("#edit-nav-dialog");
-        edit_nav_dialog.style.visibility = "visible";
+        let dialog_box_container = edit_nav_dialog.closest(".dialog-box-container");
+        dialog_box_container.style.visibility = "visible";
     });
 }
 
@@ -986,7 +1515,6 @@ const apply_changes_to_nav = async () => {
         if (webpage_name !== "") {
             navbar_update["primary_navbar"].push(primary_nav_cache[webpage_name]);
         }
-
     }
 
     // navbar_table_labels = document.querySelector("#secondary-nav-display-list label");
@@ -1013,6 +1541,8 @@ const update_nav_display_names = (nav_bar, nav_cache) => {
             // Make move down button visible if it was made hidden.
             let button = document.querySelector(`${nav_bar} .row-${i-1} .move_down`);
             button.style.visibility = null;
+            button.style.maxWidth = "none";
+            // button.style.display = "static";
             break;
         }
         label.textContent = "";
@@ -1022,20 +1552,24 @@ const update_nav_display_names = (nav_bar, nav_cache) => {
     // Add current data to table
     for (let option of list.options) {
         let rank = option.value;
-        let row = document.querySelector(`${nav_bar} .row-${rank}`);
+        let row = docuent.querySelector(`${nav_bar} .row-${rank}`);
         let label = row.querySelector("label");
         let webpage_name = option.textContent;
         label.textContent = webpage_name;
         let input = row.querySelector("input");
         input.value = nav_cache[webpage_name][0];
         row.style.visibility = "inherit";
+        // row.style.maxHeight = "none";
+        // row.style.dispaly = "static";
     }
     // Hide extra rows
     for (let i = 1; i < num_of_rows; i++) {
         let row = document.querySelector(`${nav_bar} .row-${i}`);
         let webpage_name = row.querySelector("label").textContent;
         if (webpage_name === "") {
+            // row.style.display = "none";
             row.style.visibility = "hidden";
+            // row.style.maxHeight = "0px";
         }
     }
     // Hide the move down button for the last row
@@ -1043,6 +1577,8 @@ const update_nav_display_names = (nav_bar, nav_cache) => {
     if (num_of_included_links > 0 && num_of_included_links < num_of_rows - 1) {
         let button = document.querySelector(`${nav_bar} .row-${num_of_included_links} .move_down`);
         button.style.visibility = "hidden";
+        button.style.maxWidth = "0px";
+        // button.style.display = "none";
     }
     
 }
@@ -1059,11 +1595,12 @@ const prepare_apply_button = () => {
 
 
 const prepare_cancel_button = () => {
-    let cancel_button = document.querySelector("#handle-navbar-changes .cancel");
+    let cancel_button = document.querySelector("#edit-nav-dialog .cancel");
     cancel_button.addEventListener("click", () => {
         reset_navbar_dialog_box();
         let edit_nav_dialog = document.querySelector("#edit-nav-dialog");
-        edit_nav_dialog.style.visibility = "hidden";
+        let dialog_box_container = edit_nav_dialog.closest(".dialog-box-container");
+        dialog_box_container.style.visibility = "hidden";
     });
 }
 
@@ -1108,6 +1645,7 @@ const initialize_nav_cache = (nav_data, urls) => {
     //         nav_cache.add(link);
     //     }
     // }
+    console.log("url", urls);
     for (let url of urls) {
         if (!included_webpages.includes(url)) {
             let link = ["", url]
@@ -1248,23 +1786,27 @@ const enable_edit_nav_bar = async () => {
 // ###################################################################################################
 
 
-const make_header_editable = () => {
-    let header = document.querySelector(".sidebar h2");
-    header.setAttribute("contenteditable", "true");
-}
+// const make_header_editable = () => {
+//     let header = document.querySelector(".sidebar h2");
+//     header.setAttribute("contenteditable", "true");
+// }
 
 
 const insert_add_navlink_button = () => {
     let button = document.createElement("button");
+    let button_container = document.createElement("div");
     button.classList.add("add-navlink");
+    button_container.classList.add("button-container");
     button.textContent = "Add Navlink";
 
     let navbar = document.querySelector(".tertiary-navbar ul");
-    navbar.append(button);
+    button_container.append(button);
+    navbar.append(button_container);
 
     button.addEventListener("click", (event) => {
-        let add_navlink_dialog = document.querySelector("#add-navlink-dialog");
-        add_navlink_dialog.style.visibility = "visible";
+        let dialog = document.querySelector("#add-navlink-dialog");
+        let dialog_box_container = dialog.closest(".dialog-box-container");
+        dialog_box_container.style.visibility = "visible";
     });
 }
 
@@ -1272,7 +1814,8 @@ const insert_add_navlink_button = () => {
 // Hides "Add Link" Dialog box and deletes inputs entered.
 const hideAddNavlinkDialog = () => {
     let dialog = document.querySelector("#add-navlink-dialog");
-    dialog.style.visibility = "hidden";
+    let dialog_box_container = dialog.closest(".dialog-box-container");
+    dialog_box_container.style.visibility = "hidden";
     let inputs = dialog.querySelectorAll("input");
     for (let input of inputs) {
         input.value = "";
@@ -1290,7 +1833,12 @@ const deleteNavlink = (event) => {
 const add_delete_navlink_button = (div) => {
     // Add delete link button
     let delete_link = document.createElement("button");
-    delete_link.textContent = "Delete Link";
+    let span = document.createElement("span");
+    span.classList.add("material-icons");
+    delete_link.classList.add("delete-navlink-button");
+    span.textContent = "delete";
+
+    delete_link.append(span);
     delete_link.addEventListener("click", deleteNavlink);
     div.append(delete_link);
 }
@@ -1311,8 +1859,8 @@ const addNavlink= () => {
     div.append(a);
     li.append(div);
     
-    let add_navlink_button = document.querySelector(".tertiary-navbar .add-navlink");
-    add_navlink_button.before(li);
+    let nav_button_container = document.querySelector(".tertiary-navbar ul .button-container");
+    nav_button_container.before(li);
     hideAddNavlinkDialog();
 
     add_delete_navlink_button(div);
@@ -1325,7 +1873,8 @@ const get_article_id = (event) => {
     let article = elem.closest(".article");
     if (article !== null) {
         let dialog = document.querySelector("#add-navlink-dialog");
-        dialog.style.visibility = "visible";
+        let dialog_box_container = dialog.closest(".dialog-box-container");
+        dialog_box_container.style.visibility = "visible";
 
         document.removeEventListener("click", get_article_id);
 
@@ -1346,7 +1895,8 @@ const prepare_add_navlink_dialog = () => {
 
     generate_link.addEventListener("click", () => {
         let dialog = document.querySelector("#add-navlink-dialog");
-        dialog.style.visibility = "hidden";
+        let dialog_box_container = dialog.closest(".dialog-box-container");
+        dialog_box_container.style.visibility = "hidden";
 
         document.addEventListener("click", get_article_id);
     });
@@ -1380,80 +1930,80 @@ const prepare_delete_navlink_buttons = () => {
 
 
 
-const prepare_edit_sb_but = (edit_sidebar_button) => {
-    edit_sidebar_button.addEventListener("click", () => {
-        make_header_editable();
-        insert_add_navlink_button();
-        prepare_add_navlink_dialog();
-        prepare_delete_navlink_buttons();
-        update_admin_buttons("#admin-controls", "#save-cancel");
-    });
-}
+// const prepare_edit_sb_but = (edit_sidebar_button) => {
+//     edit_sidebar_button.addEventListener("click", () => {
+//         make_header_editable();
+//         insert_add_navlink_button();
+//         prepare_add_navlink_dialog();
+//         prepare_delete_navlink_buttons();
+//         update_admin_buttons("#admin-controls", "#save-cancel");
+//     });
+// }
 
 
 
-const sidebar_exists = () => {
-    let main = document.querySelector("main");
-    if (main.querySelector(".sidebar") !== null) {
-        return true;
-    }
-    else {
-        return false;
-    }
-}
+// const sidebar_exists = () => {
+//     let main = document.querySelector("main");
+//     if (main.querySelector(".sidebar") !== null) {
+//         return true;
+//     }
+//     else {
+//         return false;
+//     }
+// }
 
 
-const add_or_delete_sidebar = async (sidebar) => {
-    // Get data of current webpage
-    let id = location.href.split("/").slice(-1)[0];
-    id = id.split("#").slice(0, 1)[0];
-    let webpage = await apiRequest("GET", "/webpages/" + id);
+// const add_or_delete_sidebar = async (sidebar) => {
+//     // Get data of current webpage
+//     let id = location.href.split("/").slice(-1)[0];
+//     id = id.split("#").slice(0, 1)[0];
+//     let webpage = await apiRequest("GET", "/webpages/" + id);
 
-    // Update the data to reflect the inclusion of a sidebar.
-    webpage["sidebar"] = sidebar;
-    webpage["sidebar_title"] = "Navigation Pane";
+//     // Update the data to reflect the inclusion of a sidebar.
+//     webpage["sidebar"] = sidebar;
+//     webpage["sidebar_title"] = "Navigation Pane";
 
-    // Patch data to database.
-    let url = "/protected/webpages/" + id;
-    console.log(url);
-    let res = await apiRequest("PATCH", url, webpage);
-    console.log(res);
+//     // Patch data to database.
+//     let url = "/protected/webpages/" + id;
+//     console.log(url);
+//     let res = await apiRequest("PATCH", url, webpage);
+//     console.log(res);
 
-    location.reload();
-}
-
-
-const prepare_mk_sb_but = (make_sidebar_button) => {
-    make_sidebar_button.addEventListener("click", () => {
-        add_or_delete_sidebar([["This Webpage", location.href]]);
-    });
-}
+//     location.reload();
+// }
 
 
-const prepare_del_sb_but = (delete_sidebar_button) => {
-    delete_sidebar_button.addEventListener("click", () => {
-        add_or_delete_sidebar([]);
-    });
-}
+// const prepare_mk_sb_but = (make_sidebar_button) => {
+//     make_sidebar_button.addEventListener("click", () => {
+//         add_or_delete_sidebar([["This Webpage", location.href]]);
+//     });
+// }
 
 
-const enable_edit_sidebar = () => {
-    let make_sidebar_button = document.querySelector("#make-sidebar");
-    let delete_sidebar_button = document.querySelector("#delete-sidebar");
-    let edit_sidebar_button = document.querySelector("#edit-sidebar");
+// const prepare_del_sb_but = (delete_sidebar_button) => {
+//     delete_sidebar_button.addEventListener("click", () => {
+//         add_or_delete_sidebar([]);
+//     });
+// }
 
-    prepare_mk_sb_but(make_sidebar_button);
-    prepare_del_sb_but(delete_sidebar_button);
-    prepare_edit_sb_but(edit_sidebar_button);
 
-    if (sidebar_exists()) {
-        make_sidebar_button.style.display = "none";
-    }
-    else {
-        delete_sidebar_button.style.display = "none";
-        edit_sidebar_button.style.display = "none";
-    }
-}
+// const enable_edit_sidebar = () => {
+//     let make_sidebar_button = document.querySelector("#make-sidebar");
+//     let delete_sidebar_button = document.querySelector("#delete-sidebar");
+//     let edit_sidebar_button = document.querySelector("#edit-sidebar");
+
+//     prepare_mk_sb_but(make_sidebar_button);
+//     prepare_del_sb_but(delete_sidebar_button);
+//     prepare_edit_sb_but(edit_sidebar_button);
+
+//     if (sidebar_exists()) {
+//         make_sidebar_button.style.display = "none";
+//     }
+//     else {
+//         delete_sidebar_button.style.display = "none";
+//         edit_sidebar_button.style.display = "none";
+//     }
+// }
 
 
 
@@ -1462,21 +2012,24 @@ const enable_edit_sidebar = () => {
 // ###################################################################################################
 
 const add_admin_features = () => {
-    // Checks if user is admin
-    let API_KEY = sessionStorage.getItem('API_KEY');
-    const isAdmin = (API_KEY !== null);
-    if (isAdmin) {
-        make_logout_button();
-        show_admin_controls();
-        enable_make_new_page();
-        enable_edit_page();
-        enable_save_page();
-        enable_delete_page();
-        enable_edit_nav_bar();
-        enable_edit_sidebar();
-    }
+    let main = document.querySelector("main");
+    let main_content_area = main.querySelector(".main-content");
+    let articles_container;
+    if (main_content_area === null) articles_container = main;
+    else articles_container = main_content_area;
+    let sidebar_container = main.querySelector(".sidebar"); // TODO Figure out what sidebar container is after analyzing how this info is used in editMenu.
+    let dialog_boxes_container = document.querySelector('#temporary');
+    new EditMenu(webpage_data).install(document.body, articles_container, sidebar_container, dialog_boxes_container);
+
+
+    // show_admin_controls();
+    // enable_make_new_page();
+    // enable_edit_page();
+    // enable_save_page();
+    // enable_delete_page();
+    // enable_edit_nav_bar();
+    // enable_edit_sidebar();
 }
 
 
 
-export default add_admin_features;

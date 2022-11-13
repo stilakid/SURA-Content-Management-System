@@ -25,40 +25,31 @@
         <!-- Google Icons -->
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
         rel="stylesheet">
-        
         <!-- My custom styles -->
+        <link rel="stylesheet" href="/components/navbar/css/navbar.css">
+        <link rel="stylesheet" href="/components/sidebar/css/sidebar.css">
         <link rel="stylesheet" href="/styles/template.css" />
         <link rel="stylesheet" href="/styles/login.css" />
 
-        <!-- My custom scripts -->
-        <script type="module" src="/scripts/login.js" defer></script>
-        <script type="module" src="/scripts/load-webpage.js" defer></script>
 
+        <!-- My custom scripts -->
+        <script src="/scripts/api.js"></script>
+        <script src="/scripts/utility.js"></script>
+        <script src="/components/dataModel/js/dataModel.js"></script>
+        <script src="/components/navbar/js/navbar.js"></script>
+        <script src="/components/sidebar/js/sidebar.js"></script>
+        <script src="/components/dialogBoxes/js/dialogBoxes.js"></script>
+        <script src="/components/buttons/js/buttons.js"></script>
+        <script src="/components/articles/js/articles.js"></script>
+        <script src="/scripts/load-webpage.js"></script>
+        <script src="/scripts/admin-features.js"></script>
+        <!-- <script src="/scripts/main.js" defer></script> -->
+        <script src="/scripts/login.js" defer></script>
     </head>
 
     <body>
         <header>
-            <div id="SURA-div"> 
-                <a id="SURA" href="/" title="Home" rel="home">
-                    <img id="sura-logo-home" src="/images/sura_logo_white.png">
-                    <p>SURA</p>
-                </a>
-                <!-- We need this empty div to not make the SURA homelink be clickable across half of the header. -->
-                <div></div>
-            </div>
-            
-            <nav id="primary-navbar" role="navigation">
-                <ul class="nav">
-                    <!-- <li class="leaf"><a href="/">Team</a></li>
-                    <li class="leaf"><a href="/">Research Conference</a></li>
-                    <li class="leaf"><a href="/">Outreach</a></li>
-                    <li class="leaf"><a href="/">Mentorship</a></li> -->
-                    <!-- <li class="leaf"><a href="/treesearch.html">TreeSearch</a></li> -->
-                    <!-- <li class="leaf"><a href="/">Get Involved</a></li>
-                    <li class="leaf"><a href="/">About</a></li> -->
-                    <li id="login-leaf" class="leaf"><a href="/login.html">Login</a></li>
-                </ul>
-            </nav>
+        
         </header>
 
         <main>

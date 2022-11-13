@@ -1,5 +1,13 @@
 // WELCOME TO THE BACKEND!!! MUUAAAAHAHAHAHAHAAAAAA T^T
 
+
+// -----------------------------------------//
+// ----------- Import Statements -----------//
+// -----------------------------------------//
+
+import Util from "./server_util.js";
+const util = new Util();
+
 // Import the filesystem module
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
@@ -28,6 +36,8 @@ const structuredClone = obj => {
 };
 
 
+
+
 // For parsing multipart/dataform
 import multer from "multer";
 
@@ -35,12 +45,23 @@ import multer from "multer";
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     let webpage = req.body.webpage;
-    cb(null, `public/images/${webpage}/`);
+    if (req.body.media === "image") {
+      cb(null, `public/images/${webpage}/`);
+    }
+    else if (req.body.media === "video") {
+      cb(null, `public/videos/${webpage}/`);
+    }
   },
   filename: async function (req, file, cb) {
     // Make sure the original name isn't already used in the server.
     let webpage = req.body.webpage;
-    let filenames = await fs.promises.readdir(`public/images/${webpage}`);
+    let filenames;
+    if (req.body.media === "image") {
+      filenames = await fs.promises.readdir(`public/images/${webpage}`);
+    }
+    else if (req.body.media === "video") {
+      filenames = await fs.promises.readdir(`public/videos/${webpage}`);
+    }
 
     let filename = file.originalname;
     if (!filenames.includes(filename)) {
@@ -48,7 +69,7 @@ const storage = multer.diskStorage({
     }
     else {
       // Get primary and secondary filename of the file being saved.
-      let parts_of_filename = file.originalname.split(".");
+      let parts_of_filename = filename.split(".");
       let primary_filename = "";
       for (let i = 0; i < parts_of_filename.length - 1; i++) {
         primary_filename += parts_of_filename[i] + ".";
@@ -70,6 +91,8 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
+
+
 
 
 
@@ -103,9 +126,10 @@ api.get("/", (req, res) => {
   res.json({ db: DATABASE_NAME });
 });
 
-// Adding endpoints here:
-// express.static(path.join(__dirname, '/public'));
 
+
+
+// *********************************** Endpoints ***********************************************************
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -130,8 +154,15 @@ api.use("/protected", async (req, res, next) => {
 
     next();
   } catch (e) {
+    util.print_error_message_header();
+
+    console.log("Error: Client supplied an invalid API key (a.k.a. JWT (JSON web token duh...))");
+    console.log("\n");
     console.error(e);
-    error();
+
+    util.print_error_message_footer();
+
+    res.json({isAdmin: false, message: "You are not the admin? Think of a better message."});
   }
 });
 
@@ -175,10 +206,21 @@ api.post("/login", async (req, res) => {
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////    File System Reports    /////////////////////////////////////////
+//////////////////////////////////////////    Utility    ///////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+api.get("/protected/isAdmin", async (req, res) => {
+  res.json({isAdmin: true});
+});
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////    File System    /////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Sends the list of webpage urls.
+// E.g. /html_not_core/Members.html
 api.get("/protected/urls", async (req, res) => {
   let files_batch_1 = await fs.promises.readdir("public");
   for (let i = 0; i < files_batch_1.length; i++) {
@@ -201,18 +243,25 @@ api.get("/protected/urls", async (req, res) => {
 });
 
 
-
+// Uploads an image to the server.
 api.post("/protected/images", upload.single("image"), async (req, res) => {
+  console.log("hey made it this far")
   let image = req.file;
   res.json(image.filename);
 });
 
+// Uploads a video to the server.
+api.post("/protected/videos", upload.single("video"), async (req, res) => {
+  let video = req.file;
+  res.json(video.filename);
+})
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////    Database Collection: Webpages    ////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Sends the list of webpages in the database.
+// Sends the list of webpage names in the database.
+// E.g. Members.html
 api.get("/protected/webpages", async (req, res) => {
   let list_of_webpages = await webpages.find().toArray();
   let webpage_ids = [];
@@ -300,15 +349,17 @@ api.patch("/protected/webpages/:id", async (req, res) => {
   for (let article of webpage["articles"]) {
     current_images = current_images.concat(article["images"]);
   }
+  current_images = current_images.concat(webpage["background"]["image"]);
 
   for (let article of prior_data["articles"]) {
     prior_images = prior_images.concat(article["images"]);
   }
+  prior_images = prior_images.concat(prior_data["background"]["image"]);
 
   for (let image of prior_images) {
     if (image !== "" && !current_images.includes(image)) {
-      // let image_name = image.split("/").slice(-1)[0];
       let file_path = `public${image}`;
+      // TODO: dont let nodemon crash if file to be deleted cannot be found.
       fs.unlink(file_path, (err) => {
         if (err) {
           console.log("Error Found:", err);
@@ -317,6 +368,35 @@ api.patch("/protected/webpages/:id", async (req, res) => {
       });
     }
   }
+
+  // Delete unused videos from server
+  let current_videos = [];
+  let prior_videos = [];
+
+  for (let article of webpage["articles"]) {
+    current_videos = current_videos.concat(article["videos"]);
+  }
+  current_videos = current_videos.concat(webpage["background"]["video"]);
+
+  for (let article of prior_data["articles"]) {
+    prior_videos = prior_videos.concat(article["videos"]);
+  }
+  prior_videos = prior_videos.concat(prior_data["background"]["video"]);
+
+  for (let video of prior_videos) {
+    if (video !== "" && !current_videos.includes(video)) {
+      let file_path = `public${video}`;
+      // TODO: dont let nodemon crash if file to be deleted cannot be found.
+      fs.unlink(file_path, (err) => {
+        if (err) {
+          console.log("Error Found:", err);
+          throw err;
+        }
+      });
+    }
+  }
+
+  
   res.json(webpage);
   // res.json({"current" : current_images, "prior": prior_images});
 });
@@ -346,6 +426,9 @@ api.post("/protected/webpages", async (req, res) => {
   let webpage = {
     "id" : id,
     "title" : "Page Title",
+    "sidebar" : [],
+    "sidebar_title" : "",
+    "background" : {"image" : '', "video" : '', "color" : ["transparent", "transparent"]},
     "articles" : []
   };
   await webpages.insertOne(webpage);
@@ -359,11 +442,15 @@ api.post("/protected/webpages", async (req, res) => {
     }
   });
 
-  // If an image directory exists with this name, delete it.
+  // If an image and video directories exist with this name, deletes them.
   let dir_name = id.slice(0,-5);
-  let folders = await fs.promises.readdir("public/images");
-  if (folders.includes(dir_name)) {
+  let image_folders = await fs.promises.readdir("public/images");
+  let video_folders = await fs.promises.readdir("public/videos");
+  if (image_folders.includes(dir_name)) {
     await fs.promises.rm(`public/images/${dir_name}`, { recursive: true });
+  }
+  if (video_folders.includes(dir_name)) {
+    await fs.promises.rm(`public/videos/${dir_name}`, { recursive: true });
   }
 
   // Make new image directory for it.
@@ -374,6 +461,13 @@ api.post("/protected/webpages", async (req, res) => {
     }
   });
 
+  // Make new video directory for it.
+  fs.mkdir(`public/videos/${dir_name}`, (err) => {
+    if (err) {
+      console.log("Error Found:", err);
+      throw err;
+    }
+  });
 
   // The code below is for testing.
   // fs.writeFile("public/newfile.txt", 'Learn Node FS module', function (err) {
@@ -421,9 +515,15 @@ api.delete("/protected/webpages/:id", async (req, res) => {
     }
   });
 
-  // Delete the image directory for the webpage.
+  // Delete the image and video directories for the webpage.
   let dir_name = id.slice(0,-5);
   fs.rm(`public/images/${dir_name}`, { recursive: true }, (err) => {
+    if (err) {
+      console.log("Error Found:", err);
+      throw err;
+    }
+  });
+  fs.rm(`public/videos/${dir_name}`, { recursive: true }, (err) => {
     if (err) {
       console.log("Error Found:", err);
       throw err;

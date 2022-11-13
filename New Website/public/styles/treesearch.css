@@ -8,7 +8,7 @@ body {
 
 /* Page Title */
 
-#page-title > * {
+#background-container > * {
     color: azure;
     background-color: rgba(95, 95, 95, 0.562);
     border-radius: 0.2em;

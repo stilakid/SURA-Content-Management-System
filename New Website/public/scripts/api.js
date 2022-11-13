@@ -7,14 +7,14 @@ let API_URL = "/api";
 
 /* Subclass of Error for representing HTTP errors returned from the API.
    Exposes a status (the HTTP response status code) and message (a user-facing message). */
-export class HTTPError extends Error {
-  /* status is the HTTP status, message is a user-facing error message. */
-  constructor(status, message) {
-    /* Call the Error constructor with the given message. */
-    super(message);
-    this.status = status;
-  }
-}
+// export class HTTPError extends Error {
+//   /* status is the HTTP status, message is a user-facing error message. */
+//   constructor(status, message) {
+//     /* Call the Error constructor with the given message. */
+//     super(message);
+//     this.status = status;
+//   }
+// }
 
 /* Make an API request.
    - method is the HTTP method.
@@ -76,4 +76,4 @@ const apiRequest = async (method, path, body = null, body_type = null) => {
 /* This line exposes the apiRequest function in the console, so you can call it for testing. */
 window.apiRequest = apiRequest;
 
-export default apiRequest;
+// export default apiRequest;

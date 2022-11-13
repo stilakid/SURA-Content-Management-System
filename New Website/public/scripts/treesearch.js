@@ -14,7 +14,6 @@ const slideRight = (event) => {
     let condition = (TRANSLATE/SLIDE_WIDTH + 1) == parseInt(document.querySelectorAll(".slide").length);
 
     if (condition) {
-        console.log("worked");
         let button = document.querySelector("#button_right");
         button.style.visibility = "hidden";
     }
@@ -41,7 +40,6 @@ const slideLeft = (event) => {
     let condition = (TRANSLATE/SLIDE_WIDTH == 0);
 
     if (condition) {
-        console.log("worked");
         let button = document.querySelector("#button_left");
         button.style.visibility = "hidden";
     }

@@ -1,0 +1,89 @@
+/***************************************************************************/
+
+/* Nav Bar Styles */
+
+.navbar-container {
+    position: fixed;
+    width: 100vw;
+    z-index: 2;
+}
+
+.primary-navbar-container {
+    background-color: rgb(165, 0, 0);
+
+    display: flex;
+    align-items: center;
+
+}
+
+.secondary-navbar-container {
+    background-color: rgb(73, 73, 73);
+
+    display: flex;
+    align-items: center;
+}
+
+
+
+/***************************************************************************/
+
+/* SURA homepage Link */
+
+#SURA {
+    font-size: xx-large;
+    font-weight: bolder;
+    color: white;
+    margin: 10px;
+    text-decoration: none;
+
+    display: flex;
+    align-items: center;
+}
+
+#SURA:hover {
+    color: white;
+}
+
+#sura-logo-home {
+    width: 1em;
+    padding-right: 5px;
+}
+
+
+
+/***************************************************************************/
+
+/* Navigation Links */
+
+
+#SURA-div {
+    display: flex;
+    flex-grow: 1;
+}
+
+#primary-navbar > ul {
+    display: flex;
+    align-items: flex-end;
+    /* margin: 15px; */
+
+    list-style-type: none; /* Remove bullets */
+}
+
+.leaf > a {
+    color: white;
+    text-transform: capitalize;
+    /* margin: 15px; */
+    text-decoration: none;
+    display: block;
+    padding:20px;
+}
+
+.leaf > a:hover {
+    color: white;
+    background-color: darkred;
+    text-decoration: none;
+}
+
+
+
+/***************************************************************************/

@@ -3,11 +3,16 @@
 /***************************************************************************/
 
 
+
 /***************************************************************************/
 /* Foundation */
 /***************************************************************************/
 
 /* Whole Docment */
+
+.invisible {
+    visibility: hidden!important;
+}
 
 :root {
     font-family: "Nunito", sans-serif;
@@ -32,6 +37,13 @@ a:hover {
     display: none;
 }
 
+button {
+    font-family: "Nunito", sans-serif;
+}
+
+.hidden {
+    display: none;
+}
 
 /***************************************************************************/
 
@@ -57,7 +69,7 @@ a:hover {
 /* Background layer */
 
 body {
-    background-image: url(/images/corridor.jpg);
+    /* background-image:  linear-gradient(rgba(39, 39, 39, 0.313), rgba(39, 39, 39, 0.313)), url(/images/default-page/Hello%2520World.png); */
     background-repeat: no-repeat;
     background-size: cover;
     background-attachment: fixed;
@@ -68,25 +80,117 @@ body {
     align-items: center;
 }
 
+#page-background-video {
+    display: flex;
+    visibility: visible;
+
+    /* Make video to at least 100% wide and tall */
+    min-width: 100%; 
+    min-height: 100%; 
+
+    /* Setting width & height to auto prevents the browser from stretching or squishing the video */
+    width: auto;
+    height: auto;
+
+    /* Center the video */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+
+.bg-button-container-wrapper {
+    z-index: 1;
+    border-radius: 12px;
+    border:rgb(235, 235, 235) solid 10px;
+    background-color: #000;
+    position: absolute;
+    bottom: 2em;
+    left: 2em;
+}
+
+.bg-button-container {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border-radius: calc(12px - 10px);
+    padding: 1.5em;
+}
+
+.bg-button-container > * {
+    box-sizing: border-box;
+    height: 2.5em;
+    margin-top: 0.25em;
+    margin-bottom: 0.25em;
+    padding-top:0.25em;
+    padding-bottom:0.25em;
+}
+
+.bg-button-container button {
+    cursor: pointer;
+}
+
+.bg-img-input, .bg-vid-input {
+    display: none;
+}
+
+.bg-color-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.add-bg-img, .add-bg-vid {
+    background-color: rgb(64, 141, 224);
+    color: white;
+    border: none;
+    font-size: medium;
+    text-align: left;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    display: flex;
+    align-items: center;
+    border-radius: 0.2em;
+}
+
+.bg-button-text {
+    width: 9em;
+}
+
+.add-bg-img span, .add-bg-vid span {
+    display: flex;
+    align-items: center;
+}
+
+.add-bg-img:hover, .add-bg-vid:hover {
+    background-color: rgb(30, 124, 207);
+}
+
+.bg-color-label {
+    width: 7.5em;
+}
+
+
 /***************************************************************************/
 
 /* Page Title */
 
 #page-title {
-    display: flex;
-    justify-content: center;
-    width: 100vw;
-    height: 100vh;
-    position: fixed;
-    align-items: center;
-    /* z-index: -1; */
-}
-
-#page-title > * {
+    z-index: 1;
     color: rgb(255, 255, 255);
-    /* font-family: serif; */
     font-size: 10em;
     text-align: center;
+}
+
+#background-container {
+    display: flex;
+    justify-content: center;
+    position: fixed;
+    align-items: center;
+
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
 }
 
 /***************************************************************************/
@@ -142,73 +246,18 @@ body {
     margin: 0px;
 }
 
-header {
-    background-color: rgb(165, 0, 0);
-    /* background-color: #c50000; */
-}
 
-/***************************************************************************/
 
-/* SURA homepage Link */
-
-#SURA {
-    font-size: xx-large;
-    font-weight: bolder;
-    color: white;
-    margin: 10px;
-    text-decoration: none;
-
-    display: flex;
-    align-items: center;
-}
-
-#SURA:hover {
-    color: white;
-}
-
-#sura-logo-home {
-    width: 1em;
-    padding-right: 5px;
-}
 
 /***************************************************************************/
 
 /* Navigation Links */
 
 header {
-    display: flex;
-    align-items: center;
-    position: fixed;
     width: 100vw;
-    z-index: 2;
 }
 
-#SURA-div {
-    display: flex;
-    flex-grow: 1;
-}
 
-#primary-navbar > ul {
-    display: flex;
-    align-items: flex-end;
-    /* margin: 15px; */
-
-    list-style-type: none; /* Remove bullets */
-}
-
-.leaf > a {
-    color: white;
-    text-transform: capitalize;
-    /* margin: 15px; */
-    text-decoration: none;
-    display: block;
-    padding:20px;
-}
-
-.leaf > a:hover {
-    color: white;
-    background-color: darkred;
-}
 
 /***************************************************************************/
 /* Content Area */
@@ -328,28 +377,37 @@ article {
 
 .button-link {
     margin: 1em;
-    font-size: large;
     width: fit-content;
     height:fit-content;
     /* border-radius: 1em; */
     border: none;
-    background-color: rgb(77, 123, 221);
-    color:white;
-}
-
-.button-link:hover {
-    background-color: rgb(86, 131, 226);
-}
-
-.button-link a {
     display: flex;
-    padding: 1em;
-    color: white;
+    flex-direction: column;
 }
 
 .button-link a:hover {
     text-decoration: none;
 }
+
+.link-button {
+    font-size: large;
+    border: none;
+    background-color: rgb(77, 123, 221);
+    color:white;
+    display: flex;
+}
+
+.link-button:hover {
+    background-color: rgb(86, 131, 226);
+}
+
+.link-button a {
+    flex-grow: 1;
+    display: block;
+    padding: 0.5rem;
+    color: white;
+}
+
 
 /***************************************************************************/
 
@@ -437,14 +495,48 @@ footer {
 
 /* Master Buttons */
 
+#expand, #collapse {
+    border-radius: 50%;
+    width: 3em;
+    height: 3em;
+    position: fixed;
+    bottom:2em;
+    right: 2em;
+    border: none;
+    z-index: 4;
+}
+
+#expand {
+    background-color:#ebebebb4;
+    border: rgba(0, 0, 0, 0.26) 1px solid;
+    color: rgba(0, 0, 0, 0.26);
+}
+
+#expand:hover {
+    color: black;
+    border: none;
+    cursor: pointer;
+}
+
+#collapse {
+    background-color: rgb(45, 45, 45);
+    color: rgba(255, 255, 255, 0.3);
+    border: rgba(255, 255, 255, 0.3) 1px solid;
+}
+
+#collapse:hover {
+    color: rgba(255, 255, 255, 1);
+    cursor: pointer;
+    border: none;
+}
+
 #admin-controls {
-    display: none;
     flex-direction: column;
     position: fixed;
-    z-index: 5;
-    bottom: 2em;
+    z-index: 4;
     background-color:#000000b4;
-    right: 2em;
+    bottom: 3em;
+    right: 3em;
     width: 15rem;
 }
 
@@ -455,16 +547,16 @@ footer {
     /* width: fit-content(10em); */
     /* padding: 0.5em;
     height: 2.5em; */
-    margin: 1em;
+    font-size: medium;
+    margin: 1.3em;
     cursor: pointer;
     align-items: center;
     display: flex;
     color: rgba(255, 255, 255, 0.3);
-    font-size: medium;
 }
 
 #admin-controls button:hover {
-    color: rgb(255, 255, 255, 1);
+    color: rgba(255, 255, 255, 1);
 }
 
 #admin-controls button * {
@@ -480,11 +572,15 @@ footer {
     position: fixed;
     width: 100vw;
     height: 100vh;
+    top: 0;
+    left: 0;
     display:flex;
     align-items: center;
     justify-content: center;
     z-index: 5;
-    visibility: hidden;
+    /* visibility: hidden; */
+    background-color: rgb(0, 0, 0); /* fallback color */
+    background-color: rgba(0, 0, 0, 0.4);
 }
 
 #make-new-page-dialog {
@@ -493,11 +589,13 @@ footer {
 }
 
 #make-new-page-dialog {
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     /* width: 15em;
     height: 5em; */
     background-color: white;
-    padding: 1em;
+    padding: 1rem;
     border: black solid 1px;
 }
 
@@ -507,38 +605,93 @@ footer {
     flex-direction: row;
 }
 
-.adjacent-buttons {
+.sura-modal-header {
+    width: 100%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+.cancel {
+    color: #aaaaaa;
+    position: absolute;
+    top: -1rem;
+    right: -1rem;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+
+    border: none;
+    background-color: transparent;
+    margin-right: 0.5rem;
+}
+
+.cancel:hover,
+.cancel:focus {
+  color: #000;
+  cursor: pointer;
+}
+
+.create-new-page, .save {
+    width: fit-content;
+    padding: 0em 1em;
+    height: 3em;
+}
+
+/* .adjacent-buttons {
     display: flex;
     justify-content: flex-end;
-}
+} */
 
 #webpage-id {
     font-size: medium;
     height: 1.5em;
 }
 
+
+#add-navlink-dialog {
+    background-color: white;
+    border: black solid 2px;
+    padding: 1em;
+    text-align: center;
+}
+
+.sura-modal {
+    background-color: white;
+    border: black solid 2px;
+    padding: 1em;
+    text-align: center;
+}
+
+.sura-modal-body, #add-navlink-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    overflow-y: scroll;
+}
+
+.sura-modal-footer, #add-navlink-buttons {
+    display: flex;
+    /* justify-content: flex-end; */
+    justify-content: center;
+}
+
+.add-link-table td {
+    text-align: start;
+}
+
+.add-link-table input {
+    height: 1.5em;
+    font-size: medium;
+    padding: 0px 0.5em;
+}
+
+
 /***************************************************************************/
 
 /* Template Menu */
 
-#popup-menu-container * {
-    margin: 0;
-    padding: 0;
-}
-
-#popup-menu-container {
-    /* display: none; */
-    position: fixed;
-    width: 100vw;
-    height: 100vh;
-    display:flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 5;
-    visibility: hidden;
-}
-
-#popup-menu {
+.popup-menu {
     width: 80vw;
     height: 80vh;
     background-color: antiquewhite;
@@ -547,7 +700,7 @@ footer {
     align-items: center;
 }
 
-#popup-menu h2 {
+.popup-menu h2 {
     padding: 0.5em;
 }
 
@@ -556,7 +709,6 @@ footer {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    overflow-y:scroll;
 }
 
 #templates li button {
@@ -580,20 +732,35 @@ footer {
     display:flex;
     flex-direction: column;
     padding: 1em;
-    width: 40vw;
-    border: black solid 1px;
+    /* width: 40vw; */
+    width: 40rem;
+    /* border: black solid 1px; */
     justify-content: center;
     /* Uncomment the code below if the table is too wide in the nav dialog box. */
     /* align-items: center; */
 }
 
-#primary-nav-control, #secondary-nav-control {
+.nav-control-panel h3 {
+    font-size: 1.3em;
+}
+
+.nav-control {
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-#primary-nav-control > *, #secondary-nav-control > * {
+.nav-control > * {
+    padding: 1em;
+}
+
+#secondary-nav-control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#secondary-nav-control > * {
     padding: 1em;
 }
 
@@ -602,28 +769,41 @@ footer {
     flex-direction: column;
 }
 
+.nav-list label {
+    font-size: large;
+}
+
 .nav-include-exclude {
     display:flex;
     flex-direction: column;
 }
 
-#add-link-dialog, #add-navlink-dialog {
-    background-color: white;
-    border: black solid 2px;
-    padding: 1em;
+.excluded-links, .included-links {
+    width: 15em;
+}
+
+.excluded-links option, .included-links option {
+    font-size: medium;
+    height: 1.5em;
     text-align: center;
 }
 
-#add-link-content, #add-navlink-content {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+#secondary-nav-control-panel {
+    display: none;
 }
 
-#add-link-buttons, #add-navlink-buttons {
-    display: flex;
-    justify-content: flex-end;
+.nav-display-list input, #primary-nav-display-list input, #secondary-nav-display-list input {
+    height: 1.5em;
+    font-size: 0.9em;
+    text-align: center;
 }
+
+.nav-display-list caption, #primary-nav-display-list caption, #secondary-nav-display-list caption {
+    font-size: large;
+    margin-bottom: 1em;
+    margin-top: 1em;
+}
+
 
 /***************************************************************************/
 
@@ -631,10 +811,9 @@ footer {
 
 #save-cancel {
     position: fixed;
-    z-index: 5;
-    right: 2em;
-    bottom: 2em;
-    display: none;
+    z-index: 4;
+    right: 3em;
+    bottom: 3em;
     flex-direction: column;
     background-color:#000000b4;
     width: 15rem;
@@ -655,7 +834,7 @@ footer {
 }
 
 #save-cancel button:hover {
-    color: rgb(255, 255, 255, 1);
+    color: rgba(255, 255, 255, 1);
 }
 
 #save-cancel button * {
@@ -680,26 +859,21 @@ footer {
     background-color: rgb(73, 135, 194);
 }
 
-.delete-section {
+.modify-section {
     position: absolute;
-    top: 0px;
-    right: 0px;
-
+    top: 1em;
+    right: 1em;
+    display: flex;
+    flex-direction: column;
 }
 
-.delete-section {
+.modify-section button {
     border: none;
-    background-color: rgb(240, 240, 240);
-    border-radius: 0.5em;
-    font-size: medium;
+    background-color: transparent;
 }
 
-.delete-section img {
-    width: 2em;
-}
-
-.delete-section img:hover {
-    transform: scale(1.1);
+.modify-section button:hover {
+    cursor: pointer;
 }
 
 .add-image {
@@ -717,7 +891,13 @@ footer {
 }
 
 .add-image img:hover {
-    transform: scale(1.05);
+    cursor: pointer;
+}
+
+.delete-img-button {
+    margin-top: 1em;
+    padding: 0.5em;
+    font-size: medium;
 }
 
 .add-link {
@@ -725,20 +905,30 @@ footer {
     font-size: large;
     width: fit-content;
     height:fit-content;
-    padding-left: 1em;
-    padding-right: 1em;
-    padding-top: 1em;
-    padding-bottom: 1em;
+    min-width: 5rem;
+    padding: 0.5rem;
     /* border-radius: 1em; */
     border: none;
     background-color: rgb(77, 123, 221);
     color:white;
-    display: none;
+    /* display: none; */
     cursor: pointer;
 }
 
 .add-link:hover {
     background-color: rgb(86, 131, 226);
+}
+
+.delete-link-button {
+    border: none;
+    font-size:medium;
+    background-color: rgb(226, 0, 0);
+    color: white;
+    text-align: center;
+}
+
+.delete-link-button:hover {
+    background-color: red;
 }
 
 /* .new-section > button:hover {
@@ -754,69 +944,6 @@ textarea {
     font-family: "Nunito", sans-serif;
     font-size: large;
 }
-
-
-/***************************************************************************/
-
-/* Navigation Side Bar */
-
-.sidebar {
-    display: flex;
-    flex-direction: column;
-    width: 20rem;
-    /* height:auto; */
-    background-color: white;
-    position: relative;
-    /* justify-content: center; */
-    align-items: center;
-}
-
-.sticky-sidebar {
-    position: sticky;
-    top: 8.8vh;
-    margin: 1em;
-}
-
-/* This two CSS code below is for preventing the hyperlink taget from headbutting the fixed floating navbar. */
-/* h2::before {
-    display: block;
-    content: " ";
-    height: 5rem;
-    visibility: hidden;
-    pointer-events: none;
-}
-
-h2 {
-    margin-top: -5rem;
-} */
-
-.sidebar h2 {
-    font-size: 2.3em;
-    margin-bottom: 1em;
-    padding-top: 0.5rem;
-}
-
-.tertiary-navbar > ul {
-    display: flex;
-    flex-direction: column;
-    margin: 15px;
-    list-style-type: none; /* Remove bullets */
-}
-
-.tertiary-navbar li {
-    margin-bottom: 1.5em;
-}
-
-.tertiary-navbar a {
-    color: #000000;
-    text-decoration: none;
-    font-size: x-large;
-}
-
-.add-navlink {
-    cursor: pointer;
-}
-
 
 
 
@@ -892,4 +1019,12 @@ h2 {
 
 #team-section h2 {
     font-size: 3em;
+}
+
+
+
+.section-menu {
+    position: fixed;
+    top: 0px;
+    right: 0px;
 }

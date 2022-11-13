@@ -1,0 +1,88 @@
+/***************************************************************************/
+
+/* Navigation Side Bar */
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    width: 20rem;
+    /* height:auto; */
+    background-color: white;
+    position: relative;
+    /* justify-content: center; */
+    align-items: center;
+}
+
+.sticky-sidebar {
+    position: sticky;
+    top: 8.8vh;
+    margin: 1em;
+}
+
+/* This two CSS code below is for preventing the hyperlink taget from headbutting the fixed floating navbar. */
+/* h2::before {
+    display: block;
+    content: " ";
+    height: 5rem;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+h2 {
+    margin-top: -5rem;
+} */
+
+.sidebar h2 {
+    font-size: 2.3em;
+    margin-bottom: 1em;
+    padding-top: 0.5rem;
+}
+
+.tertiary-navbar ul {
+    display: flex;
+    flex-direction: column;
+    margin: 15px;
+    list-style-type: none; /* Remove bullets */
+}
+
+.tertiary-navbar li {
+    margin-bottom: 1.5em;
+}
+
+.tertiary-navbar a {
+    color: #000000;
+    text-decoration: none;
+    font-size: x-large;
+}
+
+.button-container {
+    justify-content: center;
+    display: flex;
+}
+
+.add-navlink {
+    cursor: pointer;
+    width: fit-content;
+    padding: 1em;
+}
+
+.button-navlink {
+    display: flex;
+}
+
+.button-navlink a {
+    flex-grow: 1;
+}
+
+.delete-navlink-button {
+    border-radius: 10%;
+    border: black 1px solid;
+    background-color: #000000b4;
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.delete-navlink-button:hover {
+    color: rgba(255, 255, 255, 1);
+    cursor: pointer;
+}
+
