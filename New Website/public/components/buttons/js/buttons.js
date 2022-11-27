@@ -118,7 +118,7 @@ class LinkButton extends Button {
 
 
     _onDelete() {
-        this.dataModel.webpage.articles[this.articleIndex].links[this.linkSectionIndex][this.linkIndex] = {};
+        this.dataModel.webpage.articles[this.articleIndex].links[this.linkSectionIndex][this.linkIndex] = null;
         this.buttonsContainer.remove();
     }
 
@@ -168,10 +168,17 @@ class ModalHeaderCloseButton extends Button {
 
 
 class AddImageButton extends Button {
-    static loadImage(parent_container, img_url) {
-        let img = Util.tag('img', {'src': img_url, 'class': 'image'}, "");
-        parent_container.append(img);
+    static loadImage(parent_container, image_data) {
+        console.log('image', image_data);
 
+        let img = Util.tag('img', {'src': image_data.url, 'class': 'image'}, "");
+        parent_container.append(img);
+        // let aspect_ratio = img.naturalHeight / img.naturalWidth;
+        // if (aspect_ratio > 1) {
+        //     img.classList.add("portrait");
+        // } else {
+        //     img.classList.add("landscape");
+        // }
         return img;
     }
 
@@ -203,11 +210,20 @@ class AddImageButton extends Button {
     render(class_name = "", text = "") {
         let input = Util.tag('input', {'type': 'file', 'accept': 'image/*'}, "");
         this.input = input;
-        let img = Util.tag('img', {'src': Util.addImgPic}, "");
-        let button = Util.tag('button', {'class': class_name}, [img, text]);
+        let span = Util.tag('span', {'class': 'material-icons'}, "add_photo_alternate");
+        let button = Util.tag('button', {'class': class_name}, [span, text]);
         this.button = button;
         return [input, button];
     }
+
+    // render(class_name = "", text = "") {
+    //     let input = Util.tag('input', {'type': 'file', 'accept': 'image/*'}, "");
+    //     this.input = input;
+    //     let img = Util.tag('img', {'src': Util.addImgPic}, "");
+    //     let button = Util.tag('button', {'class': class_name}, [img, text]);
+    //     this.button = button;
+    //     return [input, button];
+    // }
 
     removeFromDOM() {
         this.button.remove();
@@ -236,13 +252,13 @@ class AddImageButton extends Button {
 
         let filename = await this.dataModel.uploadImage(file);
         let img_url = `/images/${this.dataModel.webpageNameNoExtension}/${filename}`;
-        this.dataModel.webpage.articles[this.articleIndex].images[this.imageIndex] = img_url;
+        this.dataModel.webpage.articles[this.articleIndex].images[this.imageIndex] = Util.createImageData(img_url);
     }
 
     // Assumption: This method will only be evoked by an admin.
     _loadImg(event) {
         let reader = event.currentTarget;
-        let img = AddImageButton.loadImage(this.parentContainer, reader.result);
+        let img = AddImageButton.loadImage(this.parentContainer, Util.createImageData(reader.result));
         AddImageButton.addDeleteImageButton(this.parentContainer, img, this.dataModel, this.articleIndex, this.imageIndex);
         this.button.remove();
         this.input.remove();
@@ -284,7 +300,7 @@ class DeleteImageButton extends Button {
         this.button.remove();
 
         // Remove the image url from the data model. The image stored in the server will be deleted after the server receives the new webpage data.
-        this.dataModel.webpage.articles[this.articleIndex].images[this.imageIndex] = "";
+        this.dataModel.webpage.articles[this.articleIndex].images[this.imageIndex] = null;
         
         // Create and add default buttons
         let add_img_button = new AddImageButton(this.dataModel, this.articleIndex, this.imageIndex);
@@ -336,6 +352,7 @@ class NewSectionButton extends Button {
         super();
 
         this.dataModel = data_model;
+        this.buttonContainer = null;
         this._addNewSection = this._addNewSection.bind(this);
     }
 
@@ -371,6 +388,13 @@ class NewSectionButton extends Button {
         this.button.addEventListener('click', this._addNewSection);
     }
 
+    render(class_name, text) {
+        let button = super.render(class_name, text);
+        let container = Util.tag('div', {'class': "new-section-container"}, button);
+        this.buttonContainer = container;
+        return container;
+    }
+
 
     addBefore(button, elem_after_button) {
         if (button instanceof Array) {
@@ -404,7 +428,7 @@ class NewSectionButton extends Button {
 
     _addNewSection() {
         let popup_menu_container = document.querySelector('#temporary');
-        new TemplateDialogBox(this.dataModel).install(popup_menu_container, this.button);
+        new TemplateDialogBox(this.dataModel).install(popup_menu_container, this.buttonContainer);
     }
 }
 
@@ -436,7 +460,8 @@ class TemplateButton extends Button {
     }
 
     render(id, text) {
-        let button = Util.tag('button', {'id': id, 'class': 'template'}, text);
+        let button = Util.tag('button', {'id': id, 'class': 'template'}, "");
+        button.style.backgroundImage = `url(${Util.templateImages[id]})`;
         this.button = button;
         return button;
     }
@@ -895,7 +920,7 @@ class DeleteNavLinkButton extends Button {
         let link = this.parentContainer.closest("li");
         link.remove();
 
-        this.dataModel.webpage.sidebar[this.linkIndex] = [];
+        this.dataModel.webpage.sidebar[this.linkIndex] = null;
     }
 
     _resetInstanceVariables() {
@@ -1100,7 +1125,11 @@ class AddBackgroundColorButton extends Button {
             else {
                 this.dataModel.webpage.background.color[1] = "transparent";
             }
-            Background.loadBackgroundColor(this.background);
+
+            let color_1 = this.dataModel.webpage.background.color[0];
+            let color_2 = this.dataModel.webpage.background.color[1];
+            let image = this.dataModel.webpage.background.image;
+            Background.loadBackgroundColor(this.background, color_1, color_2, image);
         });
 
         return [div_1, div_2];
@@ -1174,6 +1203,7 @@ class ArticleEditButtons extends Button {
         this.deleteButton = null;
         this.editButton = null;
         this.buttonContainer = null;
+        this.articleBgEditorInstance = null;
 
         this._deleteArticle = this._deleteArticle.bind(this);
         this._editArticle = this._editArticle.bind(this);
@@ -1182,6 +1212,7 @@ class ArticleEditButtons extends Button {
     install(parent_container) {
         super.install(parent_container);
         this.deleteButton.addEventListener('click', this._deleteArticle);
+        this.editButton.addEventListener('click', this._editArticle);
     }
 
     render() {
@@ -1193,19 +1224,29 @@ class ArticleEditButtons extends Button {
         let edit_button = Util.tag('button', {'class': "edit-section"}, span_2, false);
         this.editButton = edit_button;
 
-        let button_container = Util.tag('div', {'class': "modify-section"}, [delete_button, edit_button])
+        let button_container = Util.tag('div', {'class': "modify-section"}, [delete_button, edit_button]);
         this.buttonContainer = button_container;
 
         return button_container;
     }
 
     _editArticle() {
+        if (!this.articleBgEditorInstance) {
+            let query = `#${Util.makeQueryValid(this.articleID)}`;
+            const article = document.querySelector(`#${Util.makeQueryValid(this.articleID)}`);
+            this.articleBgEditorInstance = new ArticleBackgroundEditor(this.dataModel, this.articleIndex);
+            this.articleBgEditorInstance.install(article, article);
 
+            $(query).show("slide", { direction: "down" }, 500);
+        } else {
+            this.articleBgEditorInstance.removeFromDOM();
+            this.articleBgEditorInstance = null;
+        }
     }
 
     _deleteArticle() {
         this.buttonContainer.closest(".article").remove();
-        this.dataModel.webpage.articles[this.articleIndex] = {};
+        this.dataModel.webpage.articles[this.articleIndex] = null;
 
         let index = this.dataModel.articleArrangement.indexOf(this.articleID);
         this.dataModel.articleArrangement.splice(index, 1);
@@ -1242,7 +1283,7 @@ class AddNewMemberButton extends Button {
         // Add data to data model
         let card_index = this.dataModel.webpage.articles[this.articleIndex].images.length;
         // Images start from empty array but texts, subheadings, and links start with two arrays by default (generic article data).
-        this.dataModel.webpage.articles[this.articleIndex].images.push(Util.defaultMemberPhoto);
+        this.dataModel.webpage.articles[this.articleIndex].images.push(Util.createImageData(Util.defaultMemberPhoto));
         
         if (this.dataModel.webpage.articles[this.articleIndex].texts.length - 1 >= card_index) {
             this.dataModel.webpage.articles[this.articleIndex].texts[card_index] = ["More Info"];
@@ -1257,7 +1298,7 @@ class AddNewMemberButton extends Button {
         }
 
         if (this.dataModel.webpage.articles[this.articleIndex].links.length - 1 >= card_index) {
-            this.dataModel.webpage.articles[this.articleIndex].subheadings[card_index] = "Name/Title";
+            this.dataModel.webpage.articles[this.articleIndex].links[card_index] = [];
         } else {
             this.dataModel.webpage.articles[this.articleIndex].links.push([]);
         }
@@ -1274,28 +1315,60 @@ class AddNewMemberButton extends Button {
     }
 }
 
-class DeleteMemberButton extends DeleteImageButton {
+class DeleteMemberButton extends Button {
     constructor(data_model, article_index, image_index) {
-        super(data_model, article_index, image_index);
+        super();
+
+        this.memberCard = null;
+        this.dataModel = data_model;
+        this.articleIndex = article_index;
+        this.cardIndex = image_index;
+        this.icon = null;
+
+        this._deleteMember = this._deleteMember.bind(this);
+    }
+    
+
+    install(parent_container, member_card) {
+        console.log("member card", member_card);
+        if (!member_card) {
+            throw "DeleteMemberButton: You must provide a member card for the button to delete.";
+        }
+        this.memberCard = member_card;
+        super.install(parent_container, 'delete-member-button', "Delete Member");
+        this.button.addEventListener('click', this._deleteMember);
     }
 
-    install(parent_container, image) {
-        this.image = image;
-        super.install(parent_container, 'delete-member-image', "Delete Member");
-        this.button.addEventListener('click', this._onClick);
+    render() {
+        let span = Util.tag('span', {'class': 'material-icons'}, "clear");
+        this.icon = span;
+        let button = Util.tag('button', {'class': "delete-member-button"}, span, false);
+        this.button = button;
+        return button;
     }
 
-    _deleteImage() {
-        let team_member = this.button.closest(".team-member");
-        team_member.remove();
+    // Deletes an image.
+    _deleteMember() {
+        // Remove the member card.
+        this.button.remove();
+        this.memberCard.remove();
+
+        // Remove the image url from the data model. The image stored in the server will be deleted after the server receives the new webpage data.
+        this.dataModel.webpage.articles[this.articleIndex].images[this.cardIndex] = null;
+        this.dataModel.webpage.articles[this.articleIndex].links[this.cardIndex] = null;
+        this.dataModel.webpage.articles[this.articleIndex].subheadings[this.cardIndex] = null;
+        this.dataModel.webpage.articles[this.articleIndex].texts[this.cardIndex] = null;
     }
 
+    _resetInstanceVariables() {
+        super._resetInstanceVariables();
+    }
 }
 
 
 class AddMemberPhotoButton extends AddImageButton {
-    static loadImage(parent_container, img_url) {
-        let img = Util.tag('img', {'src': img_url, 'class': 'image member-photo'}, "");
+    static loadImage(parent_container, image_data) {
+        let img = Util.tag('img', {'src': image_data.url, 'class': 'image member-photo'}, "");
         parent_container.append(img);
 
         return img;
@@ -1319,7 +1392,7 @@ class AddMemberPhotoButton extends AddImageButton {
     render(class_name = "", text = "") {
         let input = Util.tag('input', {'type': 'file', 'accept': 'image/*'}, "");
         this.input = input;
-        let img = Util.tag('img', {'src': Util.defaultMemberPhoto}, "");
+        let img = Util.tag('img', {'src': Util.defaultMemberPhoto, 'class': "image member-photo"}, "");
         let button = Util.tag('button', {'class': "add-member-image"}, [img, text]);
         this.button = button;
         return [input, button];
@@ -1327,7 +1400,7 @@ class AddMemberPhotoButton extends AddImageButton {
 
     _loadImg(event) {
         let reader = event.currentTarget;
-        let img = AddMemberPhotoButton.loadImage(this.parentContainer, reader.result);
+        let img = AddMemberPhotoButton.loadImage(this.parentContainer, Util.createImageData(reader.result));
         AddMemberPhotoButton.addDeleteImageButton(this.parentContainer, img, this.dataModel, this.articleIndex, this.imageIndex);
         this.button.remove();
         this.input.remove();
@@ -1363,17 +1436,738 @@ class DeleteMemberPhotoButton extends Button {
         this.button.remove();
 
         // Remove the image url from the data model. The image stored in the server will be deleted after the server receives the new webpage data.
-        this.dataModel.webpage.articles[this.articleIndex].images[this.imageIndex] = Util.defaultMemberPhoto;
+        this.dataModel.webpage.articles[this.articleIndex].images[this.imageIndex] = Util.createImageData(Util.defaultMemberPhoto);
         
         // Create and add default buttons
         let add_img_button = new AddMemberPhotoButton(this.dataModel, this.articleIndex, this.imageIndex);
-        let img_container = this.parentContainer.querySelector('.member-photo-container');
-        add_img_button.install(img_container);
+        add_img_button.install(this.parentContainer);
     }
 
 
     _resetInstanceVariables() {
         super._resetInstanceVariables();
         this.image = null;
+    }
+}
+
+
+class NavPanelButton extends Button {
+    constructor() {
+        super();
+        this.drawerOpen = false;
+
+        this._onClick = this._onClick.bind(this);
+        this._autoClosePanel = this._autoClosePanel.bind(this);
+    }
+
+    install(parent_container, nav_panel) {
+        super.install(parent_container);
+        this.navPanel = nav_panel;
+        this.button.addEventListener('click', this._onClick);
+        window.addEventListener("resize", this._autoClosePanel);
+    }
+
+    render() {
+        let span = Util.tag('span', {'class': "material-icons"}, "menu");
+        let button = Util.tag('button', {'class': "nav-panel-button"}, span, false);
+        this.button = button;
+        return button;
+    }
+
+    _onClick() {
+        if (this.drawerOpen) {
+            this.navPanel.style.width = "0";
+            document.body.style.marginLeft = "0";
+            console.log("closing");
+        } else {
+            this.navPanel.style.width = "250px";
+            document.body.style.marginLeft = "250px";
+            console.log("opening")
+        }
+        this.drawerOpen = !this.drawerOpen;
+    }
+
+    // min-width: 769px
+    _autoClosePanel() {
+        if (this.drawerOpen) {
+            this.navPanel.style.width = "0";
+            document.body.style.marginLeft = "0";
+            console.log("closing");
+            this.drawerOpen = !this.drawerOpen;
+        }
+    }
+
+    _resetInstanceVariables() {
+
+    }
+}
+
+
+class AddNewStickyNoteButton extends Button {
+    constructor(data_model, article_index) {
+        super();
+        
+        this.dataModel = data_model;
+        this.articleIndex = article_index;
+
+        this._addNewStickyNote = this._addNewStickyNote.bind(this);
+    }
+
+    install(parent_container) {
+        super.install(parent_container);
+        this.button.addEventListener('click', this._addNewStickyNote);
+    }
+
+    render() {
+        let span = Util.tag('span', {'class': "material-icons"}, "post_add");
+        let button = Util.tag('button', {'class': "add-sticky-note-button sticky-note"}, span);
+        this.button = button;
+        return button;
+    }
+
+    _addNewStickyNote() {
+        // Add data to data model
+        let card_index = this.dataModel.webpage.articles[this.articleIndex].subheadings.length;
+        
+        if (this.dataModel.webpage.articles[this.articleIndex].texts.length - 1 >= card_index) {
+            this.dataModel.webpage.articles[this.articleIndex].texts[card_index] = ["Enter text here"];
+        } else {
+            this.dataModel.webpage.articles[this.articleIndex].texts.push(["Enter text here"]);
+        }
+
+        if (this.dataModel.webpage.articles[this.articleIndex].subheadings.length - 1 >= card_index) {
+            this.dataModel.webpage.articles[this.articleIndex].subheadings[card_index] = "Sticky Note";
+        } else {
+            this.dataModel.webpage.articles[this.articleIndex].subheadings.push("Sticky Note");
+        }
+
+        if (this.dataModel.webpage.articles[this.articleIndex].links.length - 1 >= card_index) {
+            this.dataModel.webpage.articles[this.articleIndex].links[card_index] = [];
+        } else {
+            this.dataModel.webpage.articles[this.articleIndex].links.push([]);
+        }
+        
+        
+        // Add member card to the DOM
+        let new_sticky_note = new StickyNote(this.dataModel);
+        new_sticky_note.install(this.parentContainer);
+        StickyNote.enableEditMode(new_sticky_note.stickyNote, this.dataModel, this.articleIndex, card_index);
+    }
+
+    _resetInstanceVariables() {
+
+    }
+}
+
+
+
+class DeleteStickyNoteButton extends Button {
+    constructor(data_model, article_index, image_index) {
+        super();
+
+        this.stickyNote = null;
+        this.dataModel = data_model;
+        this.articleIndex = article_index;
+        this.cardIndex = image_index;
+        this.icon = null;
+
+        this._deleteStickyNote = this._deleteStickyNote.bind(this);
+    }
+    
+
+    install(parent_container, sticky_note) {
+        if (!sticky_note) {
+            throw "DeleteStickyNoteButton: You must provide a sticky note for the button to delete.";
+        }
+        this.stickyNote = sticky_note;
+        super.install(parent_container, 'delete-sticky-note-button', "Delete Sticky Note");
+        this.button.addEventListener('click', this._deleteStickyNote);
+    }
+
+    render() {
+        let span = Util.tag('span', {'class': 'material-icons'}, "clear");
+        this.icon = span;
+        let button = Util.tag('button', {'class': "delete-sticky-note-button"}, span, false);
+        this.button = button;
+        return button;
+    }
+
+    // Deletes an image.
+    _deleteStickyNote() {
+        // Remove the member card.
+        this.button.remove();
+        this.stickyNote.remove();
+
+        // Remove the image url from the data model. The image stored in the server will be deleted after the server receives the new webpage data.
+        this.dataModel.webpage.articles[this.articleIndex].links[this.cardIndex] = null;
+        this.dataModel.webpage.articles[this.articleIndex].subheadings[this.cardIndex] = null;
+        this.dataModel.webpage.articles[this.articleIndex].texts[this.cardIndex] = null;
+    }
+
+    _resetInstanceVariables() {
+        super._resetInstanceVariables();
+    }
+}
+
+
+class SlideButton extends Button {
+    constructor(data_model, article_id) {
+        super();
+
+        this.dataModel = data_model;
+        let index;
+        for (let i = 0; i < data_model.webpage.articles.length; i++) {
+            if (data_model.webpage.articles[i] && data_model.webpage.articles[i].article_id === article_id) {
+                index = i;
+            }
+        }
+        this.articleIndex = index;
+        console.log('index', article_id, this.articleIndex)
+
+        this.leftButton = null;
+        this.rightButton = null;
+        this.activeIndex = 0;
+        this.trasitionWasSet = false;
+
+        this._swipeLeft = this._swipeLeft.bind(this);
+        this._swipeRight = this._swipeRight.bind(this);
+        this._setHorizontalSlidePosition = this._setHorizontalSlidePosition.bind(this);
+        this._adjustSlideHeight = this._adjustSlideHeight.bind(this);
+    }
+
+    install(parent_container) {
+        if (!parent_container) {
+            throw "SlideButton: You must provide a div to install the slide buttons into.";
+        }
+        this.parentContainer = parent_container;
+        let buttons = this.render();
+        this.addToDOM(buttons, parent_container);
+        this.leftButton.addEventListener('click', this._swipeLeft);
+        this.rightButton.addEventListener('click', this._swipeRight);
+        window.addEventListener('resize', () => {
+            this._setHorizontalSlidePosition();
+            this._adjustSlideHeight();
+        });
+    }
+
+    render(){
+        let left_button = this.renderLeftButton();
+        let right_button = this.renderRightButton();
+
+        return [left_button, right_button];
+    }
+
+    renderLeftButton() {
+        let span = Util.tag('span', {'class': "material-icons"}, "arrow_back_ios");
+        let button = Util.tag('button', {'class': "slide-button-left"}, span, false);
+        this.leftButton = button;
+        return button;
+    }
+
+    renderRightButton() {
+        let span = Util.tag('span', {'class': "material-icons"}, "arrow_forward_ios");
+        let button = Util.tag('button', {'class': "slide-button-right"}, span, false);
+        this.rightButton = button;
+        return button;
+    }
+
+
+    removeFromDOM() {
+        this.leftButton.remove();
+        this.rightButton.remove();
+    }
+
+
+    _swipeLeft() {
+        this.activeIndex--;
+        this._moveSlide();
+    }
+
+    _swipeRight() {
+        this.activeIndex++;
+        this._moveSlide();
+    }
+
+    _moveSlide() {
+        // Set transition when you click on the slide navigation buttons
+        if (!this.trasitionWasSet) {
+            this._addTransition();
+        }
+
+        let num_of_slides = this.parentContainer.querySelectorAll('.slide').length;
+        // Correct active index if out of bounds
+        if (this.activeIndex === num_of_slides) {
+            this.activeIndex = 0;
+        } else if (this.activeIndex == -1) {
+            this.activeIndex = num_of_slides - 1;
+        }
+
+        this._setHorizontalSlidePosition();
+    }
+
+    _addTransition() {
+        let slides = this.parentContainer.querySelectorAll('.slide');
+        let slide_containers = this.parentContainer.querySelectorAll('.slides');
+        for (let slide_container of slide_containers) {
+            slide_container.style.transition = "all 0.75s";
+        }
+        for (let slide of slides) {
+            slide.style.transition = "1s";
+        }
+        this.trasitionWasSet = true;
+    }
+
+    _setHorizontalSlidePosition() {
+        let width = this.parentContainer.getBoundingClientRect().width;
+        let slider = this.parentContainer.querySelector('.slides');
+        slider.style.transform = `translateX(-${width * this.activeIndex}px)`;
+    }
+
+    _adjustSlideHeight() {
+        Article.afterLoadingTemplateThirteen(this.parentContainer.parentElement, this.dataModel.webpage.articles[this.articleIndex].images);
+        console.log('working')
+    }
+
+    _resetInstanceVariables() {
+        this.parentContainer = null;
+        this.leftButton = null;
+        this.rightButton = null;
+    }
+}
+
+
+class AddNewSlideButton extends Button {
+    static addDeleteSlideButton(parent_container, img, data_model, article_index, card_index) {
+        let delete_img = new DeleteImageButton(data_model, article_index, card_index);
+        delete_img.install(parent_container, img);
+    }
+
+    constructor(data_model, article_index) {
+        super();
+
+        this.dataModel = data_model;
+        this.articleIndex = article_index;
+
+        this.input = null;
+        this.slideIndex = null;
+
+        this._onClick = this._onClick.bind(this);
+        this._addNewSlide = this._addNewSlide.bind(this);
+        this._loadImg = this._loadImg.bind(this);
+    }
+
+    install(parent_container) {
+        super.install(parent_container);
+        this.input.addEventListener('change', this._addNewSlide);
+        this.button.addEventListener('click', this._onClick);
+    }
+
+    render() {
+        let input = Util.tag('input', {'type': 'file', 'accept': 'image/*', 'class': 'add-new-slide-input'}, "");
+        this.input = input;
+        let span = Util.tag('span', {'class': "material-icons"}, "add");
+        let button = Util.tag('button', {'class': "add-slide-button"}, span);
+        this.button = button;
+        let slide = Util.tag('div', {'class': "slide add-slide-button-container"}, [input, button]);
+        return slide;
+    }
+
+    removeFromDOM() {
+        this.button.remove();
+        this.input.remove();
+    }
+
+    _onClick() {
+        this.input.click();
+    }
+
+    // Adds an image to the slide when the "add slide" button is clicked.
+    async _addNewSlide(event) {
+        // Add image to DOM
+        let file = event.currentTarget.files[0];
+        if (!file) return;
+
+        let slide_index = this.dataModel.webpage.articles[this.articleIndex].images.length;
+        this.slideIndex = slide_index;
+        // Because of fakepath, we can upload the file but cannot display it before uploading.
+        // So, we will use data url until we save the page.
+        let reader = new FileReader();
+        reader.addEventListener("error", (event) => {
+            throw new Error("Error reading image file");
+        });
+        reader.addEventListener("load", this._loadImg);
+        reader.readAsDataURL(file);
+
+        // Upload Image to Server
+        let filename = await this.dataModel.uploadImage(file);
+        let img_url = `/images/${this.dataModel.webpageNameNoExtension}/${filename}`;
+
+        // Add data to data model
+        this.dataModel.webpage.articles[this.articleIndex].images.push(Util.createImageData(img_url));
+        if (this.dataModel.webpage.articles[this.articleIndex].texts.length - 1 >= slide_index) {
+            this.dataModel.webpage.articles[this.articleIndex].texts[slide_index] = ["More Info"];
+        } else {
+            this.dataModel.webpage.articles[this.articleIndex].texts.push(["More Info"]);
+        }
+
+        if (this.dataModel.webpage.articles[this.articleIndex].subheadings.length - 1 >= slide_index) {
+            this.dataModel.webpage.articles[this.articleIndex].subheadings[slide_index] = "Slide Title";
+        } else {
+            this.dataModel.webpage.articles[this.articleIndex].subheadings.push("Slide Title");
+        }
+
+        if (this.dataModel.webpage.articles[this.articleIndex].links.length - 1 >= slide_index) {
+            this.dataModel.webpage.articles[this.articleIndex].links[slide_index] = [];
+        } else {
+            this.dataModel.webpage.articles[this.articleIndex].links.push([]);
+        }
+    }
+
+    // Assumption: This method will only be evoked by an admin.
+    _loadImg(event) {
+        let reader = event.currentTarget;
+        let new_slide = new Slide(this.dataModel);
+        new_slide.install(this.parentContainer, Util.createImageData(reader.result));
+        Slide.enableEditMode(new_slide.slide, this.dataModel, this.articleIndex, this.slideIndex);
+    }
+
+    _resetInstanceVariables() {
+
+    }
+}
+
+
+class DeleteSlideButton extends Button {
+    constructor(data_model, article_index, slide_index) {
+        super();
+
+        this.slide = null;
+        this.dataModel = data_model;
+        this.articleIndex = article_index;
+        this.slideIndex = slide_index;
+
+        this._deleteSlide = this._deleteSlide.bind(this);
+    }
+    
+
+    install(parent_container, slide) {
+        if (!slide) {
+            throw "DeleteSlideButton: You must provide a slide for the button to delete.";
+        }
+        this.slide = slide;
+        super.install(parent_container, 'delete-slide-button', "Delete Slide");
+        this.button.addEventListener('click', this._deleteSlide);
+    }
+
+    render() {
+        let span = Util.tag('span', {'class': 'material-icons'}, "delete");
+        this.icon = span;
+        let button = Util.tag('button', {'class': "delete-slide-button"}, [span, "Delete Slide"]);
+        this.button = button;
+        return button;
+    }
+
+    
+    // Deletes an image.
+    _deleteSlide() {
+        // Remove the member card.
+        this.button.remove();
+        this.slide.remove();
+
+        // Remove the image url from the data model. The image stored in the server will be deleted after the server receives the new webpage data.
+        this.dataModel.webpage.articles[this.articleIndex].links[this.slideIndex] = null;
+        this.dataModel.webpage.articles[this.articleIndex].subheadings[this.slideIndex] = null;
+        this.dataModel.webpage.articles[this.articleIndex].texts[this.slideIndex] = null;
+        this.dataModel.webpage.articles[this.articleIndex].images[this.slideIndex] = null;
+    }
+
+    _resetInstanceVariables() {
+        super._resetInstanceVariables();
+    }
+}
+
+class GetAspectRatioButton extends Button {
+    constructor(data_model) {
+        super();
+
+        this.dataModel = data_model;
+
+        this._onClick = this._onClick.bind(this);
+    }
+
+    install(parent_container, slides_container) {
+        super.install(parent_container, "get-aspect-ratio-button", "Use Current Image's Aspect Ratio");
+        this.slidesContainer = slides_container;
+        this.button.addEventListener('click', this._onClick);
+    }
+
+    render() {
+        let span = Util.tag('span', {'class': 'material-icons'}, "aspect_ratio");
+        this.icon = span;
+        let button = Util.tag('button', {'class': "get-aspect-ratio-button"}, [span, "Use Current Image's Aspect Ratio"]);
+        this.button = button;
+        return button;
+    }
+
+    _onClick() {
+        // Get dimensions of current image
+        let active_slide;
+        let bg_image = active_slide.style.backgroundImage;
+        let image = new Image();
+        image.src = bg_image;
+        let width = image.width;
+        let height = image.height;
+
+
+    }
+
+    _resetInstanceVariables() {
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class AddArticleBackgroundImageButton extends Button {
+    constructor(data_model, article_index) {
+        super();
+
+        this.background = null;
+        this.backgroundVideo = null;
+        this.backgroundVideoSource = null;
+        this.input = null;
+        this.dataModel = data_model;
+        this.articleIndex = article_index;
+
+        this._onClick = this._onClick.bind(this);
+        this._addBackgroundImg = this._addBackgroundImg.bind(this);
+    }
+
+    install(parent_container, article) {
+        this.article = article;
+        super.install(parent_container);
+        this.input.addEventListener('change', this._addBackgroundImg);
+        this.button.addEventListener('click', this._onClick);
+    }
+
+    render() {
+        let label = Util.tag('label', {'class': "article-bg-button-text"}, "Add Background Image");
+        let span = Util.tag('span', {'class': "material-icons"}, "image");
+        let icon = Util.tag('div', {}, span);
+        let button = Util.tag('button', {'class': "add-article-bg-img"}, [label, icon], false);
+        this.button = button;
+        
+        let input = Util.tag('input', {'class': "article-bg-img-input", 'type': "file", 'accept': "image/*"}, "");
+        this.input = input;
+
+        return [button, input];
+    }
+
+    _onClick() {
+        this.input.click();
+    }
+
+    async _addBackgroundImg(event) {
+        let file = event.currentTarget.files[0];
+        if (!file) return;
+
+        // Because of fakepath, we can upload the file but cannot display it before uploading.
+        // So, we will use data url until we save the page.
+        let reader = new FileReader();
+        reader.addEventListener("error", (event) => {
+            throw new Error("Error reading image file");
+        });
+        reader.addEventListener("load", () => {
+            let color_1 = "transparent";
+            let color_2 = "transparent";
+            if (this.dataModel.webpage.articles[this.articleIndex].background.color_gradient) {
+                color_1 = this.dataModel.webpage.articles[this.articleIndex].background.color_gradient[0];
+                color_2 = this.dataModel.webpage.articles[this.articleIndex].background.color_gradient[1];
+            }
+            ArticleBackgroundEditor.loadBackgroundImage(this.article, reader.result, color_1, color_2);
+        });
+        reader.readAsDataURL(file);
+
+        let filename = await this.dataModel.uploadImage(file);
+        let img_url = `/images/${this.dataModel.webpageNameNoExtension}/${filename}`;
+        this.dataModel.webpage.articles[this.articleIndex].background.image = img_url;
+    }
+
+
+    _resetInstanceVariables() {
+
+    }
+}
+
+
+
+class AddArticleBackgroundColorButton extends Button {
+    constructor(data_model, article_index) {
+        super();
+        this.parentContainer = null;
+        this.button1 = null;
+        this.button2 = null;
+        this.buttonContainers = null;
+
+        this.background = null;
+        this.dataModel = data_model;
+        this.articleIndex = article_index;
+    }
+
+    install(parent_container, article) {
+        if (!parent_container) {
+            throw "AddArticleBackgroundColorButton: You must provide a div to install the Add Article Background Color Button into.";
+        }
+        this.parentContainer = parent_container;
+        this.article = article;
+
+        let buttons = this.render();
+        this.buttonContainers = buttons;
+        this.addToDOM(buttons, parent_container);
+    }
+
+    render() {
+        let label_1 = Util.tag('label', {'class': "article-bg-color-label"}, "Color Foreground - Top:");
+        let button_1 = Util.tag('button', {}, "", false);
+        this.button1 = button_1;
+        let div_1 = Util.tag('div', {'class': "article-bg-color-container"}, [label_1, button_1]);
+        
+        let label_2 = Util.tag('label', {'class': "article-bg-color-label"}, "Color Foreground - Bottom:");
+        let button_2 = Util.tag('button', {}, "", false);
+        this.button2 = button_2;
+        let div_2 = Util.tag('div', {'class': "article-bg-color-container"}, [label_2, button_2]);
+
+        let label_3 = Util.tag('label', {'class': "article-bg-color-label"}, "Color Background:");
+        let button_3 = Util.tag('button', {}, "", false);
+        this.button3 = button_3;
+        let div_3 = Util.tag('div', {'class': "article-bg-color-container"}, [label_3, button_3]);
+
+        let current_color_1 = "transparent";
+        let current_color_2 = "transparent";
+        let current_color_3 = "transparent";
+        if (this.dataModel.webpage.articles[this.articleIndex].background.color_gradient) {
+            current_color_1 = this.dataModel.webpage.articles[this.articleIndex].background.color_gradient[0];
+            current_color_2 = this.dataModel.webpage.articles[this.articleIndex].background.color_gradient[1];
+        }
+        if (this.dataModel.webpage.articles[this.articleIndex].background.color) {
+            current_color_3 = this.dataModel.webpage.articles[this.articleIndex].background.color;
+        }
+        let pickr_top = this.set_up_color_picker(current_color_1, button_1, 'monolith');
+        let pickr_bot = this.set_up_color_picker(current_color_2, button_2, 'monolith');
+        let pickr_bg = this.set_up_color_picker(current_color_3, button_3, 'monolith');
+
+        pickr_top.on('save', (color) => {
+            if (!Array.isArray(this.dataModel.webpage.articles[this.articleIndex].background.color_gradient)) {
+                this.dataModel.webpage.articles[this.articleIndex].background.color_gradient = ["transparent", "transparent"];
+            }
+            if (color !== null) {
+                this.dataModel.webpage.articles[this.articleIndex].background.color_gradient[0] = color.toHEXA().toString();
+            }
+            else {
+                this.dataModel.webpage.articles[this.articleIndex].background.color_gradient[0] = "transparent";
+            }
+
+            let color_1 = this.dataModel.webpage.articles[this.articleIndex].background.color_gradient[0];
+            let color_2 = this.dataModel.webpage.articles[this.articleIndex].background.color_gradient[1];
+            let image = this.dataModel.webpage.articles[this.articleIndex].background.image;
+            ArticleBackgroundEditor.loadBackgroundColorGradient(this.article, color_1, color_2, image);
+        });
+        pickr_bot.on('save', (color) => {
+            if (!Array.isArray(this.dataModel.webpage.articles[this.articleIndex].background.color_gradient)) {
+                this.dataModel.webpage.articles[this.articleIndex].background.color_gradient = ["transparent", "transparent"];
+            }
+            if (color !== null) {
+                this.dataModel.webpage.articles[this.articleIndex].background.color_gradient[1] = color.toHEXA().toString();
+            }
+            else {
+                this.dataModel.webpage.articles[this.articleIndex].background.color_gradient[1] = "transparent";
+            }
+
+            let color_1 = this.dataModel.webpage.articles[this.articleIndex].background.color_gradient[0];
+            let color_2 = this.dataModel.webpage.articles[this.articleIndex].background.color_gradient[1];
+            let image = this.dataModel.webpage.articles[this.articleIndex].background.image;
+            ArticleBackgroundEditor.loadBackgroundColorGradient(this.article, color_1, color_2, image);
+        });
+        pickr_bg.on('save', (color) => {
+            if (color !== null) {
+                color = color.toHEXA().toString();
+                this.dataModel.webpage.articles[this.articleIndex].background.color = color;
+            }
+            else {
+                this.dataModel.webpage.articles[this.articleIndex].background.color = null;
+            }
+
+            ArticleBackgroundEditor.loadBackgroundColor(this.article, color);
+        });
+
+        return [div_1, div_2, div_3];
+    }
+
+    set_up_color_picker(color, button, theme) {
+        const pickr = Pickr.create({
+            el: button,
+            theme: theme, // or 'monolith', or 'nano'
+            default: color,     // Set to existing value for bg color.
+            swatches: [             // Set to colors used in the theme of the page.
+                'rgba(244, 67, 54, 1)',
+                'rgba(233, 30, 99, 0.95)',
+                'rgba(156, 39, 176, 0.9)',
+                'rgba(103, 58, 183, 0.85)',
+                'rgba(63, 81, 181, 0.8)',
+                'rgba(33, 150, 243, 0.75)',
+                'rgba(3, 169, 244, 0.7)',
+                'rgba(0, 188, 212, 0.7)',
+                'rgba(0, 150, 136, 0.75)',
+                'rgba(76, 175, 80, 0.8)',
+                'rgba(139, 195, 74, 0.85)',
+                'rgba(205, 220, 57, 0.9)',
+                'rgba(255, 235, 59, 0.95)',
+                'rgba(255, 193, 7, 1)'
+            ],
+        
+            components: {
+        
+                // Main components
+                preview: true,
+                opacity: true,
+                hue: true,
+        
+                // Input / output Options
+                interaction: {
+                    hex: true,
+                    rgba: true,
+                    hsla: true,
+                    hsva: true,
+                    cmyk: true,
+                    input: true,
+                    clear: true,
+                    save: true
+                }
+            }
+        });
+    
+        return pickr;
+    }
+
+    removeFromDOM() {
+        for (let container of this.buttonContainers) {
+            container.remove();
+        }
+    }
+
+    _resetInstanceVariables() {
+
     }
 }

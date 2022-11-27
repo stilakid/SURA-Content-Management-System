@@ -1,0 +1,33 @@
+/***************************************************************************/
+/* Admin/Member Features */
+/***************************************************************************/
+
+/* Master Buttons */
+
+#expand, #collapse {
+    border-radius: 50%;
+    width: 3em;
+    height: 3em;
+    position: fixed;
+    bottom:2em;
+    right: 2em;
+    border: none;
+    z-index: 4;
+}
+
+
+#admin-controls {
+    flex-direction: column;
+    position: fixed;
+    z-index: 3;
+    background-color: var(--tertiary-color-light);
+    bottom: 3em;
+    right: 3em;
+    width: 15rem;
+    box-shadow: var(--shadow);
+}
+/* 
+
+box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
+
+box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px; */

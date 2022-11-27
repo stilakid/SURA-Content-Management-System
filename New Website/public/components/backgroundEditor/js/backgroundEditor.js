@@ -17,12 +17,12 @@ class BackgroundEditor {
 
     render(class_name = "") {    
         let button_container = Util.tag('div', {'class': `bg-button-container`}, "");
-        let body = document.querySelector("body");
+        let background_container = document.querySelector("#background-container");
         let vid_tag = document.querySelector("#page-background-video");
         let vid_src_tag = document.querySelector("#page-background-video source");
-        new AddBackgroundImageButton(this.dataModel).install(button_container, body, vid_tag, vid_src_tag);
-        new AddBackgroundVideoButton(this.dataModel).install(button_container, body, vid_tag, vid_src_tag);
-        new AddBackgroundColorButton(this.dataModel).install(button_container, body);
+        new AddBackgroundImageButton(this.dataModel).install(button_container, background_container, vid_tag, vid_src_tag);
+        new AddBackgroundVideoButton(this.dataModel).install(button_container, background_container, vid_tag, vid_src_tag);
+        new AddBackgroundColorButton(this.dataModel).install(button_container, background_container);
 
         let editor = Util.tag('div', {'class': `bg-button-container-wrapper ${class_name}`}, button_container, false);
         this.editor = editor;

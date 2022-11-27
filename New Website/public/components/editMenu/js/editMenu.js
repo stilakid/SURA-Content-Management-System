@@ -213,7 +213,7 @@ class EditMenu {
 
     async _saveChanges() {
         await this.dataModel.saveWebpageDataModel();
-        this._reloadWebpage();
+        // this._reloadWebpage();
     }
 
     _reloadWebpage() {

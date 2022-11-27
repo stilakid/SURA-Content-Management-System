@@ -332,27 +332,32 @@ api.patch("/protected/webpages/:id", async (req, res) => {
   // If no error
   // Update database
   let webpage_update = req.body;
-  let webpage = await webpages.findOne({ "id" : id});
-  let prior_data = structuredClone(webpage);
-
-  for (let key of Object.keys(webpage_update)) {
-    if (key != "id") {
-      webpage[key] = webpage_update[key];
-    }
-  }
-  await webpages.replaceOne({"id" : id}, webpage);
+  let prior_data = await webpages.findOne({ "id" : id});
+  await webpages.replaceOne({"id" : id}, webpage_update);
 
   // Delete unused images from server
   let current_images = [];
   let prior_images = [];
 
-  for (let article of webpage["articles"]) {
-    current_images = current_images.concat(article["images"]);
+  for (let article of webpage_update["articles"]) {
+    if (article.background.image) {
+      current_images.push(article.background.image);
+    }
+
+    for (let image of article["images"]) {
+      current_images.push(image.url);
+    }
   }
-  current_images = current_images.concat(webpage["background"]["image"]);
+  current_images = current_images.concat(webpage_update["background"]["image"]);
 
   for (let article of prior_data["articles"]) {
-    prior_images = prior_images.concat(article["images"]);
+    if (article.background.image) {
+      prior_images.push(article.background.image);
+    }
+
+    for (let image of article["images"]) {
+      prior_images.push(image.url);
+    }
   }
   prior_images = prior_images.concat(prior_data["background"]["image"]);
 
@@ -373,13 +378,17 @@ api.patch("/protected/webpages/:id", async (req, res) => {
   let current_videos = [];
   let prior_videos = [];
 
-  for (let article of webpage["articles"]) {
-    current_videos = current_videos.concat(article["videos"]);
+  for (let article of webpage_update["articles"]) {
+    for (let video of article["videos"]) {
+      current_videos.push(video);
+    }
   }
-  current_videos = current_videos.concat(webpage["background"]["video"]);
+  current_videos = current_videos.concat(webpage_update["background"]["video"]);
 
   for (let article of prior_data["articles"]) {
-    prior_videos = prior_videos.concat(article["videos"]);
+    for (let video of article["videos"]) {
+      prior_videos.push(video);
+    }
   }
   prior_videos = prior_videos.concat(prior_data["background"]["video"]);
 
@@ -397,7 +406,7 @@ api.patch("/protected/webpages/:id", async (req, res) => {
   }
 
   
-  res.json(webpage);
+  res.json(webpage_update);
   // res.json({"current" : current_images, "prior": prior_images});
 });
 

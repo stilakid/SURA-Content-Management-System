@@ -24,7 +24,6 @@ const slideRight = (event) => {
         let button = document.querySelector("#button_left");
         button.style.visibility = "visible";
     }
-
 }
 
 const slideLeft = (event) => {

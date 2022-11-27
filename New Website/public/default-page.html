@@ -3,6 +3,7 @@
 
     <head>
         <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
         <link rel="canonical" href="/welcome-sura" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <title>SURA | Stanford Undergraduate Research Association</title>
@@ -39,15 +40,19 @@
         <link rel="stylesheet" href="/components/navbar/css/navbar.css">
         <link rel="stylesheet" href="/components/sidebar/css/sidebar.css">
         <link rel="stylesheet" href="/components/memberCard/css/memberCard.css">
+        <link rel="stylesheet" href="/components/stickyNote/css/stickyNote.css">
+        <link rel="stylesheet" href="/components/slide/css/slide.css">
         <link rel="stylesheet" href="/components/editMenu/css/editMenu.css">
         <link rel="stylesheet" href="/components/dialogBoxes/css/dialogBoxes.css">
         <link rel="stylesheet" href="/components/buttons/css/buttons.css">
         <link rel="stylesheet" href="/components/backgroundEditor/css/backgroundEditor.css">
         <link rel="stylesheet" href="/components/background/css/background.css">
         <link rel="stylesheet" href="/components/articles/css/articles.css">
-
+        <link rel="stylesheet" href="/components/articleBackgroundEditor/css/articleBackgroundEditor.css">
 
         <link rel="stylesheet" href="/styles/template.css">
+        <link rel="stylesheet" href="/styles/preloader.css">
+        <link rel="stylesheet" href="/styles/transitions.css">
 
         <!-- My custom scripts -->
         <script src="/scripts/api.js"></script>
@@ -64,10 +69,12 @@
         <script src="/components/background/js/background.js"></script>
         <script src="/components/backgroundEditor/js/backgroundEditor.js"></script>
         <script src="/components/memberCard/js/memberCard.js"></script>
+        <script src="/components/stickyNote/js/stickyNote.js"></script>
+        <script src="/components/slide/js/slide.js"></script>
+        <script src="/components/articleBackgroundEditor/js/articleBackgroundEditor.js"></script>
 
-        <script src="/scripts/load-webpage.js"></script>
+
         <script src="/scripts/webpage.js"></script>
-        <script src="/scripts/admin-features.js"></script>
         <script src="/scripts/main.js" defer></script>
 
     </head>
@@ -76,6 +83,8 @@
         <div id="temporary">
             <!-- This is where admin control UI and dialog boxes go. -->
         </div>
+
+        <div class="loader">Loading...</div>
         
         <header>
             <!-- This is where the navbar goes. -->

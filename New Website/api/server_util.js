@@ -17,5 +17,4 @@ export default class Util {
         console.log("#######################################");
         console.log("\n");
     }
-
 }

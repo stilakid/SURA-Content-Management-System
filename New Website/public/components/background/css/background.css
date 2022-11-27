@@ -1,0 +1,73 @@
+
+/***************************************************************************/
+
+/* Background */
+
+body {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+
+    /* For footer and the new section button above footer to show up properly */
+    display:flex;
+    flex-direction: column;
+}
+
+#page-background-video {
+    display: flex;
+    visibility: visible;
+
+    /* Make video to at least 100% wide and tall */
+    min-width: 100%; 
+    min-height: 100%; 
+
+    /* Setting width & height to auto prevents the browser from stretching or squishing the video */
+    width: auto;
+    height: auto;
+
+    /* Center the video */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+
+
+
+/***************************************************************************/
+
+/* Page Title */
+
+#page-title {
+    z-index: 1;
+    color: rgb(255, 255, 255);
+    font-size: 10em;
+    text-align: center;
+}
+
+#background-container {
+    display: flex;
+    justify-content: center;
+    position: fixed;
+    align-items: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    animation: fadeIn 1s;
+}
+
+
+
+
+/***************************************************************************/
+
+/* One Viewport worth of Empty Space */
+
+#empty-space {
+    height: 100vh;
+    width: 100vw;
+}

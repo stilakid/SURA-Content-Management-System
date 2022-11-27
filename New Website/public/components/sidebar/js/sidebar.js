@@ -2,11 +2,15 @@ class Sidebar {
     // Call it on sidebar when user enters edit mode first.
     // Subsequently, call it on individual li element when adding new li to the sidebar.
     static enterSidebarEditMode(parent_container, data_model) {
+        console.log("parent_container", parent_container);
         let heading = parent_container.querySelector('.sidebar-title');
-        heading.setAttribute("contenteditable", "true");
-        heading.addEventListener("input", () => {
-            data_model.webpage.sidebar_title = heading.textContent;
-        });
+        if (heading) {
+            heading.setAttribute("contenteditable", "true");
+            heading.addEventListener("input", () => {
+                data_model.webpage.sidebar_title = heading.textContent;
+            });
+        }
+
 
         let ul = parent_container.querySelector('.tertiary-navbar ul');
         if (ul) {

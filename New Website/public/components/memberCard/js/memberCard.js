@@ -1,30 +1,38 @@
 class MemberCard {
-    static enableEditMode(member_card, data_model, article_index, image_index) {
+    // Here, image_index === subheading_index === link_section_index. So, we will use image_index in general for all three.
+    static enableEditMode(member_card, data_model, article_index, card_index) {
         // Makes heading and paragraph editable.
         let subheading = member_card.querySelector(".article-subheading");
-        Article.makeSubHeadingEditable(data_model, subheading, article_index, image_index);
+        Article.makeSubHeadingEditable(data_model, subheading, article_index, card_index);
         let text = member_card.querySelector(".text-container .article-text");
-        Article.makeTextEditable(data_model, text, article_index, image_index);
-
-        // Handles adding and deleting member photo
-        MemberCard.makeMemberPhotosEditable(data_model, member_card, article_index, image_index);
+        Article.makeTextEditable(data_model, text, article_index, card_index);
 
         // Makes links editable
-        Article.makeLinkEditable(data_model, member_card, article_index, image_index);
+        Article.makeLinkEditable(data_model, member_card, article_index, card_index);
         let link_section = member_card.querySelector(".text-container");
-        Article.installAddNewLinkButton(data_model, link_section, article_index, image_index);
+        Article.installAddNewLinkButton(data_model, link_section, article_index, card_index);
+
+        // Handles adding and deleting member photo
+        MemberCard.makeMemberPhotosEditable(data_model, member_card, article_index, card_index);
+
+        // Handles deleting the member card
+        MemberCard.makeMemberDeletable(data_model, member_card, article_index, card_index);
     }
 
-    static makeMemberPhotosEditable(data_model, member_card, article_index, image_index) {
+    static makeMemberPhotosEditable(data_model, member_card, article_index, card_index) {
         let img = member_card.querySelector('.image.member-photo');
         let img_container = member_card.querySelector('.member-photo-container');
-        if (data_model.webpage.articles[article_index].images[image_index] == Util.defaultMemberPhoto) {
+        if (data_model.webpage.articles[article_index].images[card_index].url == Util.defaultMemberPhoto) {
             img.remove();
-            let add_image_button = new AddMemberPhotoButton(data_model, article_index, image_index);
+            let add_image_button = new AddMemberPhotoButton(data_model, article_index, card_index);
             add_image_button.install(img_container);
         } else {
-            AddMemberPhotoButton.addDeleteImageButton(member_card, img, data_model, article_index, image_index);
+            AddMemberPhotoButton.addDeleteImageButton(img_container, img, data_model, article_index, card_index);
         }
+    }
+
+    static makeMemberDeletable(data_model, member_card, article_index, card_index) {
+        new DeleteMemberButton(data_model, article_index, card_index).install(member_card, member_card);
     }
 
     constructor(data_model) {
@@ -45,7 +53,7 @@ class MemberCard {
         this.addToDOM(member_card, parent_container);
     }
 
-    render(heading = "Name/Title", texts = ["More Info"], img_url = Util.defaultMemberPhoto, links = []) {
+    render(heading = "Name/Title", texts = ["More Info"], img_url = Util.createImageData(Util.defaultMemberPhoto), links = []) {
         let img_container = Util.tag('div', {'class': "member-photo-container"}, "");
         AddMemberPhotoButton.loadImage(img_container, img_url);
         
@@ -68,9 +76,9 @@ class MemberCard {
 
     addToDOM(member_card, parent_container) {
         let add_member_button = parent_container.querySelector(".add-member-button");
-        if (add_member_button) {
-            this.addBefore(member_card, add_member_button);
-        } else {
+        if (add_member_button) { // This is for adding a new member while editing.
+            this.addBefore(member_card, add_member_button); // We add before so that the new member card does not end up after the add new member button.
+        } else { // This is for initial loading of webpage.
             this.append(member_card, parent_container);
         }
     }

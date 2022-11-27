@@ -1,13 +1,14 @@
 class Background {
     static loadBackgroundImage(background, bg_vid_tag, bg_vid_src, img_url, color_1, color_2) {
-        background.style.backgroundImage = `linear-gradient(${color_1}, ${color_2}), url(${encodeURI(img_url)})`;
+        background.style.backgroundImage = `linear-gradient(${color_1}, ${color_2}), url(${Util.encodeUriAll(img_url)})`;
         bg_vid_src.removeAttribute("src");
         bg_vid_tag.load();
     }
 
     static loadBackgroundVideo(background, bg_vid_tag, bg_vid_src, vid_url, color_1, color_2) {
         background.style.backgroundImage = `linear-gradient(${color_1}, ${color_2})`;
-        bg_vid_src.src = encodeURI(vid_url);
+        bg_vid_src.src = vid_url;
+
         bg_vid_tag.load();
         bg_vid_tag.muted = true;
         bg_vid_tag.play();
@@ -15,7 +16,7 @@ class Background {
 
     static loadBackgroundColor(background, color_1, color_2, image) {
         if (image !== "") {
-            background.style.backgroundImage = `linear-gradient(${color_1}, ${color_2}), url(${encodeURI(image)})`;
+            background.style.backgroundImage = `linear-gradient(${color_1}, ${color_2}), url(${Util.encodeUriAll(image)})`;
         }
         // if bg video is present, it is handled by video tag. So, the bg-image property is the same as the case with only colors.
         else {

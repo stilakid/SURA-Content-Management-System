@@ -64,7 +64,14 @@
  * 
  * 
  */
-class webpageData {
+class WebpageData {
+
+    static getWebpageName() {
+        let id = location.href.split("/").slice(-1)[0];
+        let webpage_name = id.split("#").slice(0, 1)[0];
+        return webpage_name;
+    }
+
     constructor() {
         this.webpage = null;
         this.primaryNavbar = null;
@@ -93,6 +100,20 @@ class webpageData {
         await this.getListOfWebpages();
         await this.getListOfWebpageUrls();
         console.log("data model", this);
+
+        for (let i = 0; i < this.webpage.articles.length; i++) {
+            // Clear the remains of deleted images.
+            // console.log("images?", this.webpage.articles[i].images)
+            // for (let j = 0; j < this.webpage.articles[i].images.length; j++) {
+            //     console.log("loop", this.webpage.articles[i].images[j])
+            //     if (this.webpage.articles[i].images[j] == null) {
+            //         this.webpage.articles[i].images.splice(j, 1);
+            //         j--;
+            //     }
+            // }
+        }
+        console.log("data model", this);
+
     }
 
     getArticleArrangement() {
@@ -106,7 +127,11 @@ class webpageData {
     getImageNames() {        
         this.imageNames.push(this.webpage.background.image);
         for (let article of this.webpage.articles) {
-            for (let url of article.images) {
+            if (article.background.image) {
+                this.imageNames.push(article.background.image);
+            }
+            for (let image_data of article.images) {
+                let url = image_data.url;
                 if (!url) { continue }
                 let filename = url.split("/").slice(-1)[0];
                 this.imageNames.push(filename);
@@ -212,10 +237,10 @@ class webpageData {
      *  images: empty string.
      * 
      */
-    async saveWebpageDataModel() {
+     async saveWebpageDataModel() {
         // Clear the remains of deleted sidebar data.
         for (let i = 0; i < this.webpage.sidebar.length; i++) {
-            if (this.webpage.sidebar[i].length === 0) {
+            if (this.webpage.sidebar[i] == null) {
                 this.webpage.sidebar.splice(i, 1);
                 i--;
             }
@@ -224,7 +249,7 @@ class webpageData {
         // Clear the remains of deleted article data.
         for (let i = 0; i < this.webpage.articles.length; i++) {
             // Delete article data for deleted articles.
-            if (Object.keys(this.webpage.articles[i]).length === 0) {
+            if (this.webpage.articles[i] == null) {
                 this.webpage.articles.splice(i, 1);
                 i--;
             }
@@ -243,20 +268,45 @@ class webpageData {
         // Clear the remains of deleted values inside each article.
         for (let i = 0; i < this.webpage.articles.length; i++) {
             // Clear the remains of deleted images.
-            for (let j = 0; j < this.webpage.articles[i].images; j++) {
-                if (this.webpage.articles[i].images[j].length === 0) {
+            for (let j = 0; j < this.webpage.articles[i].images.length; j++) {
+                if (this.webpage.articles[i].images[j] == null) {
                     this.webpage.articles[i].images.splice(j, 1);
                     j--;
                 }
             }
 
-            // Clear the remains of deleted links.
+
+            // Clear the remains of deleted link sections and links
             for (let j = 0; j < this.webpage.articles[i].links.length; j++) {
+                if (this.webpage.articles[i].links[j] == null) {
+                    this.webpage.articles[i].links.splice(j, 1);
+                    j--;
+                    continue;
+                }
+
+                console.log("link", this.webpage.articles[i].links);
                 for (let k = 0; k < this.webpage.articles[i].links[j].length; k++) {
-                    if (Object.keys(this.webpage.articles[i].links[j][k]).length === 0) {
+                    if (this.webpage.articles[i].links[j][k] == null) {
                         this.webpage.articles[i].links[j].splice(k, 1);
                         k--;
                     }
+                }
+            }
+
+            // Clear the remains of deleted text sections
+            for (let j = 0; j < this.webpage.articles[i].texts.length; j++) {
+                if (this.webpage.articles[i].texts[j] == null) {
+                    this.webpage.articles[i].texts.splice(j, 1);
+                    j--;
+                }
+            }
+
+
+            // Clear the remains of deleted subheadings
+            for (let j = 0; j < this.webpage.articles[i].subheadings.length; j++) {
+                if (this.webpage.articles[i].subheadings[j] == null) {
+                    this.webpage.articles[i].subheadings.splice(j, 1);
+                    j--;
                 }
             }
         }
@@ -266,6 +316,57 @@ class webpageData {
         let res = await apiRequest("PATCH", `/protected/webpages/${this.webpageName}`, this.webpage);
         console.log("new webpage data", res);
     }
+    // async saveWebpageDataModel() {
+    //     // Clear the remains of deleted sidebar data.
+    //     for (let i = 0; i < this.webpage.sidebar.length; i++) {
+    //         if (this.webpage.sidebar[i].length === 0) {
+    //             this.webpage.sidebar.splice(i, 1);
+    //             i--;
+    //         }
+    //     }
+
+    //     // Clear the remains of deleted article data.
+    //     for (let i = 0; i < this.webpage.articles.length; i++) {
+    //         // Delete article data for deleted articles.
+    //         if (Object.keys(this.webpage.articles[i]).length === 0) {
+    //             this.webpage.articles.splice(i, 1);
+    //             i--;
+    //         }
+    //     }
+
+    //     // Arrange article data based on the arrangement specified by the user.
+    //     for (let i = 0; i < this.articleArrangement.length; i++) {
+    //         for (let j = i; j < this.webpage.articles.length; j++) {
+    //             if (this.articleArrangement[i] === this.webpage.articles[j].article_id) {
+    //                 let article = this.webpage.articles.splice(j, 1)[0];
+    //                 this.webpage.articles.splice(i, 0, article);
+    //             }
+    //         }
+    //     }
+
+    //     // Clear the remains of deleted values inside each article.
+    //     for (let i = 0; i < this.webpage.articles.length; i++) {
+    //         // Clear the remains of deleted images.
+    //         for (let j = 0; j < this.webpage.articles[i].images; j++) {
+    //             if (this.webpage.articles[i].images[j].length === 0) {
+    //                 this.webpage.articles[i].images.splice(j, 1);
+    //                 j--;
+    //             }
+    //         }
+
+    //         // Clear the remains of deleted links.
+    //         for (let j = 0; j < this.webpage.articles[i].links.length; j++) {
+    //             for (let k = 0; k < this.webpage.articles[i].links[j].length; k++) {
+    //                 if (Object.keys(this.webpage.articles[i].links[j][k]).length === 0) {
+    //                     this.webpage.articles[i].links[j].splice(k, 1);
+    //                     k--;
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     let res = await apiRequest("PATCH", `/protected/webpages/${this.webpageName}`, this.webpage);
+    //     console.log("new webpage data", res);
+    // }
 
     async saveNavbarDataModel() {
         let res = await apiRequest("PATCH", `/protected/navbars/${this.webpage_name}`, navbar_update);

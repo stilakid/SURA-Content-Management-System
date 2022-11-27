@@ -51,7 +51,7 @@ login();
 
 
 
-let webpage_data = new webpageData();
+let webpage_data = new WebpageData();
 
 
 const main = async () => {
@@ -63,4 +63,4 @@ const main = async () => {
     }
 }
 
-main();
+// main();

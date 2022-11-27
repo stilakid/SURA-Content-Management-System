@@ -277,9 +277,10 @@ class TemplateDialogBox extends DialogBox {
         let temp9 = this.renderTemplateOption('template-9', "Template 9");
         let temp10 = this.renderTemplateOption('template-10', "Template 10");
         let temp11 = this.renderTemplateOption('template-11', "Template 11");
+        let temp12 = this.renderTemplateOption('template-12', "Template 12");
+        let temp13 = this.renderTemplateOption('template-13', "Template 13");
 
-
-        let ul = Util.tag('ul', {'id': 'templates'}, [temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, temp11]);
+        let ul = Util.tag('ul', {'id': 'templates'}, [temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, temp11, temp12, temp13]);
         return Util.tag('div', {'class': `sura-modal-body ${modal_body_class}`}, ul);
     }
 
@@ -392,7 +393,7 @@ class NavbarDialogBox extends DialogBox {
         return nav_cache;
     }
 
-    renderBody(modal_body_class = "content") {
+    renderBody(modal_body_class = "") {
 
         let control_panel = this.renderWebpageSelector();
         this.renderTable(control_panel);
