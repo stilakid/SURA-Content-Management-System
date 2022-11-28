@@ -66,6 +66,9 @@ class Webpage {
     
         let page_title = document.querySelector("#page-title");
         page_title.textContent = webpage["title"];
+        if (webpage.title.length === 0) {
+            page_title.style.backgroundColor = "transparent";
+        }
 
         let articles = webpage["articles"];
         for (let article of articles) {
@@ -181,21 +184,23 @@ class Webpage {
 
         // Fade in Sidebar
         const sidebar = document.querySelector(".sticky-sidebar");
-        sidebar.style.opacity = 0;
-        const sidebar_observer_options = {
-            rootMargin: "0px 0px -200px 0px"
+        if (sidebar) {
+            sidebar.style.opacity = 0;
+            const sidebar_observer_options = {
+                rootMargin: "0px 0px -200px 0px"
+            }
+    
+            const sidebar_observer = new IntersectionObserver((entries, sidebar_observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("fade-right");
+                        articles_observer.unobserve(entry.target);
+                    }
+                });
+            }, sidebar_observer_options);
+    
+            sidebar_observer.observe(sidebar);
         }
-
-        const sidebar_observer = new IntersectionObserver((entries, sidebar_observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add("fade-right");
-                    articles_observer.unobserve(entry.target);
-                }
-            });
-        }, sidebar_observer_options);
-
-        sidebar_observer.observe(sidebar);
     }
 
 }

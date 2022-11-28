@@ -22,7 +22,7 @@ class MemberCard {
     static makeMemberPhotosEditable(data_model, member_card, article_index, card_index) {
         let img = member_card.querySelector('.image.member-photo');
         let img_container = member_card.querySelector('.member-photo-container');
-        if (data_model.webpage.articles[article_index].images[card_index].url == Util.defaultMemberPhoto) {
+        if (!data_model.webpage.articles[article_index].images[card_index].url) { // null or undefined
             img.remove();
             let add_image_button = new AddMemberPhotoButton(data_model, article_index, card_index);
             add_image_button.install(img_container);
@@ -53,7 +53,7 @@ class MemberCard {
         this.addToDOM(member_card, parent_container);
     }
 
-    render(heading = "Name/Title", texts = ["More Info"], img_url = Util.createImageData(Util.defaultMemberPhoto), links = []) {
+    render(heading = "Name/Title", texts = ["More Info"], img_url = Util.createImageData(null), links = []) {
         let img_container = Util.tag('div', {'class': "member-photo-container"}, "");
         AddMemberPhotoButton.loadImage(img_container, img_url);
         

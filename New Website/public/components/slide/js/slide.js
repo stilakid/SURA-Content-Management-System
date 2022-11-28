@@ -189,10 +189,11 @@ class Slide {
         }
 
         let slide_info = Util.tag('div', {'class': "slide-info text-container"}, [h2, p]);
-        if (heading.length !== 0 || texts.length !== 0) {
-            slide_info.style.backgroundColor = `var(--tertiary-color)`;
-        } else {
+        console.log('slide info', heading.length, texts.length, texts, texts[0].length, texts[0].length === 0, texts.length === 1);
+        if (heading.length === 0 && (texts.length === 0 || (texts.length === 1 && texts[0].length === 0))) {
             slide_info.style.backgroundColor = `transparent`;
+        } else {
+            slide_info.style.backgroundColor = `var(--tertiary-color)`;
         }
 
         for (let link of links) {

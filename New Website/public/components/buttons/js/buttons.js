@@ -253,6 +253,12 @@ class AddImageButton extends Button {
         let filename = await this.dataModel.uploadImage(file);
         let img_url = `/images/${this.dataModel.webpageNameNoExtension}/${filename}`;
         this.dataModel.webpage.articles[this.articleIndex].images[this.imageIndex] = Util.createImageData(img_url);
+        for (let i = 0; i < this.imageIndex; i++) {
+            if (!this.dataModel.webpage.articles[this.articleIndex].images[i]) {
+                this.dataModel.webpage.articles[this.articleIndex].images[i] = Util.createImageData();
+            }
+        }
+        console.log("this", this.dataModel.webpage.articles[this.articleIndex].images);
     }
 
     // Assumption: This method will only be evoked by an admin.
@@ -300,7 +306,7 @@ class DeleteImageButton extends Button {
         this.button.remove();
 
         // Remove the image url from the data model. The image stored in the server will be deleted after the server receives the new webpage data.
-        this.dataModel.webpage.articles[this.articleIndex].images[this.imageIndex] = null;
+        this.dataModel.webpage.articles[this.articleIndex].images[this.imageIndex] = Util.createImageData();
         
         // Create and add default buttons
         let add_img_button = new AddImageButton(this.dataModel, this.articleIndex, this.imageIndex);
@@ -1283,7 +1289,7 @@ class AddNewMemberButton extends Button {
         // Add data to data model
         let card_index = this.dataModel.webpage.articles[this.articleIndex].images.length;
         // Images start from empty array but texts, subheadings, and links start with two arrays by default (generic article data).
-        this.dataModel.webpage.articles[this.articleIndex].images.push(Util.createImageData(Util.defaultMemberPhoto));
+        this.dataModel.webpage.articles[this.articleIndex].images.push(Util.createImageData(null));
         
         if (this.dataModel.webpage.articles[this.articleIndex].texts.length - 1 >= card_index) {
             this.dataModel.webpage.articles[this.articleIndex].texts[card_index] = ["More Info"];
@@ -1368,7 +1374,12 @@ class DeleteMemberButton extends Button {
 
 class AddMemberPhotoButton extends AddImageButton {
     static loadImage(parent_container, image_data) {
-        let img = Util.tag('img', {'src': image_data.url, 'class': 'image member-photo'}, "");
+        let img;
+        if (image_data.url) {
+            img = Util.tag('img', {'src': image_data.url, 'class': 'image member-photo'}, "");
+        } else {
+            img = Util.tag('img', {'src': Util.defaultMemberPhoto, 'class': 'image member-photo'}, "");
+        }
         parent_container.append(img);
 
         return img;
@@ -1436,7 +1447,7 @@ class DeleteMemberPhotoButton extends Button {
         this.button.remove();
 
         // Remove the image url from the data model. The image stored in the server will be deleted after the server receives the new webpage data.
-        this.dataModel.webpage.articles[this.articleIndex].images[this.imageIndex] = Util.createImageData(Util.defaultMemberPhoto);
+        this.dataModel.webpage.articles[this.articleIndex].images[this.imageIndex].url = null;
         
         // Create and add default buttons
         let add_img_button = new AddMemberPhotoButton(this.dataModel, this.articleIndex, this.imageIndex);

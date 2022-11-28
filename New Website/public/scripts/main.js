@@ -16,6 +16,7 @@ const run_webpage = async () => {
         await data_model.getDataModel();
         await webpage.loadWebpage(navbar_container, sidebar_container, sidebar_container, background_container);
         if (await Util.isAdmin()) {
+            await data_model.getProtectedDataModel();
             let dialog_boxes_container = document.querySelector('#temporary');
             let edit_menu_container = document.body;
             webpage.addAdminFeatures(edit_menu_container, dialog_boxes_container);

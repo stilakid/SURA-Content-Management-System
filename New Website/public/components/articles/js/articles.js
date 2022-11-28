@@ -412,7 +412,7 @@ class Article {
         }
 
         let div_2 = Util.tag('div', {'class': 'image-container'}, "");
-        if (images[0]) {
+        if (images[0] && images[0].url) {
             AddImageButton.loadImage(div_2, images[0]);
         }
 
@@ -439,7 +439,7 @@ class Article {
         }
 
         let div_1 = Util.tag('div', {'class': 'image-container'}, "");
-        if (images[0]) {
+        if (images[0] && images[0].url) {
             AddImageButton.loadImage(div_1, images[0]);
         }
 
@@ -480,7 +480,7 @@ class Article {
         }
 
         let div_1_2 = Util.tag('div', {'class': 'image-container'}, "");
-        if (images[0]) {
+        if (images[0] && images[0].url) {
             AddImageButton.loadImage(div_1_2, images[0]);
         }
 
@@ -512,7 +512,7 @@ class Article {
         }
 
         let div_1_1 = Util.tag('div', {'class': 'image-container'}, "");
-        if (images[0]) {
+        if (images[0] && images[0].url) {
             AddImageButton.loadImage(div_1_1, images[0]);
         }
 
@@ -543,7 +543,7 @@ class Article {
 
 
         let div_1_1 = Util.tag('div', {'class': 'image-container'}, "");
-        if (images[0]) {
+        if (images[0] && images[0].url) {
             AddImageButton.loadImage(div_1_1, images[0]);
         }
 
@@ -566,7 +566,7 @@ class Article {
 
 
         let div_2_1 = Util.tag('div', {'class': 'image-container'}, "");
-        if (images[1]) {
+        if (images[1] && images[1].url) {
             AddImageButton.loadImage(div_2_1, images[1]);
         }
 
@@ -607,7 +607,7 @@ class Article {
 
 
         let div_1_1 = Util.tag('div', {'class': 'image-container'}, "");
-        if (images[0]) {
+        if (images[0] && images[0].url) {
             AddImageButton.loadImage(div_1_1, images[0]);
         }
 
@@ -630,7 +630,7 @@ class Article {
 
 
         let div_2_1 = Util.tag('div', {'class': 'image-container'}, "");
-        if (images[1]) {
+        if (images[1] && images[1].url) {
             AddImageButton.loadImage(div_2_1, images[1]);
         }
 
@@ -695,7 +695,7 @@ class Article {
 
 
         let div_2 = Util.tag('div', {'class': 'image-container image-card'}, "");
-        if (images[0]) {
+        if (images[0] && images[0].url) {
             AddImageButton.loadImage(div_2, images[0]);
         }
 

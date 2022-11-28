@@ -96,9 +96,18 @@ Util.encodeUriAll = (url) => {
     if (url.slice(0, 5) === "data:") { // if it is a data uri, we do not want to encode it as it is alrady in the correct form. Encoding it causes errors.
         return url;
     }
+    
+    // For some reason, if url starts with '/', the encoded value of '/' is not interpreted correctly. This is evident when you add background image for html_not_core files.
+    if (url[0] === '/') {
+        url = url.slice(1);
+        return '/' + url.replace(/[^A-Za-z0-9]/g, c =>
+            `%${c.charCodeAt(0).toString(16).toUpperCase()}`
+        );
+    }
+
     return url.replace(/[^A-Za-z0-9]/g, c =>
-    `%${c.charCodeAt(0).toString(16).toUpperCase()}`
-  );
+        `%${c.charCodeAt(0).toString(16).toUpperCase()}`
+    );
 }
 
 Util.createImageData = (url, obj_fit, width, height) => {

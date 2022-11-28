@@ -97,8 +97,6 @@ class WebpageData {
         this.getArticleArrangement();
         this.getImageNames();
         await this.getNavbarDataModel();
-        await this.getListOfWebpages();
-        await this.getListOfWebpageUrls();
         console.log("data model", this);
 
         for (let i = 0; i < this.webpage.articles.length; i++) {
@@ -113,7 +111,13 @@ class WebpageData {
             // }
         }
         console.log("data model", this);
+    }
 
+    // Fetches data from the server that requires admin privileges.
+    async getProtectedDataModel() {
+        await this.getListOfWebpages();
+        await this.getListOfWebpageUrls();
+        console.log("data model", this);
     }
 
     getArticleArrangement() {
@@ -174,6 +178,7 @@ class WebpageData {
             sidebar: [],
             sidebar_title: 'Navigation Pane',
             background: { image: '', video: '', color: [ 'transparent', 'transparent' ] },
+            theme: 'original',
             articles: []
         };
         return this.webpage;

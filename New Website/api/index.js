@@ -345,7 +345,9 @@ api.patch("/protected/webpages/:id", async (req, res) => {
     }
 
     for (let image of article["images"]) {
-      current_images.push(image.url);
+      if (image.url) {
+        current_images.push(image.url);
+      }
     }
   }
   current_images = current_images.concat(webpage_update["background"]["image"]);
@@ -356,13 +358,15 @@ api.patch("/protected/webpages/:id", async (req, res) => {
     }
 
     for (let image of article["images"]) {
-      prior_images.push(image.url);
+      if (image.url) {
+        prior_images.push(image.url);
+      }
     }
   }
   prior_images = prior_images.concat(prior_data["background"]["image"]);
 
   for (let image of prior_images) {
-    if (image !== "" && !current_images.includes(image)) {
+    if (image && image.length === 0 && !current_images.includes(image)) {
       let file_path = `public${image}`;
       // TODO: dont let nodemon crash if file to be deleted cannot be found.
       fs.unlink(file_path, (err) => {
