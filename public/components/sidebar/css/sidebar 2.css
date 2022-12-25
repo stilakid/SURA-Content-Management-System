@@ -1,0 +1,90 @@
+/***************************************************************************/
+
+/* Side Bar */
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    min-width: 20rem;
+    flex-grow: 1;
+    /* height:auto; */
+    background-color: var(--secondary-color);
+    position: relative;
+    /* justify-content: center; */
+    align-items: center;
+}
+
+.sticky-sidebar {
+    position: sticky;
+    top: 8.8vh;
+    margin: 1em;
+}
+
+/* This two CSS code below is for preventing the hyperlink taget from headbutting the fixed floating navbar. */
+/* h2::before {
+    display: block;
+    content: " ";
+    height: 5rem;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+h2 {
+    margin-top: -5rem;
+} */
+
+.sidebar h2 {
+    font-size: 2.3em;
+    margin-bottom: 1em;
+    padding-top: 0.5rem;
+    color: white;
+}
+
+.tertiary-navbar ul {
+    display: flex;
+    flex-direction: column;
+    margin: 15px;
+    list-style-type: none; /* Remove bullets */
+}
+
+.tertiary-navbar li {
+    margin-bottom: 1.5em;
+}
+
+.tertiary-navbar a {
+    color: white;
+    text-decoration: none;
+    font-size: x-large;
+}
+
+.button-container {
+    justify-content: center;
+    display: flex;
+}
+
+.button-navlink {
+    display: flex;
+}
+
+.button-navlink a {
+    flex-grow: 1;
+}
+
+
+
+/***************************************************************************/
+
+/* Article Design with Sidebar */
+
+.display-area {
+    display: flex;
+    width: 100vw;
+}
+
+.main-content {
+    flex-grow: 4;
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0em;
+}

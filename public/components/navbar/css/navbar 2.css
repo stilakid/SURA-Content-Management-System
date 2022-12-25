@@ -1,0 +1,179 @@
+/***************************************************************************/
+/* Navigaiton Bars */
+/***************************************************************************/
+
+
+/***************************************************************************/
+
+/* Nav Bar Styles */
+
+.navbar-container {
+    position: fixed;
+    width: 100vw;
+    z-index: 3;
+}
+
+.primary-navbar-container {
+    background-color: var(--primary-color-dark);
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    box-shadow: var(--large-shadow);
+    transition: 0.05s;
+}
+
+.secondary-navbar-container {
+    background-color: var(--primary-color);
+
+    display: flex;
+    align-items: center;
+}
+
+
+
+/***************************************************************************/
+
+/* SURA homepage Link */
+
+#SURA, #SURA-alternate {
+    font-size: xx-large;
+    font-weight: bolder;
+    color: white;
+    margin: 10px;
+    text-decoration: none;
+
+    display: flex;
+    align-items: center;
+}
+
+#SURA:hover, #SURA-alternate:hover {
+    color: white;
+}
+
+#sura-logo-home, #sura-logo-home-alternate {
+    width: 1em;
+    padding-right: 5px;
+}
+
+
+
+/***************************************************************************/
+
+/* Navigation Links */
+
+
+#SURA-div, #SURA-div-alternate {
+    display: flex;
+}
+
+#SURA-div {
+    flex-grow: 1;
+
+}
+
+#primary-navbar > ul {
+    display: flex;
+    align-items: flex-end;
+    /* margin: 15px; */
+
+    list-style-type: none; /* Remove bullets */
+}
+
+.leaf > a {
+    color: white;
+    text-transform: capitalize;
+    /* margin: 15px; */
+    text-decoration: none;
+    display: block;
+    padding:20px;
+}
+
+.leaf > a:hover {
+    color: white;
+    background-color: var(--primary-color-darker);
+    text-decoration: none;
+}
+
+
+
+/***************************************************************************/
+
+/* Navbar Title Bar */
+
+.title-bar {
+    background-color: var(--primary-color-dark);
+    display: flex;
+    justify-content: center;
+    height: 4rem;
+    align-items: center;
+    box-shadow: var(--large-shadow);
+    transition: 0.05s;
+}
+
+
+/***************************************************************************/
+
+/* Navbar Panel */
+
+
+.primary-nav-panel-sidebar {
+    height: 100vh; /* 100% Full-height */
+    width: 0; /* 0 width - change this with JavaScript */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Stay on top */
+    top: 0; /* Stay at the top */
+    left: 0;
+    background-color: var(--secondary-color-dark);
+    overflow-x: hidden; /* Disable horizontal scroll */
+    padding-top: 60px; /* Place content 60px from the top */
+    transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+}
+
+.primary-nav-panel-sidebar a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: var(--secondary-text-color-dark);
+    display: block;
+    transition: 0.3s;
+}
+
+body {
+    transition: margin-left .5s;
+}
+
+
+/***************************************************************************/
+
+/* Navbar Panel */
+
+.nav-not-scrolled {
+    background-color: transparent;
+    box-shadow: none;
+    background-image: linear-gradient(black 0%, transparent 100%);
+}
+
+.nav-not-scrolled .leaf > a:hover {
+    background-color: transparent;
+}
+
+
+.nav-not-scrolled .leaf::after {
+  backface-visibility: hidden;
+  border: 0px solid white;
+  bottom: 0px;
+  content: " ";
+  display: block;
+  margin: 0 auto;
+  position: relative;
+  transition: all 280ms ease-in-out;
+  width: 0;
+}
+
+.nav-not-scrolled .leaf:hover::after {
+  border: 1.5px solid white;
+  backface-visibility: hidden;
+  border-color: #fff;
+  transition: width 200ms ease-in-out;
+  width: 70%;
+}

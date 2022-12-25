@@ -1,0 +1,70 @@
+
+.slides {
+    width: inherit;
+    height: inherit;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.slide {
+    opacity: 1;
+    width: inherit;
+    height: inherit;
+    object-fit: cover;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    flex: none;
+    display: flex;
+    align-items: flex-end;
+    position: relative;
+    background-color: var(--secondary-color);
+}
+
+.slide-editor {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.slide-editor > * {
+    margin-left: 2em;
+    margin-right: 2em;
+}
+
+.aspect-ratio-container, .object-fit-container {
+    display: flex;
+    align-items: center;
+    height: 5em;
+    margin-bottom: 2em;
+}
+
+.aspect-ratio-container > div {
+    margin-left: 2em;
+    margin-right: 2em;
+}
+
+.object-fit-container > input {
+    margin-left: 2em;
+    margin-right: 1em;
+}
+
+.object-fit-container > label {
+    margin-right: 2em;
+}
+
+legend {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.slide-info {
+    padding: 1em;
+    border-radius: 3px;
+    box-shadow: var(--shadow);
+}
+
+.slide-info > h2 {
+    margin-bottom: 0.5em;
+}

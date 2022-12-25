@@ -36,7 +36,7 @@ const structuredClone = obj => {
 };
 
 // For connecting to the MongoDB server
-const MONGODB_URL = process.env.MONGODB_URL || "mongodb://127.0.0.1:27017";
+const MONGODB_URL = process.env.MONGODB_URL || "mongodb://127.0.0.1:27017"; // Uncomment for production
 
 
 // For parsing multipart/dataform
@@ -113,7 +113,8 @@ const initAPI = async app => {
   app.use("/api", api);
 
   // Initialize database connection
-  conn = await MongoClient.connect(MONGODB_URL);
+  conn = await MongoClient.connect(MONGODB_URL); // Uncomment for production
+  // conn = await MongoClient.connect("mongodb://localhost"); // Uncomment for development
   db = conn.db(DATABASE_NAME);
   webpages = db.collection("webpages");
   admins = db.collection("admins");

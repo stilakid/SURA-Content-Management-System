@@ -1,0 +1,154 @@
+/***************************************************************************/
+
+/* Center Box */
+
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    background: radial-gradient(rgb(255, 255, 255), rgb(187, 187, 187));
+}
+
+#outer_box {
+    display: flex;
+}
+
+.inner_box {
+    width: 35em;
+    height: 40em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+
+
+/***************************************************************************/
+
+/* Left Box */
+
+#left_box {
+    background-color: rgb(41, 107, 117);
+    /* background-image: linear-gradient(to bottom right, rgb(182, 0, 0), rgb(85, 235, 255)); */
+}
+
+#left_box > * {
+    color: white;
+    font-size: 2.3em;
+}
+
+#left_box #SURA_description {
+    font-size: 1.2em;
+}
+
+#left_box > img {
+    margin: 1em;
+}
+
+
+
+/***************************************************************************/
+
+/* Right Box */
+
+#right_box {
+    background-color: white;
+}
+
+.label_input_container {
+    display: flex;
+    margin: 1em;
+}
+
+input {
+    height:2.5em;
+    width:15em;
+    font-size: 18px;
+    margin-left: 1em;
+}
+
+h1 {
+    margin: 0.5em;
+}
+
+ul {
+    margin: 0em;
+    list-style: none
+}
+
+#submit-button-container {
+    display: flex;
+    justify-content: center;
+}
+
+#submit-button {
+    font-size: 1.2em;
+    width: 8em;
+    height:2.5em;
+    border-radius: 0.8em;
+    background-color: rgb(41, 107, 117);
+    color: white;
+    border: transparent;
+    cursor: pointer;
+}
+
+#submit-button:hover {
+    background-color: rgb(37, 130, 146);
+}
+
+#forgot-password-container {
+    margin-top: 2em;
+    display: flex;
+    justify-content: center;
+}
+
+
+
+/***************************************************************************/
+
+/* Border between two boxes */
+
+#left_box, #right_box {
+    position: relative;
+    float: left;
+}
+
+#left_box:after {
+    content: '';
+    line-height: 0;
+    width: 0;
+    height: 0;
+    border-top: 40em solid rgb(41, 107, 117);
+    border-bottom: 50px solid transparent;
+    border-left: 0px solid transparent;
+    border-right: 100px solid transparent;
+    position: absolute;
+    top: 0;
+    right: -100px;
+}
+
+#right_box {
+    margin-left: 7em;
+    width:30em;
+}
+
+#right_box:after {
+    content: '';
+    line-height: 0;
+    width: 0;
+    height: 0;
+    border-top: 50px solid transparent;
+    border-bottom: 40em solid white;
+    border-left: 100px solid transparent;
+    border-right: 0px solid white;
+    position: absolute;
+    top: -50px;
+    left: -100px;
+}
+
+
+
+/***************************************************************************/

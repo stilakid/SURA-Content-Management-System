@@ -1,0 +1,32 @@
+/***************************************************************************/
+
+/* Member Card Components */
+
+.team-members {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.image.member-photo {
+    border-radius: 50%;
+    width: 15rem;
+    height: 15rem;
+    object-fit: cover;
+}
+
+.team-member {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 2em;
+    flex: 1;
+}
+
+.team-sub-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+

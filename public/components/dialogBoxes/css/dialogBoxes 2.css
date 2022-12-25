@@ -1,0 +1,197 @@
+/********************************************************************************/
+
+/* General */
+
+.dialog-box-container {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    /* visibility: hidden; */
+    background-color: rgb(0, 0, 0); /* fallback color */
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.sura-modal {
+    background-color: var(--tertiary-color-light);
+    /* border: black solid 2px; */
+    padding: 1em;
+    text-align: center;
+    box-shadow: var(--very-large-shadow);
+}
+
+.sura-modal-header {
+    width: 100%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+.sura-modal-body, #add-navlink-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    overflow-y: scroll;
+}
+
+.sura-modal-footer, #add-navlink-buttons {
+    display: flex;
+    /* justify-content: flex-end; */
+    justify-content: center;
+}
+
+
+/***************************************************************************/
+
+/* Make New Page Dialog Box */
+
+#webpage-id {
+    font-size: medium;
+    height: 1.5em;
+}
+
+
+/***************************************************************************/
+
+/* Template Menu */
+
+.popup-menu {
+    width: 80vw;
+    height: 80vh;
+    background-color: antiquewhite;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.popup-menu h2 {
+    padding: 0.5em;
+}
+
+#templates {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+#templates li button {
+    height: 18vw;
+    width: 32vw;
+    margin: 2vw;
+}
+
+
+/***************************************************************************/
+
+/* Navlink Dialog Box */
+
+#add-navlink-dialog {
+    background-color: white;
+    border: black solid 2px;
+    padding: 1em;
+    text-align: center;
+}
+
+.add-link-table td {
+    text-align: start;
+}
+
+.add-link-table input {
+    height: 1.5em;
+    font-size: medium;
+    padding: 0px 0.5em;
+}
+
+
+/********************************************************************************/
+
+/* Navbar Controls */
+
+#edit-nav-dialog {
+    text-align: center;
+    background-color: white;
+    border: black solid 1px;
+    padding: 1em;
+}
+
+.nav-control-panel {
+    display:flex;
+    flex-direction: column;
+    padding: 1em;
+    /* width: 40vw; */
+    width: 40rem;
+    /* border: black solid 1px; */
+    justify-content: center;
+    /* Uncomment the code below if the table is too wide in the nav dialog box. */
+    /* align-items: center; */
+}
+
+.nav-control-panel h3 {
+    font-size: 1.3em;
+}
+
+.nav-control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-control > * {
+    padding: 1em;
+}
+
+#secondary-nav-control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#secondary-nav-control > * {
+    padding: 1em;
+}
+
+.nav-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.nav-list label {
+    font-size: large;
+}
+
+.nav-include-exclude {
+    display:flex;
+    flex-direction: column;
+}
+
+.excluded-links, .included-links {
+    width: 15em;
+}
+
+.excluded-links option, .included-links option {
+    font-size: medium;
+    height: 1.5em;
+    text-align: center;
+}
+
+#secondary-nav-control-panel {
+    display: none;
+}
+
+.nav-display-list input, #primary-nav-display-list input, #secondary-nav-display-list input {
+    height: 1.5em;
+    font-size: 0.9em;
+    text-align: center;
+}
+
+.nav-display-list caption, #primary-nav-display-list caption, #secondary-nav-display-list caption {
+    font-size: large;
+    margin-bottom: 1em;
+    margin-top: 1em;
+}
