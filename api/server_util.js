@@ -1,5 +1,6 @@
 export default class Util {
     constructor() {
+        
     }
 
     print_error_message_header() {
@@ -17,4 +18,6 @@ export default class Util {
         console.log("#######################################");
         console.log("\n");
     }
+
+
 }
