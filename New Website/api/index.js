@@ -35,7 +35,8 @@ const structuredClone = obj => {
   return v8.deserialize(v8.serialize(obj));
 };
 
-
+// For connecting to the MongoDB server
+const MONGODB_URL = process.env.MONGODB_URL || "mongodb://127.0.0.1:27017";
 
 
 // For parsing multipart/dataform
@@ -112,7 +113,7 @@ const initAPI = async app => {
   app.use("/api", api);
 
   // Initialize database connection
-  conn = await MongoClient.connect("mongodb://localhost");
+  conn = await MongoClient.connect(MONGODB_URL);
   db = conn.db(DATABASE_NAME);
   webpages = db.collection("webpages");
   admins = db.collection("admins");
