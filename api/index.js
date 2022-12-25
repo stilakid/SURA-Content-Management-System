@@ -95,9 +95,6 @@ const upload = multer({ storage: storage });
 
 
 
-
-
-
 let DATABASE_NAME = "sura";
 
 const api = express.Router();
