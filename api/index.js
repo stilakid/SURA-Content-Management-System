@@ -36,7 +36,7 @@ const structuredClone = obj => {
 };
 
 // For connecting to the MongoDB server
-const MONGODB_URL = process.env.MONGODB_URL || "mongodb://127.0.0.1:27017";
+const MONGODB_URL = process.env.MONGODB_URL || "mongodb://127.0.0.1:27017"; // Uncomment for production
 
 
 // For parsing multipart/dataform
