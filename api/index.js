@@ -36,7 +36,7 @@ const structuredClone = obj => {
 };
 
 // For connecting to the MongoDB server
-// const MONGODB_URL = process.env.MONGODB_URL || "mongodb://127.0.0.1:27017"; // Uncomment for production
+const MONGODB_URL = process.env.MONGODB_URL || "mongodb://127.0.0.1:27017"; // Uncomment for production
 
 
 // For parsing multipart/dataform
@@ -47,10 +47,10 @@ const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     let webpage = req.body.webpage;
     if (req.body.media === "image") {
-      cb(null, `public/images/${webpage}/`);
+      cb(null, `${Util.mediaDir}/images/${webpage}/`);
     }
     else if (req.body.media === "video") {
-      cb(null, `public/videos/${webpage}/`);
+      cb(null, `${Util.mediaDir}/videos/${webpage}/`);
     }
   },
   filename: async function (req, file, cb) {
@@ -58,10 +58,10 @@ const storage = multer.diskStorage({
     let webpage = req.body.webpage;
     let filenames;
     if (req.body.media === "image") {
-      filenames = await fs.promises.readdir(`public/images/${webpage}`);
+      filenames = await fs.promises.readdir(`${Util.mediaDir}/images/${webpage}`);
     }
     else if (req.body.media === "video") {
-      filenames = await fs.promises.readdir(`public/videos/${webpage}`);
+      filenames = await fs.promises.readdir(`${Util.mediaDir}/videos/${webpage}`);
     }
 
     let filename = file.originalname;
@@ -110,8 +110,8 @@ const initAPI = async app => {
   app.use("/api", api);
 
   // Initialize database connection
-  // conn = await MongoClient.connect(MONGODB_URL); // Uncomment for production
-  conn = await MongoClient.connect("mongodb://localhost"); // Uncomment for development
+  conn = await MongoClient.connect(MONGODB_URL); // Uncomment for production
+  // conn = await MongoClient.connect("mongodb://localhost"); // Uncomment for development
   db = conn.db(DATABASE_NAME);
   webpages = db.collection("webpages");
   admins = db.collection("admins");
@@ -219,16 +219,16 @@ api.get("/protected/isAdmin", async (req, res) => {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Sends the list of webpage urls.
-// E.g. /html_not_core/Members.html
+// E.g. /html_not_core/Members.html // This is deprecated. The path is different now.
 api.get("/protected/urls", async (req, res) => {
   let files_batch_1 = await fs.promises.readdir("public");
   for (let i = 0; i < files_batch_1.length; i++) {
     files_batch_1[i] = `/${files_batch_1[i]}`;
   }
 
-  let files_batch_2 = await fs.promises.readdir("public/html_not_core");
+  let files_batch_2 = await fs.promises.readdir(`${Util.webpageDir}`);
   for (let i = 0; i < files_batch_2.length; i++) {
-    files_batch_2[i] = `/html_not_core/${files_batch_2[i]}`;
+    files_batch_2[i] = `${Util.mediaDir}/${files_batch_2[i]}`;
   }
 
   let urls = [];
@@ -366,7 +366,7 @@ api.patch("/protected/webpages/:id", async (req, res) => {
 
   for (let image of prior_images) {
     if (image && image.length === 0 && !current_images.includes(image)) {
-      let file_path = `public${image}`;
+      let file_path = `${Util.mediaDir}${image}`;
       // TODO: dont let nodemon crash if file to be deleted cannot be found.
       fs.unlink(file_path, (err) => {
         if (err) {
@@ -397,7 +397,7 @@ api.patch("/protected/webpages/:id", async (req, res) => {
 
   for (let video of prior_videos) {
     if (video !== "" && !current_videos.includes(video)) {
-      let file_path = `public${video}`;
+      let file_path = `${Util.mediaDir}${video}`;
       // TODO: dont let nodemon crash if file to be deleted cannot be found.
       fs.unlink(file_path, (err) => {
         if (err) {
@@ -446,7 +446,7 @@ api.post("/protected/webpages", async (req, res) => {
   await webpages.insertOne(webpage);
 
   // Make new webpage for it.
-  let file_name = "public/html_not_core/" + id;
+  let file_name = `${Util.webpageDir}/${id}`;
   fs.copyFile("public/default-page.html", file_name, (err) => {
     if (err) {
       console.log("Error Found:", err);
@@ -456,17 +456,17 @@ api.post("/protected/webpages", async (req, res) => {
 
   // If an image and video directories exist with this name, deletes them.
   let dir_name = id.slice(0,-5);
-  let image_folders = await fs.promises.readdir("public/images");
-  let video_folders = await fs.promises.readdir("public/videos");
+  let image_folders = await fs.promises.readdir(`${Util.mediaDir}/images`);
+  let video_folders = await fs.promises.readdir(`${Util.mediaDir}/videos`);
   if (image_folders.includes(dir_name)) {
-    await fs.promises.rm(`public/images/${dir_name}`, { recursive: true });
+    await fs.promises.rm(`${Util.mediaDir}/images/${dir_name}`, { recursive: true });
   }
   if (video_folders.includes(dir_name)) {
-    await fs.promises.rm(`public/videos/${dir_name}`, { recursive: true });
+    await fs.promises.rm(`${Util.mediaDir}/videos/${dir_name}`, { recursive: true });
   }
 
   // Make new image directory for it.
-  fs.mkdir(`public/images/${dir_name}`, (err) => {
+  fs.mkdir(`${Util.mediaDir}/images/${dir_name}`, (err) => {
     if (err) {
       console.log("Error Found:", err);
       throw err;
@@ -474,18 +474,12 @@ api.post("/protected/webpages", async (req, res) => {
   });
 
   // Make new video directory for it.
-  fs.mkdir(`public/videos/${dir_name}`, (err) => {
+  fs.mkdir(`${Util.mediaDir}/videos/${dir_name}`, (err) => {
     if (err) {
       console.log("Error Found:", err);
       throw err;
     }
   });
-
-  // The code below is for testing.
-  // fs.writeFile("public/newfile.txt", 'Learn Node FS module', function (err) {
-  //   if (err) throw err;
-  //   console.log('File is created successfully.');
-  // });
 
   res.json(webpage);
 });
@@ -519,7 +513,7 @@ api.delete("/protected/webpages/:id", async (req, res) => {
   }
 
   // Deletes the webpage itself.
-  let file_name = "public/html_not_core/" + id;
+  let file_name = `${Util.webpageDir}/${id}`;
   fs.unlink(file_name, (err) => {
     if (err) {
       console.log("Error Found:", err);
@@ -529,13 +523,13 @@ api.delete("/protected/webpages/:id", async (req, res) => {
 
   // Delete the image and video directories for the webpage.
   let dir_name = id.slice(0,-5);
-  fs.rm(`public/images/${dir_name}`, { recursive: true }, (err) => {
+  fs.rm(`${Util.mediaDir}/images/${dir_name}`, { recursive: true }, (err) => {
     if (err) {
       console.log("Error Found:", err);
       throw err;
     }
   });
-  fs.rm(`public/videos/${dir_name}`, { recursive: true }, (err) => {
+  fs.rm(`${Util.mediaDir}/videos/${dir_name}`, { recursive: true }, (err) => {
     if (err) {
       console.log("Error Found:", err);
       throw err;
@@ -543,7 +537,7 @@ api.delete("/protected/webpages/:id", async (req, res) => {
   });
 
 
-  // Deletes the webpage data in MondoDB.
+  // Deletes the webpage data in MongoDB.
   await webpages.deleteOne({"id":id});
 
   // Delete the webpage link from navbar.
@@ -622,52 +616,6 @@ api.patch("/protected/navbars/:id", async (req, res) => {
 
   res.json(navbar_data_in_database);
 });
-
-
-// When webpage is created, creates secondary nav bar data for the webpage.
-api.post("/protected/navbars", async (req, res) => {
-  // Handles error
-  if (!("id" in req.body) || !req.body.id) {
-    res.status(400).json({ error: `No webpage ID was specified!`});
-    return;
-  }
-
-  let id = req.body.id;
-
-  let list_of_webpages = await webpages.find().toArray();
-  let webpage_ids = [];
-  for (let webpage of list_of_webpages) {
-    webpage_ids.push(webpage["id"]);
-  }
-  if (webpage_ids.includes(id)) {
-    res.status(400).json({ error: `A webpage with this ID already exists.`});
-    return;
-  }
-
-  // If no error, add to MongoDB collection "webpages".
-  let webpage = {
-    "id" : id,
-    "articles" : []
-  };
-  await webpages.insertOne(webpage);
-
-  // Make new webpage for it.
-  let file_name = "public/html_not_core/" + id;
-  fs.copyFile("public/default-page.html", file_name, (err) => {
-    if (err) {
-      console.log("Error Found:", err);
-      throw err;
-    }
-  });
-  // The code below is for testing.
-  // fs.writeFile("public/newfile.txt", 'Learn Node FS module', function (err) {
-  //   if (err) throw err;
-  //   console.log('File is created successfully.');
-  // });
-
-  res.json(webpage);
-});
-
 
 
 /* Catch-all route to return a JSON error if endpoint not defined */

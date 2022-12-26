@@ -1,7 +1,11 @@
 export default class Util {
     constructor() {
-        
     }
+
+    static dataDir = "../data";
+    static mediaDir = `${Util.dataDir}/media`;
+    static webpageDir = `${Util.dataDir}/webpages`;
+    static mongoDBDir = `${Util.dataDir}/database/MongoDB`;
 
     print_error_message_header() {
         console.log("\n");
@@ -18,6 +22,4 @@ export default class Util {
         console.log("#######################################");
         console.log("\n");
     }
-
-
 }

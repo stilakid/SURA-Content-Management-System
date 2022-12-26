@@ -1,5 +1,9 @@
 let Util = {};
 
+Util.dataDir = "/data";
+Util.mediaDir = `${Util.dataDir}/media`;
+Util.mongoDBDir = `${Util.dataDir}/database/MongoDB`;
+
 Util.defaultMemberPhoto = "/images/default-member-photo.png";
 
 Util.templateImages = {
@@ -97,15 +101,42 @@ Util.encodeUriAll = (url) => {
         return url;
     }
     
-    // For some reason, if url starts with '/', the encoded value of '/' is not interpreted correctly. This is evident when you add background image for html_not_core files.
-    if (url[0] === '/') {
-        url = url.slice(1);
-        return '/' + url.replace(/[^A-Za-z0-9]/g, c =>
-            `%${c.charCodeAt(0).toString(16).toUpperCase()}`
-        );
-    }
+    // if (url.slice(0, 6) == '/data/') {
+    //     url = url.slice();
+    //     return '/' + url.replace(/[^A-Za-z0-9]/g, c =>
+    //     `%${c.charCodeAt(0).toString(16).toUpperCase()}`
+    //     );
+    // }
 
-    return url.replace(/[^A-Za-z0-9]/g, c =>
+    // if (url.slice(0, 5) == 'data/') {
+    //     url = url.slice();
+    //     return '/' + url.replace(/[^A-Za-z0-9]/g, c =>
+    //     `%${c.charCodeAt(0).toString(16).toUpperCase()}`
+    //     );
+    // }
+
+    // if (url.slice(0, 7) == './data/') {
+    //     url = url.slice();
+    //     return '/' + url.replace(/[^A-Za-z0-9]/g, c =>
+    //     `%${c.charCodeAt(0).toString(16).toUpperCase()}`
+    //     );
+    // }
+
+
+    // For some reason, if url starts with '/', the encoded value of '/' is not interpreted correctly. This is evident when you add background image for html_not_core files.
+    // Update: I know why this happens
+    // Basically, the root '/' and all other path prefix used to serve static files (see server.js) should not be url encoded.
+    // if (url[0] === '/') {
+    //     url = url.slice(1);
+    //     return '/' + url.replace(/[^A-Za-z0-9]/g, c =>
+    //         `%${c.charCodeAt(0).toString(16).toUpperCase()}`
+    //     );
+    // }
+
+
+    // does not encode alphanumerical values  + '/'.
+    // '/' is not encoded because it conflicts with express's path prefix for directories from which static files are being served.
+    return url.replace(/[^A-Za-z0-9/]/g, c =>
         `%${c.charCodeAt(0).toString(16).toUpperCase()}`
     );
 }
