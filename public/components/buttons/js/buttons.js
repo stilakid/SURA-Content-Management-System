@@ -251,7 +251,7 @@ class AddImageButton extends Button {
         reader.readAsDataURL(file);
 
         let filename = await this.dataModel.uploadImage(file);
-        let img_url = `/images/${this.dataModel.webpageNameNoExtension}/${filename}`;
+        let img_url = `${Util.mediaDir}/images/${this.dataModel.webpageNameNoExtension}/${filename}`;
         this.dataModel.webpage.articles[this.articleIndex].images[this.imageIndex] = Util.createImageData(img_url);
         for (let i = 0; i < this.imageIndex; i++) {
             if (!this.dataModel.webpage.articles[this.articleIndex].images[i]) {
@@ -993,7 +993,7 @@ class AddBackgroundImageButton extends Button {
         reader.readAsDataURL(file);
 
         let filename = await this.dataModel.uploadImage(file);
-        let img_url = `/images/${this.dataModel.webpageNameNoExtension}/${filename}`;
+        let img_url = `${Util.mediaDir}/images/${this.dataModel.webpageNameNoExtension}/${filename}`;
         this.dataModel.webpage.background.image = img_url;
         this.dataModel.webpage.background.video = "";
     }
@@ -1062,7 +1062,7 @@ class AddBackgroundVideoButton extends Button {
         reader.readAsDataURL(file);
 
         let filename = await this.dataModel.uploadVideo(file);
-        let vid_url = `/videos/${this.dataModel.webpageNameNoExtension}/${filename}`;
+        let vid_url = `${Util.mediaDir}/videos/${this.dataModel.webpageNameNoExtension}/${filename}`;
         this.dataModel.webpage.background.image = "";
         this.dataModel.webpage.background.video = vid_url;
     }
@@ -1811,7 +1811,7 @@ class AddNewSlideButton extends Button {
 
         // Upload Image to Server
         let filename = await this.dataModel.uploadImage(file);
-        let img_url = `/images/${this.dataModel.webpageNameNoExtension}/${filename}`;
+        let img_url = `${Util.mediaDir}/images/${this.dataModel.webpageNameNoExtension}/${filename}`;
 
         // Add data to data model
         this.dataModel.webpage.articles[this.articleIndex].images.push(Util.createImageData(img_url));
@@ -2012,7 +2012,7 @@ class AddArticleBackgroundImageButton extends Button {
         reader.readAsDataURL(file);
 
         let filename = await this.dataModel.uploadImage(file);
-        let img_url = `/images/${this.dataModel.webpageNameNoExtension}/${filename}`;
+        let img_url = `${Util.mediaDir}/images/${this.dataModel.webpageNameNoExtension}/${filename}`;
         this.dataModel.webpage.articles[this.articleIndex].background.image = img_url;
     }
 

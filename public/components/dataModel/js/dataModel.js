@@ -128,7 +128,7 @@ class WebpageData {
         return this.articleArrangement;
     }
 
-    getImageNames() {        
+    getImageNames() {
         this.imageNames.push(this.webpage.background.image);
         for (let article of this.webpage.articles) {
             if (article.background.image) {

@@ -330,8 +330,9 @@ class MakeNewPageDialogBox extends DialogBox {
         }
 
         let file_name = this.input.value + ".html";
-        await apiRequest("POST", "/protected/webpages", {"id": file_name});
-        let url = "/html_not_core/" + file_name;
+        let res = await apiRequest("POST", "/protected/webpages", {"id": file_name});
+        console.log(res);
+        let url = file_name;
         window.location.href = url;
     }
 }

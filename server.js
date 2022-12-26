@@ -15,6 +15,17 @@ const dirname = process.cwd();
 const publicPath = path.join(dirname, "public");
 console.log(`Serving files from ${publicPath}`);
 app.use("/lib/client", express.static(path.join(dirname, "lib/client")));
+// -------------------------------------------------- MY CODE ----------------------------------------------------- //
+
+// Serves persistent files from outside code that will be updated in GitHub repo so that they don't get overridden when webpage redeploys after new Git commit.
+const persistentDataPath = path.join(dirname, "..", "data");
+app.use("/data", express.static(persistentDataPath));
+
+// Serves non-core html file at root so that webpage url is simple.
+const webpagesPath = path.join(persistentDataPath, "webpages");
+app.use(express.static(webpagesPath));
+
+// ---------------------------------------------------------------------------------------------------------------- //
 app.use(express.static(publicPath));
 updater(server, publicPath);
 
