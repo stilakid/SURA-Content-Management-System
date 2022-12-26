@@ -105,6 +105,3 @@ dist
 
 # Folder attribute file
 .DS_Store
-
-# Data folder that needs to persist between deployments
-data/
