@@ -21,6 +21,7 @@ const testing = async () => {
 }
 
 const login = () => {
+    console.log('login');
     google.accounts.id.initialize({
         client_id: CLIENT_ID,
         callback: onLogin
