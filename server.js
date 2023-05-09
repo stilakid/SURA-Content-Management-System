@@ -5,8 +5,8 @@ import path from "path";
 import initAPI from "./api/index.js";
 import updater from "./lib/server/updater.js";
 
-const PORT = process.env.PORT || 1930; // Uncomment for production
-// const PORT = 1930;     // Uncomment for development
+// const PORT = process.env.PORT || 1930; // Uncomment for production
+const PORT = 1930;     // Uncomment for development
 
 const app = express();
 const server = http.createServer(app);
